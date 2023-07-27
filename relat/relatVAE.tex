@@ -1,0 +1,94 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt,a4paper,english]{article}
+\usepackage{relatorio}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%inclusao do arquivo de macros
+\input{macros.tex}
+\usepackage{makeidx}
+%%%%%%%%%% alteracoes marcio %%%%%%%%%%%%%%%%%
+\newtheorem{coment}{Análise}[subsection]
+\usepackage{pdflscape}
+\usepackage{algorithmicx}
+\usepackage{algorithm}% http://ctan.org/pkg/algorithm
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hyphenation{}
+%define o numero de secoes
+\setcounter{secnumdepth}{3}
+%define o numero de secoes no sumario
+\setcounter{tocdepth}{3}
+%\includeonly{}
+\everymath{\color{blue!90!black}}
+\everydisplay{\color{blue!90!black}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\co}{\mathsf{CO}_2}
+%  \renewcommand{\familydefault}{\ttdefault}
+\makeindex
+\begin{document}
+\AddToShipoutPicture*{\BackgroundPic}
+\begin{titlepage}
+%
+%
+\hspace{-11.75mm}
+\noindent \begin{minipage}[t][1.5cm][l]{2.2cm} 
+\scriptsize
+\centering
+%\raisebox{1pt}{\includegraphics[height=40pt]{/home/mrborges/Dropbox/latex/figuras/lnccbfsombra.png}}
+%\raisebox{1pt}{\includegraphics[height=60pt]{/prj/prjmurad/mrborges/Dropbox/latex/figuras/lnccbfsombra.png}}
+\raisebox{1pt}{\includegraphics[height=40pt]{./figuras/lnccbfsombra.png}}
+\makebox[\textwidth][s]{{\sf\textbf{L}\ \ a b o r a t \'o r i o}}\par\vspace{-0mm}
+\makebox[\textwidth][s]{{\sf\textbf{N} a c i o n a l \ de}}\par\vspace{-0mm} 
+\makebox[\textwidth][s]{{\sf\textbf{C} o m p u t a \c c \~a o}}\par\vspace{-0mm}
+\makebox[\textwidth][s]{{\sf\textbf{C} i e n t \'i f i c a}}\par
+\end{minipage}
+%
+\vspace{-20mm}
+\begin{center}
+ \hspace{25mm}\textbf{\large\sf \textbf{COMOD}\\\hspace{25mm}Coordena\c c\~ao de Modelagem Computacional}
+\end{center}
+%
+\begin{center}
+{\vspace{30mm}\textbf{\Large \sf }\\
+\vspace{30mm}
+\hspace{25mm}\textbf{\Huge \textsf{ Relatório de Atividades}}}
+\end{center}
+%
+\begin{flushright}
+\vspace{50mm}
+  \textbf{Servidor:} Marcio Borges
+\vspace{50mm}
+\end{flushright}
+%
+	\begin{center}
+	{Petrópolis-RJ\\ \today }
+	\end{center}
+%
+\clearpage
+%\pagestyle{empty}
+\small
+\pagenumbering{roman}
+%\tableofcontents
+%\clearpage
+%\listoffigures
+%\clearpage
+%\listoftables
+\end{titlepage}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{VAE.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\addcontentsline{toc}{chapter}{Bibliografia}
+%\bibliography{/prj/prjmurad/mrborges/Dropbox/latex/refbib/REFERENCIAS}
+\bibliography{/home/mrborges/Dropbox/latex/refbib/REFERENCIAS}
+%\bibliography{REFERENCIAS}
+%\bibliographystyle{/home/mrborges/Dropbox/latex/refbib/plainnat}
+\bibliographystyle{plainnat}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

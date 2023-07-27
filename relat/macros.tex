@@ -1,0 +1,373 @@
+%\newcommand{\ie}{\emph{i.e.}}
+% already, then \xspace.
+\usepackage{xspace}
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+
+\def\eg{\emph{e.g}\onedot} \def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} \def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} \def\vs{\emph{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{\emph{et al}\onedot}
+\makeatother
+
+\newcommand{\dataset}[1]{\textbf{#1}}
+\newcommand{\datav}[1]{\textbf{#1}}
+
+\newcommand{\econd}{\texttt{COND}}
+\newcommand{\enocond}{\texttt{NOCOND}}
+\newcommand{\einit}{\texttt{INITGUESS}}
+\newcommand{\flog}[1]{\log\left(#1\right)}
+\newcommand{\glog}[1]{\log\left[#1\right]}
+\newcommand{\test}{\textit{test}}
+\newcommand{\training}{\textit{training}}
+\newcommand{\validation}{\textit{validadtion}}
+\newcommand{\nn}{\textsf{NN}}
+\newcommand{\mlp}{\textsf{MLP}}
+\newcommand{\ct}{\textnormal{CT}}
+\newcommand{\ncond}{\mathsf{n_c}}
+\newcommand{\mean}[1]{\mathsf{E}\!\left[#1\right]}
+\newcommand{\mat}[1]{\boldsymbol{\mathsf{#1}}}
+\newcommand{\scf}{\mathsf{c}_\dim}
+\newcommand{\scfd}{\gamma}
+\newcommand{\scfde}{\mathsf{g}}
+\newcommand{\mcov}{\mathbf{R}_t}
+\newcommand{\covC}{{\boldmath{\mbox{$\mathcal{C}$}}}}
+\newcommand{\mcovC}{\covC_t}
+\newcommand{\mcovCt}{\covC_{t+1}}
+\newcommand{\mcovCz}{\covC_\circ}
+\newcommand{\cov}[1]{\mathsf{cov}\!\left(#1\right)}
+% \newcommand{\covs}{\mbox{\boldmath{$\Sigma$}}}
+\newcommand{\covs}{\boldsymbol{\varSigma}}
+\newcommand{\ecovs}{\hat{\covs}}
+\newcommand{\tcovs}{\tilde{\covs}}
+\newcommand{\pertub}{\varepsilon}
+\newcommand{\DE}{\texttt{DE}}
+\newcommand{\RW}{\texttt{RW}}
+\newcommand{\vet}[1]{{\boldmath{\mbox{$#1$}}}}
+\renewcommand{\dim}{\mathsf{d}}
+\newcommand{\normalf}[2]{\normal\left(#1,#2\right)}
+\newcommand{\normalfn}[3]{\normal_{#1}\left(#2,#3\right)}
+\newcommand{\minimo}[2]{\min\!\left\{#1,#2 \right\}}
+\newcommand{\maximo}[2]{\max\!\left\{#1,#2 \right\}}
+\newcommand{\accept}[2]{\alpha(#1, #2)}
+\newcommand{\acceptc}[2]{\alpha_{\coarse}(#1, #2)}
+\newcommand{\acceptn}[3]{\alpha_{#1}\left(#2, #3\right)}
+\newcommand{\apriori}{\textit{a priori}}
+\newcommand{\maxit}{\mathsf{MaxIter}}
+\newcommand{\coarse}{\mathsf{c}}
+\newcommand{\fine}{\mathsf{f}}
+\newcommand{\preci}{\sigma^{2}}
+\newcommand{\precif}{\preci_{\fine}}
+\newcommand{\precic}{\preci_{\coarse}}
+\newcommand{\cprob}[2]{\prob{#1\ |\ #2}}
+\newcommand{\prob}[1]{\mathsf{P}\!\left(#1\right)}
+\newcommand{\prop}{\mathsf{q}}
+% \newcommand{\propf}[1]{\prop\!\left(#1\right)}
+\newcommand{\propf}[1]{\prop(#1)}
+\newcommand{\propfn}[2]{\prop_{#1}\!\left(#2\right)}
+\newcommand{\post}[1]{\pi(#1)}
+\newcommand{\postc}[1]{\pi_{\coarse}({#1})}
+\newcommand{\ttot}{\mathsf{T}}
+\newcommand{\statec}{{\theta}}
+\newcommand{\state}{\boldsymbol{\statec}}
+% \newcommand{\staten}[1]{\state^{^{[#1]}}}
+\newcommand{\staten}[1]{\state^{{#1}}}
+\newcommand{\data}{\mathbb{F}}
+\newcommand{\datan}[1]{\data^{#1}}
+\newcommand{\datac}{\data_{\coarse}}
+\newcommand{\datacn}[1]{\data_{\coarse}^{#1}}
+\newcommand{\Nn}{\mathsf{N}}
+\newcommand{\conc}{\mathsf{c}}
+\newcommand{\mD}{m\mathsf{D}}
+\newcommand{\simul}{\mathsf{sim}}
+\newcommand{\rf}{\mathsf{ref}}
+\newcommand{\init}[1]{\bar{#1}}
+\newcommand{\re}[1]{\mathsf{ER_{#1}}}
+% \newcommand{\mS}{\boldsymbol{\mathsf{S}}}
+\newcommand{\mS}{\boldsymbol{\mathcal{S}}}
+% \newcommand{\R}{\boldsymbol{\mathsf{R}}}
+\newcommand{\R}{\boldsymbol{\mathcal{R}}}
+\newcommand{\mava}{\boldsymbol{\Lambda}}
+% \newcommand{\covM}[1]{\boldsymbol{\mathsf{M}}_{#1}}
+\newcommand{\covM}[1]{\boldsymbol{\mathcal{M}}_{#1}}
+\newcommand{\proj}[1]{\widetilde{#1}}
+\newcommand{\nc}{\mathsf{Nc}}
+\newcommand{\perm}{\boldsymbol{\kappa}}
+\newcommand{\permn}[1]{\perm_{#1}}
+\newcommand{\permc}{\hat{\perm}}
+\newcommand{\permcn}[1]{\permc_{#1}}
+\newcommand{\permi}{\perm^{0}}
+\newcommand{\permr}{\perm^{\rf}}
+\newcommand{\ver}{$\mathbb{VER}$ }
+\newcommand{\vaz}{Q}
+\newcommand{\hd}{h}
+%\newcommand{\fig}{Fig.~}
+\newcommand{\cpy}{\xi}
+\newcommand{\LU}{{LU}}
+\newcommand{\m}{\textsf{M}}
+\newcommand{\mm}{\mathsf{m}}
+\newcommand{\xx}{x_{1}}
+\newcommand{\vtheta}{\boldsymbol{\theta}}
+\newcommand{\y}{x_{2}}
+%\renewcommand{\cov}{\mathcal{C}}
+%\renewcommand{\covv}{\cov(\xx,\cpy)}
+\newcommand{\kl}{\textsf{KL}}
+\newcommand{\KL}{{Karhunen-Lo\`eve}}
+\newcommand{\Y}{\mathsf{Y}}
+\newcommand{\Ym}{\hat{\Y}}
+\newcommand{\Yr}{\Y^{\rf}}
+%\newcommand{\vw}{\ale}
+\newcommand{\ale}{\omega}
+\newcommand{\Dom}{\mathcal{D}}
+\newcommand{\Yxw}{\Y(\vx,\ale)}
+\newcommand{\ava}{\lambda}
+\newcommand{\avai}{\ava_{i}}
+\newcommand{\avaj}{\ava_{j}}
+\newcommand{\ave}{\phi}
+\newcommand{\avei}{\ave_{i}}
+\newcommand{\avej}{\ave_{j}}
+\renewcommand{\exp}{\mbox{exp}}
+\newcommand{\normal}{\mathbb{N}}
+\newcommand{\clen}{\ell} % correlation length
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\mcmc}{\textsc{McMC}} % Monte Carlo method
+\newcommand{\apri}{{\em a priori}}
+\newcommand{\apost}{{\em a posteriori}}
+%macros matematicas
+%\newcommand{\mcov}{\boldsymbol{\mathcal{C}}}
+\newcommand{\rt}{\zeta}
+%\newcommand{\rt}{\mathcal{T}}
+\newcommand{\estrela}[1]{\overline{#1}}
+%
+\newcommand{\lamemus}{\estrela{\mu}}
+\newcommand{\lamels}{\estrela{\lambda}}
+\newcommand{\Es}[1]{\vetor{\estrela{\mathcal{E}}}\!\left( #1 \right)}
+\newcommand{\tes}{\estrela{\te}}
+\newcommand{\disps}{\estrela{\vetor{u}}}
+\newcommand{\func}[1]{{f}_{#1}}
+\newcommand{\funcc}[2]{{f}_{#1}\left( #2 \right)}
+\newcommand{\storages}{\estrela{S}}  % specific storage
+\newcommand{\heads}{\estrela{p}}         % hydraulic head
+\newcommand{\sources}{\estrela{g}}	      % source/sink function
+\newcommand{\conds}{\estrela{K}}     % hydraulic conductivity
+\newcommand{\fluxs}{\estrela{\vetor{v}}} % specific discharge (flux)
+\newcommand{\tf}[1]{\mbox{\sffamily{#1}}}
+\newcommand{\myoung}{E}
+\newcommand{\cpoisson}{\nu}
+\newcommand{\setU}{\mathcal{U}}
+\newcommand{\setV}{\mathcal{V}}
+\newcommand{\setW}{\mathcal{W}}
+\newcommand{\inprod}[2]{\Big( #1, \ #2\Big)}
+\newcommand{\inprodO}[2]{\Big( #1, \ #2\Big)_{\Omega}}
+\newcommand{\inprodOr}[2]{\Big( #1, \ #2\Big)_{\scfa\Omega}}
+\newcommand{\lamemu}{\mu}
+\newcommand{\lamel}{\lambda}
+\newcommand{\E}[1]{\vetor{\mathcal{E}}\!\left( #1 \right)}
+\newcommand{\tr}{\mbox{\! tr \!}}
+\newcommand{\te}{{\boldsymbol{\sigma}}}
+\newcommand{\tempo}{\mathcal{I}}
+\newcommand{\disp}{\vetor{u}}
+%marcio
+\newcommand{\defini}{:=}
+\newcommand{\const}{\mbox{const.}}
+\newcommand{\meshtab}{\begin{array}{c}\mbox{geological} \\ \mbox{mesh} \end{array}}
+\newcommand{\events}{\mathcal{A}} % ensemble of events
+\newcommand{\event}{\omega} % basic event
+\newcommand{\probab}{\mathcal{P}} % probability
+%\renewcommand{\prob}{\mathcal{P}} % probability
+\newcommand{\hilbert}[1]{H^{#1}}
+\newcommand{\pdf}[1]{f_{#1}}
+\newcommand{\subD}{N{_b}} % number of subdomains
+\newcommand{\nel}{N{e}} % number of finite elements
+\newcommand{\nr}{M} % number of realizations
+%\renewcommand{\sqrt}[1]{\left[ #1 \right]^{1/2}}
+%\newcommand{\lnorm}{\mathcal{L}^{2}}
+\newcommand{\lnorm}{{L}^{2}}
+\newcommand{\norm}[1]{\parallel #1 \parallel}
+%\newcommand{\norma}[1]{\left\| #1 \right\|_{0}}
+\newcommand{\norma}[1]{\left\| #1 \right\|}
+\newcommand{\MC}{\textsf{MC}} % Monte Carlo method
+\newcommand{\ME}{\textsf{ME}} % Moment equations method
+\newcommand{\TOL}{10^{-4}} % Tolerance for convergence
+\newcommand{\conv}[1]{\epsilon_{#1}} % convergence
+\newcommand{\errR}[1]{\varepsilon{_r}_{\!_{(#1)}}} % L2 relative error
+\newcommand{\erroR}[2]{\left\|#1 - #2\right\|_{0}^{r}} % L2 relative error
+\newcommand{\cl}{\lambda} % correlation length
+\newcommand{\err}[1]{\varepsilon_{\!_{(#1)}}} % L2 error
+%\newcommand{\erro}[2]{\left\|#1 - #2\right\|_{0}} % L2 error
+\newcommand{\erro}[2]{\norma{#1 - #2}} % L2 error
+\newcommand{\cvy}{\mbox{\boldmath{$\varphi$}}} % change variable
+%\newcommand{\cvx}{\boldsymbol{\chi}} % change variable
+\newcommand{\cvx}{\mbox{\boldmath{$\chi$}}} % change variable
+\newcommand{\cvxt}{\mbox{\boldmath{$\chi$}},\rt} % change variable
+%\newcommand{\cvy}{\vetor{Y}} % change variable
+%\newcommand{\cvx}{\vetor{X}} % change variable
+\newcommand{\strr}{\rho} % strength
+\newcommand{\str}{\sigma} % strength
+\newcommand{\std}[1]{{\sigma_{#1}}} % standard deviation
+\newcommand{\fac}{\varrho} % SME factor
+%\newcommand{\fac}{\gamma}
+\newcommand{\scfg}{\theta} % scaling factor2
+%\newcommand{\scf}{\alpha} % scaling factor
+\newcommand{\scfa}{\varphi} % scaling factor
+\newcommand{\scfe}{\gamma} % scaling factor exponential
+\newcommand{\scfi}{\scf_{i}} % scaling factor i
+\newcommand{\scfj}{\scf_{j}} % scaling factor j
+\newcommand{\ordem}[1]{\mathcal{O}\left(#1\right)}
+%\newcommand{\oh}[1]{\headp^{(#1)}}
+\newcommand{\oh}[1]{\headpo^{#1}}
+\newcommand{\ohs}{\oh{0} + \oh{1} + \oh{2} + \cdots}
+%\newcommand{\ohs}{\oh{0}\fx + \oh{1}\fx + \oh{2}\fx + \cdots}
+\newcommand{\flu}[1]{\tilde{#1}}
+\newcommand{\mcs}{Monte Carlo simulations}
+\newcommand{\sme}{stochastic moment equations}
+%\renewcommand{\exp}[1]{e^{#1}}
+%\renewcommand{\exp}[1]{\mbox{exp}\left({#1}\right)}
+\newcommand{\storage}{S}  % specific storage
+\newcommand{\head}{p}         % hydraulic head
+\newcommand{\headpo}{p}         % hydraulic head sme order
+\newcommand{\heade}{\hat{p}}  % hydraulic head sme for error
+\newcommand{\headp}{{p}}  % hydraulic head sme
+%\newcommand{\headp}{\hat{p}}  % hydraulic head sme
+\newcommand{\headi}{P_{0}}        % hydraulic head initial
+\newcommand{\headb}{P_{B}}        % hydraulic head initial
+\newcommand{\flux}{\vetor{v}} % specific discharge (flux)
+\newcommand{\source}{g}	      % source/sink function
+\newcommand{\cond}{K}     % hydraulic conductivity
+\newcommand{\condg}{\cond_{G}}     % hydraulic conductivity G
+%\newcommand{\condg}{\cond_{_{G}}}     % hydraulic conductivity G
+\newcommand{\kpg}{\kp_{G}}     % permeabilite G
+\newcommand{\kpo}{\kp_{0}}     % permeabilite 0
+\newcommand{\poro}{\phi}  % porosity
+%\newcommand{\storage}{S_{s}}  % specific storage
+%\newcommand{\head}{h}         % hydraulic head
+%\newcommand{\flux}{\vetor{q}} % specific discharge (flux)
+%\newcommand{\source}{g}	      % source/sink function
+%\newcommand{\cond}{K_{s}}     % hydraulic conductivity
+\newcommand{\front}{\Gamma}   % boundary
+\newcommand{\vel}{\vetor{u}}  % velocidade
+\newcommand{\fxt}{\!\left(\vetor{x},t\right)} % 
+\newcommand{\fxtr}{\!\left(\scfa\vx,\scfa^{2}t\right)}
+\newcommand{\fxtra}{\!\left(\scfa\vx,\scfa^{2}t\right)}
+\newcommand{\fx}{\!\left(\vx\right)}
+\newcommand{\fxw}{\!\left(\vx,\ale\right)}
+\newcommand{\fw}{\!\left(\ale\right)}
+\newcommand{\fxn}[1]{\!\left(\vx_#1\right)}
+\newcommand{\funcxn}[1]{\!\left(\vx_#1\right)}
+%\newcommand{\fxtn}{}
+\newcommand{\fxr}{\!\left(\scf\vx\right)}
+\newcommand{\fxra}{\!\left(\scfa\vx\right)}
+\newcommand{\fxre}{\!\left(\scfe\vx\right)}
+\newcommand{\fxtre}{\!\left(\scfe\vx,\scfe^{2}t\right)}
+\newcommand{\fxcv}{\!\left(\cvx\right)}
+\newcommand{\fxtcv}{\!\left(\cvx,\rt\right)}
+\newcommand{\fy}{\!\left(\vetor{y}\right)}
+%\newcommand{\fy}{\left(\vetor{y}\right)}
+\newcommand{\fyr}{\!\left(\scf\vy\right)}
+\newcommand{\fyre}{\!\left(\scfe\vy\right)}
+\newcommand{\vx}{\vetor{x}}
+\newcommand{\vy}{\vetor{y}}
+\newcommand{\vxt}{\vetor{x},t}
+\newcommand{\vyt}{\vetor{y},t}
+% \newcommand{\pvx}{{\vetor{x}^{\mathsf{c}}}}
+% \newcommand{\pX}{{\vetor{X}^{\mathsf{c}}}}
+% \newcommand{\pvx}{\mathring{\vetor{x}}}
+% \newcommand{\pX}{\mathring{\vetor{X}}}
+\newcommand{\pvx}{\hat{\vetor{x}}}
+\newcommand{\pvxn}[1]{\pvx_{#1}}
+\newcommand{\fpvx}{\!\left(\hat{\vetor{x}}\right)}
+\newcommand{\fpvxn}[1]{\!\left(\hat{\vetor{x}}_{#1}\right)}
+\newcommand{\pX}{\hat{\vetor{X}}}
+\newcommand{\visc}{\mu}   % fluid viscosity
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newcommand{\eq}[1]{Equa��o~(\ref{#1})}
+%\newcommand{\eqs}[2]{Equa��es~(\ref{#1}) e (\ref{#2})}
+%\newcommand{\fig}[1]{Figura~\ref{#1}}
+%\newcommand{\figs}[2]{Figuras~\ref{#1} e \ref{#2}}
+%\newcommand{\figss}[3]{Figuras~\ref{#1}, \ref{#2} e \ref{#3}}
+%\newcommand{\tab}[1]{Tabela~\ref{#1}}
+%\newcommand{\tabs}[2]{Tabelas~\ref{#1} e \ref{#2}}
+
+\newcommand{\eqp}[1]{(Eq.~\ref{#1})}
+\newcommand{\eq}[1]{Eq.~(\ref{#1})}
+\newcommand{\eqs}[2]{Eqs.~(\ref{#1}) and (\ref{#2})}
+\newcommand{\eqss}[2]{(\ref{#1}), (\ref{#2})}
+\newcommand{\Eqs}{Eqs.}
+\newcommand{\Eq}{Eq.}
+
+%\newcommand{\eq}[1]{Equation~(\ref{#1})}
+%\newcommand{\eqs}[2]{Equations~(\ref{#1}) and (\ref{#2})}
+%\newcommand{\eqss}[2]{Equations~(\ref{#1}), (\ref{#2})}
+\newcommand{\Fig}{Fig.}
+\newcommand{\Figs}{Figs.}
+\newcommand{\fig}[1]{\Fig~\ref{#1}}
+\newcommand{\figsto}[2]{\Figs~\ref{#1} to \ref{#2}}
+\newcommand{\figs}[2]{\Figs~\ref{#1} and \ref{#2}}
+\newcommand{\figss}[3]{\Figs~\ref{#1}, \ref{#2} and \ref{#3}}
+\newcommand{\algo}[1]{Algorithm~(\ref{#1})}
+\newcommand{\point}{\mathsf{X}}
+\newcommand{\mpoint}{\mathsf{x}}
+\newcommand{\mpra}{\mpoint^{_{R1}}}
+\newcommand{\mprb}{\mpoint^{_{R2}}}
+\newcommand{\candi}{\mathsf{Y}}
+\newcommand{\mcandi}{\mathsf{y}}
+
+\newcommand{\Tab}{Tab.}
+\newcommand{\Tabs}{Tabs.}
+\newcommand{\tab}[1]{\Tab~\ref{#1}}
+\newcommand{\tabs}[2]{\Tabs~\ref{#1} and \ref{#2}}
+
+\newcommand{\Div}[1]{\mbox{div \!}_{\! {#1}}}
+%\newcommand{\Div}[1]{\nabla_{\! {#1}}\cdot}
+\newcommand{\grad}{\nabla}
+\newcommand{\lap}{\Delta}
+\newcommand{\vol}{\mathcal{V}}
+\newcommand{\vari}[1]{{\sigma_{#1}^{2}}}
+\newcommand{\desv}[1]{{\sigma_{#1}}}
+\newcommand{\me}[1]{{\mu_{#1}}}
+\newcommand{\mev}[1]{{\boldsymbol{\mu}_{#1}}}
+\newcommand{\kp}{\kappa}
+\newcommand{\cc}{\ell}
+\newcommand{\ccn}[1]{\cc_{{#1}}}
+%\newcommand{\vetor}[1]{\mathbf{#1}}
+\newcommand{\scaleup}{{\em scale-up }}
+\newcommand{\vetor}[1]{\mathbf{#1}}
+%\newcommand{\vetor}[1]{\vec{#1}}
+\newcommand{\covv}[1]{\covC_{#1}(\vetor{x}, \vetor{y})}
+\newcommand{\covn}[1]{\covC_{#1}}
+%\newcommand{\cov}[1]{\mathcal{C}_{#1}}
+\newcommand{\covar}[2]{\mathsf{Cov}\left( #1, #2  \right)}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\realm}{\mathbb{R}^{m}}
+\newcommand{\realn}{\mathbb{R}^{n}}
+\newcommand{\negr}[1]{\mbox{\boldmath{$#1$}}}
+\newcommand{\CV}[1]{CV_{#1}}
+
+%funcoes trigonometricas
+\newcommand{\sen}{\mbox{sen\,}}
+\newcommand{\cotg}{\mbox{cotg\,}}
+\newcommand{\tg}{\mbox{tg\,}}
+
+%derivadas parciais
+\newcommand{\dep}[2]{\displaystyle\frac{\partial{#1}}{\partial{#2}}}
+\newcommand{\dPt}[1]{\displaystyle\frac{\partial{#1}}{\partial{t}}}
+\newcommand{\dPtau}[1]{\displaystyle\frac{\partial{#1}}{\partial{\rt}}}
+%\newcommand{\dP}[2]{\displaystyle\frac{\partial{#1}}{\partial{#2}}}
+%\newcommand{\dPP}[2]{\displaystyle\frac{\partial^{2}{#1}}{\partial{#2}^{2}}}
+\newcommand{\dP}[2]{\grad_{\!#2}{#1}}
+\newcommand{\dPT}[2]{\grad_{\!#2}^{T}{#1}}
+\newcommand{\dPP}[2]{\lap_{#2#2}{#1}}
+%derivadas
+\newcommand{\de}[2]{\displaystyle\frac{d#1}{d#2}}
+\newcommand{\des}[2]{{#1}_{#2}}
+%tensores
+\newcommand{\ten}[1]{\mathbf{#1}}
+\newcommand{\tens}[1]{\overline{\overline{#1}}}
+\newcommand{\tent}[1]{\overline{\overline{\overline{#1}}}}
+\newcommand{\tenf}[1]{\overline{\overline{\overline{\overline{#1}}}}}
+
+%medias stocastica
+\newcommand{\med}[1]{\langle {#1} \rangle}

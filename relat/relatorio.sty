@@ -1,0 +1,149 @@
+%%%%%%%%%%%%%%%%%$$$$$$$$$$$$%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Marcio Rentes Borges
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{Large}\end{Large}\usepackage{eso-pic}
+\newcommand\BackgroundPic{
+\put(0,0){
+\parbox[b][\paperheight]{\paperwidth}{%
+\vfill
+\centering
+\includegraphics[width=18cm,height=\paperheight,
+keepaspectratio]{./figuras/capa_lncc4.eps}%
+\vfill
+}}}
+%\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{setspace}
+%\usepackage[numbers]{natbib}
+\usepackage[round]{natbib}
+\usepackage{t1enc}
+\usepackage[T1]{fontenc}
+%\usepackage[latin1]{inputenc}
+%\usepackage[brazilian]{babel}
+\usepackage[utf8]{inputenc}
+%\usepackage[portuges]{babel}
+\usepackage{makeidx}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{indentfirst}
+\usepackage{graphicx,color}
+%\usepackage[dvips]{graphicx,color}
+\usepackage{subfigure}
+\usepackage{float}
+%\usepackage{rotate}
+%\usepackage{helvet}
+\usepackage{times}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,capitalize]{cleveref}
+\usepackage{soul}
+\hypersetup{
+     colorlinks = true,
+     linkcolor = blue,
+     anchorcolor = blue,
+     citecolor = blue,
+     filecolor = blue,
+     urlcolor = blue
+     }
+%\usepackage[nolists,nomarkers,tablesfirst,notabhead,nofighead]{endfloat}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \renewcommand{\l@section}{\@dottedtocline{1}{1.5em}{2.3em}}
+% \renewcommand{\l@subsection}{\@dottedtocline{2}{2.8em}{3.2em}}
+
+%%%%%%%%%% formata��o %%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\parskip}{0.25cm}
+% \setlength{\parindent}{1.0cm}
+\setlength{\oddsidemargin}{0.cm}
+\setlength{\evensidemargin}{1.cm}
+% \setlength{\topmargin}{0.0cm}       %The top margin of the page (to the header) 
+\setlength{\headheight}{0.5cm}      %height of the running head box 
+\setlength{\headsep}{0.5cm}         %Distance from head to body of the text 
+\setlength{\footskip}{1.0cm}        %The distance from the bottom of the last line of text to the bottom of the running foot 
+% %\setlength{\footheight}{1.0cm}      %Height of the foot box.
+\setlength{\textwidth}{16cm}
+\setlength{\textheight}{22.cm}    %Height of actual text 
+%\renewcommand{\familydefault}{\sfdefault}
+\usepackage[small,center]{caption}
+%\setcounter{totalnumber}{0}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\renewcommand\thesection       {\arabic{section}.}
+%\renewcommand\thesection       {\Roman{section}}
+%\renewcommand\thesubsection    {}
+%\renewcommand\thesubsubsection {}
+
+% \renewcommand\thesection       {\arabic{section}}
+% \renewcommand\thesubsection    {\thesection.\arabic{subsection}}
+% 
+\renewcommand\section{\@startsection
+                        {section}%      %nome do cabecalho
+                        {1}%            %nivel de profundidade
+                        {10mm}%          %indentacao do cabecalho incluindo numeracao
+                        {12bp}%         %espacamento antes do cabecalho
+                                        % >0 proximo paragrafo tera indentacao
+                                        % <0 suprime indentacao do proximo paragrafo
+                        {1bp}%          %indentacao apos cabecalho
+                                        % >0 o texto vira num novo paragrafo
+                                        % <0 o texto vira' na mesma linha
+                        {\reset@font\normalsize\bfseries\textsc}%  %estilo
+                      }
+
+\renewcommand\subsection{\@startsection
+                        {subsection}%   %nome do cabecalho
+                        {2}%            %nivel de profundidade
+                        {5mm}%          %indentacao do cabecalho incluindo numeracao
+                        {6bp}%         %espacamento antes do cabecalho
+                                        % >0 proximo paragrafo tera indentacao
+                                        % <0 suprime indentacao do proximo paragrafo
+                        {6bp}%          %indentacao apos cabecalho
+                                        % >0 o texto vira' num novo paragrafo
+                                        % <0 o texto vira' na mesma linha
+%                        {\reset@font\normalsize\bfseries}%  %estilo
+                        {\reset@font\normalsize\bfseries}%  %estilo
+                      }
+
+\renewcommand\subsubsection{\@startsection
+                     {subsubsection}%   %nome do cabecalho
+                     {3}%               %nivel de profundidade
+                     {10mm}%             %indentacao do cabecalho incluindo numeracao
+                     {3bp}%            %espacamento antes do cabecalho
+                                        % >0 proximo paragrafo tera indentacao
+                                        % <0 suprime indentacao do proximo paragrafo
+                     {6bp}%             %indentacao apos cabecalho
+                                        % >0 o texto vira num novo paragrafo
+                                        % <0 o texto vira' na mesma linha
+                     {\reset@font\normalsize\bfseries}%  %estilo
+                     }
+%%% endfloat %%
+%\renewcommand{\tableplace}{%
+%	\begin{center}
+%	  [\tablename~\theposttbl\ aqui.]
+%	\end{center}}
+
+%\renewcommand{\figureplace}{%
+%	\begin{center}
+%	  [\figurename~\thepostfig\ aqui.]
+%	\end{center}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%$$$$$$$$$$$$%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{calc}
+%\fancyheadoffset[LE,RO]{\marginparsep+\marginparwidth}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrulewidth}{0.4pt}
+%\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\fancyhf{}
+\fancyhead[LE,RO]{\bfseries}
+\fancyhead[LO]{\bfseries\rightmark}
+\fancyhead[RE]{\bfseries\leftmark}
+\fancyfoot[CO,CE]{\thepage}
+
+\fancypagestyle{plain}{%
+\fancyhead{} % get rid of headers
+\renewcommand{\headrulewidth}{0pt} % and the line
+}

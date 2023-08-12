@@ -22,6 +22,7 @@ import tensorflow as tf
 # Load data base ==============================================================
 home       = './'
 namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
+namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[0]
 preprocess = True
@@ -33,11 +34,11 @@ train_size = np.size(train_images,0)
 batch_size = 64
 test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
-lrate      = 5e-4
+lrate      = 1e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
 epochs     = 50
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 10
+latent_dim = 2
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################

@@ -15,6 +15,20 @@ import tensorflow_probability as tfp
 import matplotlib.pyplot as plt
 print('Tensorflow version == ',tf.__version__)
 
+
+###############################################################################
+###############################################################################
+def plot_label_clusters(vae, data, labels):
+    # display a 2D plot of the digit classes in the latent space
+    z_mean, _, _ = vae.encoder.predict(data)
+    plt.figure(figsize=(12, 10))
+    plt.scatter(z_mean[:, 0], z_mean[:, 1], c=labels)
+    plt.colorbar()
+    plt.xlabel("z[0]")
+    plt.ylabel("z[1]")
+    plt.show()
+###############################################################################
+
 ###############################################################################
 def plot_latent_images(model, n, digit_size=50):
     """Plots n x n digit images decoded from the latent space."""
@@ -117,39 +131,77 @@ class CVAE(tf.keras.Model):
     """Convolutional variational autoencoder."""
     def __init__(self, latent_dim, inputshape):
         super(CVAE, self).__init__()
-        filter1 = 32
-        filter2 = 64
-        print(inputshape)
+        filter1 = 256
+        filter2 = 128
+        filter3 = 64
 #        sys.exit()
+        channels = inputshape[2]
         self.latent_dim = latent_dim
         self.encoder = tf.keras.Sequential(
             [
                 tf.keras.layers.InputLayer(input_shape=inputshape),
-                tf.keras.layers.Conv2D(filters=filter1, kernel_size=2,
+                tf.keras.layers.Conv2D(filters=filter1, kernel_size=2, padding='same',
+                                       strides=(1, 1), activation='relu'),
+                tf.keras.layers.Conv2D(filters=filter2, kernel_size=2, padding='same', 
                                        strides=(2, 2), activation='relu'),
-                tf.keras.layers.Conv2D(filters=filter2, kernel_size=2, 
-                                       strides=(2, 2), activation='relu'),
+                tf.keras.layers.Conv2D(filters=filter3, kernel_size=2, padding='same', 
+                                       strides=(1, 1), activation='relu'),#
                 tf.keras.layers.Flatten(),
+                tf.keras.layers.Dense(1024, activation='relu',
+                                      kernel_initializer='glorot_uniform', 
+                                      bias_initializer='glorot_uniform'),
+                tf.keras.layers.Dense(512, activation='relu',
+                                      kernel_initializer='glorot_uniform', 
+                                      bias_initializer='glorot_uniform'),
                 # No activation
                 tf.keras.layers.Dense(latent_dim + latent_dim),
             ]
         )
+        
+        outputs = [layer.output for layer in self.encoder.layers]  # all layer outputs
+        cont = 0
+        for i in outputs:
+            name = i.name
+            if name[0:7] == 'flatten':
+                j = cont
+            print(name[0:7])
+            cont += 1
+        layer   = outputs[j-1]
+        layer_shape = layer.shape[1:]
+        layerdense  = layer_shape[0] * layer_shape[1] * layer_shape[2]
+        print(layerdense, layer_shape)
+        print(self.encoder.summary())
+#        sys.exit()
+        
         self.decoder = tf.keras.Sequential(
             [
                 tf.keras.layers.InputLayer(input_shape=(latent_dim,)),
-                tf.keras.layers.Dense(units=7*7*32, activation=tf.nn.relu),
-                tf.keras.layers.Reshape(target_shape=(7, 7, 32)),
+                tf.keras.layers.Dense(512, activation='relu',
+                                      kernel_initializer='glorot_uniform', 
+                                      bias_initializer='glorot_uniform'),
+                tf.keras.layers.Dense(1024, activation='relu',
+                                      kernel_initializer='glorot_uniform', 
+                                      bias_initializer='glorot_uniform'),
+                tf.keras.layers.Dense(units=layerdense, activation=tf.nn.relu),
+                tf.keras.layers.Reshape(target_shape=(layer_shape[0], 
+                                                      layer_shape[1], 
+                                                      layer_shape[2])),
                 tf.keras.layers.Conv2DTranspose(
-                    filters=filter2, kernel_size=2, strides=2, padding='same',
+                    filters=filter3, kernel_size=2, strides=(1,1), padding='same',
+                    activation='relu'), 
+                tf.keras.layers.Conv2DTranspose(
+                    filters=filter2, kernel_size=2, strides=(1,1), padding='same',
                     activation='relu'),
                 tf.keras.layers.Conv2DTranspose(
-                    filters=filter1, kernel_size=2, strides=2, padding='same',
+                    filters=filter1, kernel_size=2, strides=(1,1), padding='same',
                     activation='relu'),
                 # No activation
                 tf.keras.layers.Conv2DTranspose(
-                    filters=1, kernel_size=3, strides=1, padding='same'),
+                    filters=channels, kernel_size=2, strides=(2,2), padding='same'),
             ]
         )
+        print(self.decoder.summary())
+#        sys.exit()
     
     @tf.function
     def sample(self, eps=None):
@@ -211,7 +263,7 @@ def preprocess_images(images,dataname,prep):
             maxdata = np.max(images)
             mindata = np.min(images)
             images  = (images - mindata) / (maxdata - mindata)
-            images  = images.reshape((images.shape[0], 50, 50, 3))
+            images  = images.reshape((images.shape[0], 28, 28, 1))
             return images.astype('float32')
         else:
             return images.astype('float32')
@@ -241,9 +293,9 @@ def loaddataPERM(nx,ny,nz,data_size,namein):
 
 ###############################################################################
 def load_PERM(namein):
-    nx  = 50
-    ny  = 50
-    nz  = 3
+    nx  = 28
+    ny  = 28
+    nz  = 1
     data_size = 20000                # size of dataset 
     ###########################################################################
     # LOAD DATA ###############################################################

@@ -73,7 +73,7 @@ A = 0*min(X1);
 B = max(X1);
 C = min(Y1);
 D = max(Y1);
-C = 1.0e-5;
+C = 1.0e-9;
 D = 1.0e+03;
 aspec = (B - A) / (D - C);
 
@@ -109,6 +109,7 @@ ylim([C D]);
 % Set the remaining axes properties
 set(axes1,'DataAspectRatio',[aspec 1 1],'FontSize',18,'TickDir','both',...
     'TickLabelInterpreter','latex','XMinorTick','on','YMinorTick','on',...
-    'YTick',[0.0001 0.01 1 100],'XTick',[0.0 5000 10000 15000]);
+    'YTick',[1.e-10 1.e-8 1.e-6 0.0001 0.01 1 100],'XTick',...
+    [0.0 2000 4000 6000 8000 10000 12000]);
 return
 

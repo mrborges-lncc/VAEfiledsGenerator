@@ -49,9 +49,9 @@ else
     Lz = 0.06;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% mesh for covariance matrix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    nx = 50;
-    ny = 50;
-    nz = 3;
+    nx = 28;
+    ny = 28;
+    nz = 1;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Mesh for interpolation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     NX = 34;
@@ -63,8 +63,8 @@ else
     eta1  = 0.10;       % correlation length in the x direction
     eta2  = 0.10;       % correlation length in the y direction
     eta3  = 0.05;       % correlation length in the z direction
-    Nrand = 20000;      % total number of realizations
-    M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 
+    Nrand = 100000;      % total number of realizations
+    M     = 2000;      % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
     TIPOINPUT = 10;     % if == 1 reads the conditioned points from the file
                        % indicated in "file_input_cond"

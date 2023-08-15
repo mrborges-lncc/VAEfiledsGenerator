@@ -19,7 +19,7 @@ from VAEmytools import load_dataset, plot_examples
 # Load data base ==============================================================
 home       = './'
 namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
-namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
+namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_100000.mat'
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[0]
 preprocess = True
@@ -33,27 +33,28 @@ test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
 lrate      = 1e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 130
+epochs     = 50
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 200
+latent_dim = 2
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Batch and shuffle the data ==================================================
+'''
 train_dataset = (tf.data.Dataset.from_tensor_slices(train_images)
                  .shuffle(train_size).batch(batch_size))
 test_dataset  = (tf.data.Dataset.from_tensor_slices(test_images)
                  .shuffle(test_size).batch(batch_size))
-
+'''
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [128, 64]#, 64, 32, 32]
-conv_strides = [2, 2, 1, 1, 1]
-conv_kernels = [3, 2, 2, 2, 2]
-conv_activat = ["relu", "relu", "relu", "relu", "relu"]
-conv_padding = ["same", "same", "same", "same", "same"]
-dens_neurons = [512, 256, 64, 32]
+conv_filters = [256, 128, 64, 64, 64, 32, 32]
+conv_strides = [2, 1, 1, 1, 1, 1, 1]
+conv_kernels = [2, 2, 2, 2, 2, 2, 2]
+conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
+conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
+dens_neurons = [512, 256, 256, 256]
 dens_activat = ["relu", "relu", "relu", "relu"]
 #==============================================================================
 encoder_inputs = keras.Input(shape=input_shape)
@@ -69,7 +70,7 @@ for i in range(len(dens_neurons)):
   x = layers.Dense(dens_neurons[i], activation = dens_activat[i])(x)
 z_mean = layers.Dense(latent_dim, name="z_mean")(x)
 z_log_var = layers.Dense(latent_dim, name="z_log_var")(x)
-z = Sampling()([z_mean, z_log_var])
+z = Sampling(name='z')([z_mean, z_log_var])
 encoder = keras.Model(encoder_inputs, [z_mean, z_log_var, z], name="encoder")
 encoder.summary()
 #==============================================================================
@@ -101,10 +102,13 @@ x = layers.Dense(layer_shape[0] * layer_shape[1] * layer_shape[2],
 x = layers.Reshape((layer_shape[0], layer_shape[1], layer_shape[2]))(x)
 
 for i in range(nconv,-1,-1):
-  x = layers.Conv2DTranspose(filters = conv_filters[i], kernel_size = conv_kernels[i],
-                    strides = conv_strides[i], activation = conv_activat[i],
-                    padding = conv_padding[i])(x)
-decoder_outputs = layers.Conv2DTranspose(filters = 1, kernel_size = conv_kernels[0],
+  x = layers.Conv2DTranspose(filters = conv_filters[i], 
+                             kernel_size = conv_kernels[i],
+                             strides = conv_strides[i], 
+                             activation = conv_activat[i],
+                             padding = conv_padding[i])(x)
+decoder_outputs = layers.Conv2DTranspose(filters = input_shape[-1],
+                                         kernel_size = conv_kernels[0],
                                          activation="sigmoid", padding="same")(x)
 decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
 decoder.summary()
@@ -118,11 +122,12 @@ vae.fit(train_images, epochs=epochs, batch_size=batch_size)
 #==============================================================================
 ###############################################################################
 # Display a grid of sampled digits ============================================
-plot_latent_space(vae)
+if latent_dim == 2:
+    plot_latent_space(vae)
 #==============================================================================
 ###############################################################################
 # Generator ===================================================================
-fieldgenerator(vae,latent_dim)
+zmu,zvar,z = fieldgenerator(vae,latent_dim,10)
 #==============================================================================
 ###############################################################################
 # Display how the latent space clusters different digit classes ===============

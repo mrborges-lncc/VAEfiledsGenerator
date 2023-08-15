@@ -10,11 +10,11 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
+import sys
 ###############################################################################
 ###############################################################################
 class Sampling(layers.Layer):
-    """Uses (z_mean, z_log_var) to sample z, the vector encoding a digit."""
-
+    '''Uses (z_mean, z_log_var) to sample z, the vector encoding a digit.'''
     def call(self, inputs):
         z_mean, z_log_var = inputs
         batch = tf.shape(z_mean)[0]
@@ -24,6 +24,7 @@ class Sampling(layers.Layer):
 ###############################################################################
 ###############################################################################
 class VAE(keras.Model):
+    '''Combines the encoder and decoder into an end-to-end model for training.'''
     def __init__(self, encoder, decoder, **kwargs):
         super().__init__(**kwargs)
         self.encoder = encoder
@@ -69,6 +70,7 @@ class VAE(keras.Model):
 ###############################################################################
 ###############################################################################
 def plot_latent_space(vae, n=10, figsize=15):
+    '''Display a n*n 2D manifold of digits'''
     # display an n*n 2D manifold of digits
     digit_size = 28
     scale = 1.0
@@ -104,7 +106,8 @@ def plot_latent_space(vae, n=10, figsize=15):
 
 ###############################################################################
 ###############################################################################
-def fieldgenerator(model,latent_dim):
+def fieldgenerator(model,latent_dim,nf):
+    '''Display a n*n 2D manifold of digits'''
     outputs = [layer.output for layer in model.encoder.layers]
     cont = 0
     for i in outputs:
@@ -117,19 +120,22 @@ def fieldgenerator(model,latent_dim):
     
     mean_layer = model.encoder.layers[j]
     std_layer  = model.encoder.layers[m]
-    zmean = mean_layer.get_weights()[1]
-    zstd  = std_layer.get_weights()[1]
-    cov   = np.eye(latent_dim) * zstd * zstd
-    z_sample = np.random.default_rng().multivariate_normal(zmean, cov, 1)
-    x_decoded = model.decoder.predict(z_sample)
-    figure = x_decoded[0].reshape(28,28)
-    plt.imshow(figure, cmap="Greys_r")
+    zmean      = mean_layer.get_weights()[1]
+    zlogvar    = std_layer.get_weights()[1]   
+    z          = reparameterize(zmean, zlogvar)
+    z          = z.numpy()
+    z          = z.reshape((1, latent_dim))
+#    z          = np.array([[-20,20]])
+    x_decoded  = model.decoder.predict(z)
+    figure     = x_decoded[0].reshape(28,28)
+    plt.imshow(figure, cmap="jet")
+    return zmean, zlogvar, z
 ###############################################################################
 
 ###############################################################################
 ###############################################################################
 def plot_label_clusters(vae, data, labels):
-    # display a 2D plot of the digit classes in the latent space
+    '''Display a 2D plot of the digit classes in the latent space'''
     z_mean, _, _ = vae.encoder.predict(data)
     plt.figure(figsize=(12, 10))
     plt.scatter(z_mean[:, 0], z_mean[:, 1], c=labels)
@@ -138,8 +144,26 @@ def plot_label_clusters(vae, data, labels):
     plt.ylabel("z[1]")
     plt.show()
 ###############################################################################
+
 ###############################################################################
 ###############################################################################
+def reparameterize(mean, logvar):
+    '''Reparameterization trick by sampling from an isotropic unit Gaussian.'''
+    eps = tf.random.normal(shape=mean.shape)
+    return eps * tf.exp(logvar * .5) + mean
+###############################################################################
+
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
+
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
+
 ###############################################################################
 ###############################################################################
 ###############################################################################

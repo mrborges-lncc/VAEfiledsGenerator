@@ -296,7 +296,7 @@ def load_PERM(namein):
     nx  = 28
     ny  = 28
     nz  = 1
-    data_size = 20000                # size of dataset 
+    data_size = 100000                # size of dataset 
     ###########################################################################
     # LOAD DATA ###############################################################
     # name of data files

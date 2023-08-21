@@ -9,10 +9,23 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
+#import tensorflow_probability as tfp
 import matplotlib.pyplot as plt
 import sys
 import random
 import math
+import scipy.stats as stats
+
+###############################################################################
+###############################################################################
+def Gfunction(x, porosity):
+    g = stats.norm.ppf(porosity)
+    if x <= g:
+        return 1.0
+    else:
+        return 0.0
+###############################################################################
+
 ###############################################################################
 ###############################################################################
 def plot_examples(images):
@@ -52,16 +65,23 @@ def load_dataset(dataname,prep,namein,inputshape,datasize):
 ###############################################################################
 def preprocess_images(images,dataname,prep):
     '''Normalize and reshape the images'''
+    poros = True
+    porosity = 0.15
     if dataname == 'PERM':
         nx  = images.shape[1]
         ny  = images.shape[2]
         nz  = images.shape[3]
         if prep:
-            maxdata = np.max(images)
-            mindata = np.min(images)
-            images  = (images - mindata) / (maxdata - mindata)
-            images  = images.reshape((images.shape[0], nx, ny, nz))
-            return images.astype('float32')
+            if poros:
+                GfunctionVec = np.vectorize(Gfunction)
+                images = GfunctionVec(images, porosity)
+                return images.astype('float32')
+            else:
+                maxdata = np.max(images)
+                mindata = np.min(images)
+                images  = (images - mindata) / (maxdata - mindata)
+                images  = images.reshape((images.shape[0], nx, ny, nz))
+                return images.astype('float32')
         else:
             return images.astype('float32')
     else:
@@ -119,7 +139,8 @@ class Sampling(layers.Layer):
         z_mean, z_log_var = inputs
         batch = tf.shape(z_mean)[0]
         dim = tf.shape(z_mean)[1]
-        epsilon = tf.random.normal(shape=(batch, dim))
+        epsilon = tf.random.normal(shape=(batch, dim), mean = 0.0, stddev= 1.0,
+                                   dtype = tf.float32)
         return z_mean + tf.exp(0.5 * z_log_var) * epsilon
 ###############################################################################
 ###############################################################################
@@ -149,6 +170,7 @@ class VAE(keras.Model):
             reconstruction = self.decoder(z)
             reconstruction_loss = tf.reduce_mean(
                 tf.reduce_sum(
+#                    keras.losses.MeanSquaredError(reduction="none")(data, reconstruction), axis=(1, 2)
                     keras.losses.binary_crossentropy(data, reconstruction), axis=(1, 2)
                 )
             )

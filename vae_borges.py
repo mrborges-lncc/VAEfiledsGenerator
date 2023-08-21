@@ -13,7 +13,7 @@ from tensorflow.keras import layers
 import sys
 sys.path.append("./tools/")
 from mytools import Sampling, VAE, fieldgenerator, plot_latent_space, plot_label_clusters
-from mytools import load_dataset, plot_examples
+from mytools import load_dataset, plot_examples, Gfunction
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
@@ -23,7 +23,7 @@ home       = './'
 namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
 namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[0]
+dataname   = data_name[1]
 preprocess = True
 train_images, test_images = load_dataset(dataname,preprocess,namein,
                                          input_shape,data_size)
@@ -38,17 +38,17 @@ lrate      = 5e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
 epochs     = 30
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 500
+latent_dim = 50
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [512, 256, 128, 64, 64, 32, 32]
+conv_filters = [64, 64]#, 128, 64, 64, 32, 32]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [512, 256, 256, 256]
+dens_neurons = [512]#, 256, 256, 256]
 dens_activat = ["relu", "relu", "relu", "relu"]
 #==============================================================================
 encoder_inputs = keras.Input(shape=input_shape)

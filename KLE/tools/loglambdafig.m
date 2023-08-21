@@ -104,12 +104,17 @@ ylabel('$\lambda$','Interpreter','latex','FontSize',22,...
 xlim([A B]);
 ylim([C D]);
 
+aux = floor(B/5);
+aux1= mod(aux,10);
+dx  = aux - aux1;
+x   = [A : dx : B];
+
 % box(axes1,'on');
 % hold(axes1,'off');
 % Set the remaining axes properties
 set(axes1,'DataAspectRatio',[aspec 1 1],'FontSize',18,'TickDir','both',...
     'TickLabelInterpreter','latex','XMinorTick','on','YMinorTick','on',...
     'YTick',[1.e-10 1.e-8 1.e-6 0.0001 0.01 1 100],'XTick',...
-    [0.0 2000 4000 6000 8000 10000 12000]);
+    x);
 return
 

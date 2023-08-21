@@ -24,7 +24,7 @@ home       = './'
 namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
 namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[0]
+dataname   = data_name[1]
 preprocess = True
 train_images, test_images = load_dataset(dataname,preprocess,namein)
 plot_examples(train_images)
@@ -36,7 +36,7 @@ test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
 lrate      = 1e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 50
+epochs     = 5
 # set the dimensionality of the latent space to a plane for visualization later
 latent_dim = 2
 num_examples_to_generate = 16

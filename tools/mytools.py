@@ -11,6 +11,106 @@ from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
 import sys
+import random
+import math
+###############################################################################
+###############################################################################
+def plot_examples(images):
+    '''Display a 5x7 plot of 35 images'''
+    fig = plt.figure(figsize=(14,10))
+    M = np.size(images,0)
+    cor = 'jet'
+    for n in range(1, 36):
+        fig.add_subplot(5, 7, n)
+        nr  = random.randint(0,M-1)
+        img = images[nr,:,:,0]
+        plt.imshow(img, cmap=cor, aspect='equal', interpolation='none', 
+                   alpha = 1.0, origin='upper')
+        plt.axis('off')
+    #name = 'figuras/example_' + namep + '.png'
+    #plt.savefig(name, transparent=True, dpi=300)
+    plt.show()
+###############################################################################
+
+###############################################################################
+###############################################################################
+def load_dataset(dataname,prep,namein,inputshape,datasize):
+    '''Load the dataset, split it into training and test sets, and scale then'''
+    if dataname == 'MNIST':
+        (train, _), (test, _) = tf.keras.datasets.mnist.load_data()
+    if dataname == 'FASHION_MNIST':
+        (train, _), (test, _) = tf.keras.datasets.fashion_mnist.load_data()
+    if dataname == 'PERM':
+        train, test = load_PERM(namein,inputshape,datasize)
+#==========================================================
+    train = preprocess_images(train,dataname,prep)
+    test  = preprocess_images(test,dataname,prep)
+    return train, test
+###############################################################################
+
+###############################################################################
+###############################################################################
+def preprocess_images(images,dataname,prep):
+    '''Normalize and reshape the images'''
+    if dataname == 'PERM':
+        nx  = images.shape[1]
+        ny  = images.shape[2]
+        nz  = images.shape[3]
+        if prep:
+            maxdata = np.max(images)
+            mindata = np.min(images)
+            images  = (images - mindata) / (maxdata - mindata)
+            images  = images.reshape((images.shape[0], nx, ny, nz))
+            return images.astype('float32')
+        else:
+            return images.astype('float32')
+    else:
+        if prep:
+            images = images.reshape((images.shape[0], 28, 28, 1)) / 255.0
+            return np.where(images > .5, 1.0, 0.0).astype('float32')
+        else:
+            images = images.reshape((images.shape[0], 28, 28, 1)) / 255.0
+            return images.astype('float32')
+###############################################################################
+
+###############################################################################
+###############################################################################
+def loaddataPERM(nx,ny,nz,data_size,namein):
+    '''Load the dataset, split it into training and test sets, and scale then'''
+    datain  = np.fromfile(namein, dtype=np.float32)
+    datain  = np.reshape(datain, (data_size,nx*ny*nz))
+    data_in = np.zeros((data_size,nx,ny,nz),dtype=np.float32)
+    for i in range(data_size):
+        n = 0
+        for z in range(nz):
+            for y in range(ny):
+                for x in range(nx):
+                    data_in[i,x,y,z] = datain[i,n]
+                    n += 1
+    return data_in
+###############################################################################
+
+###############################################################################
+###############################################################################
+def load_PERM(namein,inputshape,datasize):
+    '''Load the dataset, split it into training and test sets, and scale then'''
+    nx  = inputshape[0]
+    ny  = inputshape[1]
+    nz  = inputshape[2]
+    data_size = datasize  # size of dataset 
+    #==========================================================================
+    # LOAD DATA ===============================================================
+    # name of data files
+    data   = loaddataPERM(nx,ny,nz,data_size,namein)
+    lista  = list(range(data_size))
+    ntrain = math.ceil(0.98 * data_size)
+    random.shuffle(lista)
+    train  = data[lista[0:ntrain],:,:,:]
+    test   = data[lista[ntrain:data_size],:,:,:]
+    
+    return train, test
+###############################################################################
+
 ###############################################################################
 ###############################################################################
 class Sampling(layers.Layer):
@@ -69,16 +169,19 @@ class VAE(keras.Model):
 
 ###############################################################################
 ###############################################################################
-def plot_latent_space(vae, n=10, figsize=15):
+def plot_latent_space(vae, n=15, figsize=15):
     '''Display a n*n 2D manifold of digits'''
     # display an n*n 2D manifold of digits
     digit_size = 28
-    scale = 1.0
+    A = -4.
+    B = 4.
+    C = -4
+    D = 4.0
     figure = np.zeros((digit_size * n, digit_size * n))
     # linearly spaced coordinates corresponding to the 2D plot
     # of digit classes in the latent space
-    grid_x = np.linspace(-scale, scale, n)
-    grid_y = np.linspace(-scale, scale, n)[::-1]
+    grid_x = np.linspace(A, B, n)
+    grid_y = np.linspace(C, D, n)[::-1]
 
     for i, yi in enumerate(grid_y):
         for j, xi in enumerate(grid_x):

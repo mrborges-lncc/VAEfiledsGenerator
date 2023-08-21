@@ -13,43 +13,37 @@ from tensorflow.keras import layers
 import sys
 sys.path.append("./tools/")
 from mytools import Sampling, VAE, fieldgenerator, plot_latent_space, plot_label_clusters
-from VAEmytools import load_dataset, plot_examples
+from mytools import load_dataset, plot_examples
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
+input_shape= (28, 28, 1)
+data_size  = 20000
 home       = './'
 namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
-namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_100000.mat'
+namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[0]
 preprocess = True
-train_images, test_images = load_dataset(dataname,preprocess,namein)
+train_images, test_images = load_dataset(dataname,preprocess,namein,
+                                         input_shape,data_size)
 plot_examples(train_images)
 ###############################################################################
 # Parameters ==================================================================
 train_size = np.size(train_images,0)
-batch_size = 128
+batch_size = 64
 test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
-lrate      = 1e-4
+lrate      = 5e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 50
+epochs     = 30
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 2
+latent_dim = 500
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
-# Batch and shuffle the data ==================================================
-'''
-train_dataset = (tf.data.Dataset.from_tensor_slices(train_images)
-                 .shuffle(train_size).batch(batch_size))
-test_dataset  = (tf.data.Dataset.from_tensor_slices(test_images)
-                 .shuffle(test_size).batch(batch_size))
-'''
-#==============================================================================
-###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [256, 128, 64, 64, 64, 32, 32]
+conv_filters = [512, 256, 128, 64, 64, 32, 32]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
@@ -121,17 +115,15 @@ vae.compile(optimizer=optimizer)
 vae.fit(train_images, epochs=epochs, batch_size=batch_size)
 #==============================================================================
 ###############################################################################
-# Display a grid of sampled digits ============================================
-if latent_dim == 2:
-    plot_latent_space(vae)
-#==============================================================================
-###############################################################################
 # Generator ===================================================================
 zmu,zvar,z = fieldgenerator(vae,latent_dim,10)
 #==============================================================================
 ###############################################################################
 # Display how the latent space clusters different digit classes ===============
-if latent_dim == 2:
-    (x_train, y_train), _ = keras.datasets.mnist.load_data()
-    x_train = np.expand_dims(x_train, -1).astype("float32") / 255
-    plot_label_clusters(vae, x_train, y_train)
+if dataname == 'MNIST':
+    if latent_dim == 2:
+        (x_train, y_train), _ = keras.datasets.mnist.load_data()
+        x_train = np.expand_dims(x_train, -1).astype("float32") / 255
+        plot_label_clusters(vae, x_train, y_train)
+        # Display a grid of sampled digits ====================================
+        plot_latent_space(vae)

@@ -1,0 +1,33 @@
+\begin{picture}(0,0)%
+\includegraphics{figuras/vae.pdf}%
+\end{picture}%
+\setlength{\unitlength}{1657sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(17166,4273)(-1607,-5750)
+\put(3916,-3841){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\mathsf{P}_{\theta}\left( \mathbb{Z} | \mathbb{X}  \right)$}%
+}}}}
+\put(3916,-3346){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Encoder}%
+}}}}
+\put(9901,-3346){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Decoder}%
+}}}}
+\put(6526,-2806){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\mu_{_{\mathbb{Z}}}$}%
+}}}}
+\put(6526,-4606){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\sigma_{_{\mathbb{Z}}}$}%
+}}}}
+\put(676,-1636){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Input-data ($\mathbb{X}$)}%
+}}}}
+\put(13276,-1636){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Predicted-data ($\mathbb{X}^{\prime}$)}%
+}}}}
+\put(7201,-5686){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Latent-space}%
+}}}}
+\put(9901,-3841){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\mathsf{P}_{\varphi}\left( \mathbb{X}^{\prime} | \mathbb{Z}  \right)$}%
+}}}}
+\put(7882,-3717){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}${\mathbb{Z}}$}%
+}}}}
+\end{picture}%

@@ -30,11 +30,11 @@ def Gfunction(x, porosity):
 ###############################################################################
 def plot_examples(images):
     '''Display a 5x7 plot of 35 images'''
-    fig = plt.figure(figsize=(14,10))
+    fig = plt.figure(figsize=(10,10))
     M = np.size(images,0)
     cor = 'jet'
-    for n in range(1, 36):
-        fig.add_subplot(5, 7, n)
+    for n in range(1, 37):
+        fig.add_subplot(6, 6, n)
         nr  = random.randint(0,M-1)
         img = images[nr,:,:,0]
         plt.imshow(img, cmap=cor, aspect='equal', interpolation='none', 
@@ -65,7 +65,7 @@ def load_dataset(dataname,prep,namein,inputshape,datasize):
 ###############################################################################
 def preprocess_images(images,dataname,prep):
     '''Normalize and reshape the images'''
-    poros = True
+    poros = False
     porosity = 0.15
     if dataname == 'PERM':
         nx  = images.shape[1]
@@ -231,7 +231,7 @@ def plot_latent_space(vae, n=15, figsize=15):
 
 ###############################################################################
 ###############################################################################
-def fieldgenerator(model,latent_dim,nf):
+def fieldgenerator(model,latent_dim,inputshape,nf):
     '''Display a n*n 2D manifold of digits'''
     outputs = [layer.output for layer in model.encoder.layers]
     cont = 0
@@ -247,13 +247,24 @@ def fieldgenerator(model,latent_dim,nf):
     std_layer  = model.encoder.layers[m]
     zmean      = mean_layer.get_weights()[1]
     zlogvar    = std_layer.get_weights()[1]   
-    z          = reparameterize(zmean, zlogvar)
-    z          = z.numpy()
-    z          = z.reshape((1, latent_dim))
-#    z          = np.array([[-20,20]])
-    x_decoded  = model.decoder.predict(z)
-    figure     = x_decoded[0].reshape(28,28)
-    plt.imshow(figure, cmap="jet")
+    
+    nx = np.int_(np.sqrt(nf, dtype = None))
+    ny = nx
+    nf = nx * ny
+    fig= plt.figure(figsize=(10,10))
+    n  = 0
+    for i in range(0,nx):
+        for j in range(0,ny):
+            n += 1
+            fig.add_subplot(nx, ny, n)
+            z = reparameterize(zmean, zlogvar)
+            z = z.numpy()
+            z = z.reshape((1, latent_dim))
+            x_decoded  = model.decoder.predict(z)
+            img = x_decoded[0].reshape(inputshape[0],inputshape[1])
+            plt.imshow(img, cmap="jet", aspect='equal', interpolation='none',
+                       alpha = 1.0, origin='upper')
+            plt.axis('off')
     return zmean, zlogvar, z
 ###############################################################################
 

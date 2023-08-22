@@ -13,15 +13,16 @@ from tensorflow.keras import layers
 import sys
 sys.path.append("./tools/")
 from mytools import Sampling, VAE, fieldgenerator, plot_latent_space, plot_label_clusters
-from mytools import load_dataset, plot_examples, Gfunction
+from mytools import load_dataset, plot_examples
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
 input_shape= (28, 28, 1)
-data_size  = 20000
+data_size  = 2000
 home       = './'
 namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
-namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
+#namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
+namein     = home + 'KLE/fields/porosity_sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_2000.mat'
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[1]
 preprocess = True
@@ -34,21 +35,21 @@ train_size = np.size(train_images,0)
 batch_size = 64
 test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
-lrate      = 5e-4
+lrate      = 1.e-3
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 30
+epochs     = 50
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 50
+latent_dim = 20
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [64, 64]#, 128, 64, 64, 32, 32]
+conv_filters = [64]#, 128, 64, 64, 32, 32]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [512]#, 256, 256, 256]
+dens_neurons = [128]#, 256, 256, 256]
 dens_activat = ["relu", "relu", "relu", "relu"]
 #==============================================================================
 encoder_inputs = keras.Input(shape=input_shape)
@@ -116,7 +117,7 @@ vae.fit(train_images, epochs=epochs, batch_size=batch_size)
 #==============================================================================
 ###############################################################################
 # Generator ===================================================================
-zmu,zvar,z = fieldgenerator(vae,latent_dim,10)
+zmu,zvar,z = fieldgenerator(vae,latent_dim,input_shape,36)
 #==============================================================================
 ###############################################################################
 # Display how the latent space clusters different digit classes ===============

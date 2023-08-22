@@ -34,6 +34,9 @@ fig=1;
 %** Determina se a covariancia dos campos sera verificada (band_cov==1)****
 band_cov = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+porous = false;
+porosity = 0.20;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%*************************************************************************
 %%* ENTRADA DE DADOS ******************************************************
 if(inputbox==1)
@@ -41,16 +44,16 @@ if(inputbox==1)
         varY,Nrand,interpolacao,M,ntipo,TIPOINPUT,...
         file_input_cond]=finputbox();
 else
-    ntipo = 3; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
+    ntipo = 1; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% physical dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Lx = 1.0;
     Ly = 1.0;
-    Lz = 0.06;
+    Lz = 0.01;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% mesh for covariance matrix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    nx = 28;
-    ny = 28;
+    nx = 50;
+    ny = 50;
     nz = 1;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Mesh for interpolation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,9 +65,9 @@ else
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     eta1  = 0.10;       % correlation length in the x direction
     eta2  = 0.10;       % correlation length in the y direction
-    eta3  = 0.05;       % correlation length in the z direction
-    Nrand = 20000;      % total number of realizations
-    M     = 500;      % number of terms used in the KL expansion. OBS: if == 0 it 
+    eta3  = 0.10;       % correlation length in the z direction
+    Nrand = 20;      % total number of realizations
+    M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
     TIPOINPUT = 10;     % if == 1 reads the conditioned points from the file
                        % indicated in "file_input_cond"
@@ -79,7 +82,7 @@ end
 %% Variables Adjustment %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 cutoff   = Lx/double(nx); % cutoff used when ntipo == 2
 alpha    = 1.0;           % KEEP == 1
-tipo_prt = 4;             % if == 1 print the fields in the LNCC format,
+tipo_prt = 1;             % if == 1 print the fields in the LNCC format,
                           % if == 0 print in the UTDallas simulator format
                           % if == 3 print binary
                           % if == 4 Neural Network
@@ -240,6 +243,9 @@ if tipo_prt == 4
         num2str(Lz,'%3.2f') '_' num2str(NX,'%d') 'x' ...
         num2str(NY,'%d') 'x' num2str(NZ,'%d') '_l' num2str(eta1,'%3.2f')...
         'x' num2str(eta2,'%3.2f') 'x' num2str(eta3,'%3.2f')];
+    if porous
+        name2 = ['porosity_' name2];
+    end
     namein    = [home name2 '_' num2str(Nrand,'%d') '.mat'];
     fileIDin  = fopen(namein,'w');
     fprintf('\n ===============================================================')
@@ -292,6 +298,9 @@ for nr=1:Nrand
     end
 %     Xi = mY + sum(phi.*theta',2);
     Xi = mY + phi * theta;
+    if porous
+        Xi = Gfilter(Xi,num_elem,porosity);
+    end
     if(estatistica==1)
         X = [X; Xi];
         THETA=[THETA; theta];

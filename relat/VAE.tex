@@ -5,7 +5,6 @@
 
 \cite{kingma2022autoencoding} introduced the variational auto-encoding, a stochastic inference and learning algorithm.
 
-$\dataset{X}$
 
 \cite{Higgins2016betaVAELB}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,7 +17,19 @@ Variational auto-encoder (\VAE) model is a generative network based on variation
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Consider the input data $\dataset{X} = \set{\dataeln{x}{i}}{i=1}{\N}$ consisting of $\N$
+\textit{i}ndependent and \textit{i}dentically \textit{d}istributed (\iid) samples of the continuous (or discrete) variable $\datael{x}$.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+ \centering
+ \input{figuras/vae.pdf_t}
+\end{figure}
+
+\begin{equation}
+ \dataset{Z} = \me{\dataset{Z}} + \desv{\dataset{Z}} \cdot \varepsilon, \quad \mbox{where} \quad \varepsilon \sim \normalf{0}{1}
+\end{equation}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

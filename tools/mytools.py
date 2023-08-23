@@ -65,7 +65,7 @@ def load_dataset(dataname,prep,namein,inputshape,datasize):
 ###############################################################################
 def preprocess_images(images,dataname,prep):
     '''Normalize and reshape the images'''
-    poros = False
+    poros = True
     porosity = 0.15
     if dataname == 'PERM':
         nx  = images.shape[1]
@@ -73,8 +73,10 @@ def preprocess_images(images,dataname,prep):
         nz  = images.shape[3]
         if prep:
             if poros:
-                GfunctionVec = np.vectorize(Gfunction)
-                images = GfunctionVec(images, porosity)
+#                GfunctionVec = np.vectorize(Gfunction)
+#                images = GfunctionVec(images, porosity)
+                g = stats.norm.ppf(porosity)
+                images = np.where(images > g, 0.0, 1.0).astype('float32')
                 return images.astype('float32')
             else:
                 maxdata = np.max(images)
@@ -195,10 +197,10 @@ def plot_latent_space(vae, n=15, figsize=15):
     '''Display a n*n 2D manifold of digits'''
     # display an n*n 2D manifold of digits
     digit_size = 28
-    A = -4.
-    B = 4.
-    C = -4
-    D = 4.0
+    A = -3.
+    B = 3.
+    C = -3
+    D = 3.0
     figure = np.zeros((digit_size * n, digit_size * n))
     # linearly spaced coordinates corresponding to the 2D plot
     # of digit classes in the latent space
@@ -291,11 +293,51 @@ def reparameterize(mean, logvar):
 
 ###############################################################################
 ###############################################################################
-###############################################################################
-###############################################################################
+def conference(vae, images, latent_dim, inputshape):
+    z_mean, z_log_var, z = vae.encoder.predict(images)
+    fig = plt.figure(figsize=(10,10))
+    n   = random.randint(0,np.size(images,axis=0))
+    img = images[n,:,:,:]
+    img = img.reshape(inputshape[0],inputshape[1])
+    fig.add_subplot(1,2,1)
+    plt.imshow(img, cmap="jet", aspect='equal', interpolation='none',
+               alpha = 1.0, origin='upper')
+    zz  = z[n,:]
+    zz  = zz.reshape((1, latent_dim))
+    prd = vae.decoder.predict(zz)
+    prd = prd.reshape(inputshape[0],inputshape[1])
+    fig.add_subplot(1,2,2)
+    plt.imshow(prd, cmap="jet", aspect='equal', interpolation='none',
+               alpha = 1.0, origin='upper')    
 ###############################################################################
 
 ###############################################################################
+###############################################################################
+def plot_latent_stat(vae, images, latent_dim):
+    z_mean, z_log_var, z = vae.encoder.predict(images)
+    n    = random.randint(0,latent_dim-1)
+    zn   = z[:,n]
+    mu_z = np.mean(zn)
+    var_z= np.var(zn)
+    std_z=np.std(zn)
+    print('Z mean: %g \t Z sigma^2: %g\n' % (mu_z, var_z))
+    #==========================================================================
+    num_bins = 40
+    fig, ax  = plt.subplots()
+    n, bins, patches = ax.hist(zn, num_bins, density=1)
+    x = np.arange(np.min(zn),np.max(zn),0.001)
+    # add a 'best fit' line
+    y = ((1 / (np.sqrt(2 * np.pi) * std_z)) *
+         np.exp(-0.5 * (1 / std_z * (x - mu_z))**2))
+    ax.plot(x, y, '-',linewidth=3,markersize=6, marker='',
+            markerfacecoloralt='tab:red', fillstyle='none')
+    ax.set_xlabel('z')
+    ax.set_ylabel('Probability density')
+    # Tweak spacing to prevent clipping of ylabel
+    fig.tight_layout()
+    plt.show()
+###############################################################################
+
 ###############################################################################
 ###############################################################################
 ###############################################################################

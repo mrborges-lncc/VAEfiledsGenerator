@@ -12,44 +12,47 @@ from tensorflow import keras
 from tensorflow.keras import layers
 import sys
 sys.path.append("./tools/")
-from mytools import Sampling, VAE, fieldgenerator, plot_latent_space, plot_label_clusters
-from mytools import load_dataset, plot_examples
+from mytools import Sampling, VAE, fieldgenerator, plot_latent_space
+from mytools import plot_label_clusters
+from mytools import load_dataset, plot_examples, conference, plot_latent_stat
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
 input_shape= (28, 28, 1)
-data_size  = 2000
+data_size  = 20000
 home       = './'
 namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
-#namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
-namein     = home + 'KLE/fields/porosity_sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_2000.mat'
+namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
+porous     = True
+#namein     = home + 'KLE/fields/porosity_sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_2000.mat'
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[1]
 preprocess = True
 train_images, test_images = load_dataset(dataname,preprocess,namein,
                                          input_shape,data_size)
 plot_examples(train_images)
+
 ###############################################################################
 # Parameters ==================================================================
 train_size = np.size(train_images,0)
 batch_size = 64
 test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
-lrate      = 1.e-3
+lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 50
+epochs     = 300
 # set the dimensionality of the latent space to a plane for visualization later
 latent_dim = 20
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [64]#, 128, 64, 64, 32, 32]
+conv_filters = [64, 64, 64]#, 64, 32, 32]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [128]#, 256, 256, 256]
+dens_neurons = [64]#, 256, 256, 256]
 dens_activat = ["relu", "relu", "relu", "relu"]
 #==============================================================================
 encoder_inputs = keras.Input(shape=input_shape)
@@ -104,7 +107,7 @@ for i in range(nconv,-1,-1):
                              padding = conv_padding[i])(x)
 decoder_outputs = layers.Conv2DTranspose(filters = input_shape[-1],
                                          kernel_size = conv_kernels[0],
-                                         activation="sigmoid", padding="same")(x)
+                                         activation="relu", padding="same")(x)
 decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
 decoder.summary()
 #==============================================================================
@@ -128,3 +131,7 @@ if dataname == 'MNIST':
         plot_label_clusters(vae, x_train, y_train)
         # Display a grid of sampled digits ====================================
         plot_latent_space(vae)
+
+
+plot_latent_stat(vae, train_images, latent_dim)
+conference(vae, train_images, latent_dim, input_shape)

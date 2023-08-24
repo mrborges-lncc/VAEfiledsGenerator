@@ -18,6 +18,16 @@ import scipy.stats as stats
 
 ###############################################################################
 ###############################################################################
+class perm_info:
+    def __init__(self, namein, porous, input_shape, data_size):
+        self.namein = namein
+        self.porous = porous
+        self.input_shape = input_shape
+        self.data_size = data_size
+###############################################################################
+
+###############################################################################
+###############################################################################
 def Gfunction(x, porosity):
     g = stats.norm.ppf(porosity)
     if x <= g:
@@ -47,14 +57,15 @@ def plot_examples(images):
 
 ###############################################################################
 ###############################################################################
-def load_dataset(dataname,prep,namein,inputshape,datasize):
+def load_dataset(dataname,prep,infoperm):
     '''Load the dataset, split it into training and test sets, and scale then'''
     if dataname == 'MNIST':
         (train, _), (test, _) = tf.keras.datasets.mnist.load_data()
     if dataname == 'FASHION_MNIST':
         (train, _), (test, _) = tf.keras.datasets.fashion_mnist.load_data()
     if dataname == 'PERM':
-        train, test = load_PERM(namein,inputshape,datasize)
+        train, test = load_PERM(infoperm.namein, infoperm.input_shape, 
+                                infoperm.data_size)
 #==========================================================
     train = preprocess_images(train,dataname,prep)
     test  = preprocess_images(test,dataname,prep)
@@ -306,6 +317,7 @@ def conference(vae, images, latent_dim, inputshape):
     zz  = zz.reshape((1, latent_dim))
     prd = vae.decoder.predict(zz)
     prd = prd.reshape(inputshape[0],inputshape[1])
+#    prd = np.where(prd > .5, 1.0, 0.0).astype('float32')
     fig.add_subplot(1,2,2)
     plt.imshow(prd, cmap="jet", aspect='equal', interpolation='none',
                alpha = 1.0, origin='upper')    
@@ -313,29 +325,56 @@ def conference(vae, images, latent_dim, inputshape):
 
 ###############################################################################
 ###############################################################################
-def plot_latent_stat(vae, images, latent_dim):
+def plot_latent_hist(vae, images, latent_dim, nf):
     z_mean, z_log_var, z = vae.encoder.predict(images)
-    n    = random.randint(0,latent_dim-1)
-    zn   = z[:,n]
-    mu_z = np.mean(zn)
-    var_z= np.var(zn)
-    std_z=np.std(zn)
-    print('Z mean: %g \t Z sigma^2: %g\n' % (mu_z, var_z))
     #==========================================================================
+    statZ = np.zeros((latent_dim, 2))
+    for i in range(latent_dim):
+        statZ[i,0] = np.mean(z[:,i])
+        statZ[i,1] = np.var(z[:,i])
+    if nf > latent_dim:
+        nf = latent_dim
+    nf = np.minimum(nf,36)
+    seq = np.arange(latent_dim, dtype = 'int')
+    nx = np.int_(np.sqrt(nf, dtype = None))
+    ny = nx
+    nf = nx * ny
+    nseq= np.random.choice(seq, nf, replace = False)
+    fig= plt.figure(figsize=(10,10))
+#    fig= plt.subplots(nrows=nx, ncols=ny, constrained_layout=True)
+    a, b = -4.5, 4.5
+    c, d = 0., 0.5
+    x = np.arange(a, b, 0.001) 
     num_bins = 40
-    fig, ax  = plt.subplots()
-    n, bins, patches = ax.hist(zn, num_bins, density=1)
-    x = np.arange(np.min(zn),np.max(zn),0.001)
-    # add a 'best fit' line
-    y = ((1 / (np.sqrt(2 * np.pi) * std_z)) *
-         np.exp(-0.5 * (1 / std_z * (x - mu_z))**2))
-    ax.plot(x, y, '-',linewidth=3,markersize=6, marker='',
-            markerfacecoloralt='tab:red', fillstyle='none')
-    ax.set_xlabel('z')
-    ax.set_ylabel('Probability density')
-    # Tweak spacing to prevent clipping of ylabel
+    n = 0
+    for i in range(0,nx):
+        for j in range(0,ny):
+            zn   = z[:, nseq[n]]
+#            zn   = np.exp(0.5 * z_log_var[:, nseq[n]])
+            mu_z = np.mean(zn)
+            var_z= np.var(zn)
+            std_z= np.std(zn)
+            print('Z_%d => mean: %5.3f \t\t sigma^2: %5.3f' % (nseq[n], 
+                                                                 mu_z, var_z))
+            #==================================================================
+            fig.add_subplot(nx, ny, n+1)
+            nb, bins, patches = plt.hist(zn, num_bins, density=1)
+#            x = np.arange(np.min(zn),np.max(zn),0.001) 
+            # add a 'best fit' line
+            y = ((1 / (np.sqrt(2 * np.pi) * std_z)) *
+                 np.exp(-0.5 * (1 / std_z * (x - mu_z))**2))
+            plt.plot(x, y, '-',linewidth=3,markersize=6, marker='',
+                    markerfacecoloralt='tab:red', fillstyle='none')
+            plt.xlim(a,b)
+            plt.ylim(c,d)
+            xlabels = 'z_' + str(nseq[n])
+            plt.xlabel(xlabels)
+            plt.ylabel('Pdf')
+            n += 1
+            # Tweak spacing to prevent clipping of ylabel
     fig.tight_layout()
     plt.show()
+    return statZ
 ###############################################################################
 
 ###############################################################################

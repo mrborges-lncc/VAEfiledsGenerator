@@ -13,25 +13,24 @@ from tensorflow.keras import layers
 import sys
 sys.path.append("./tools/")
 from mytools import Sampling, VAE, fieldgenerator, plot_latent_space
-from mytools import plot_label_clusters
-from mytools import load_dataset, plot_examples, conference, plot_latent_stat
+from mytools import plot_label_clusters, perm_info
+from mytools import load_dataset, plot_examples, conference, plot_latent_hist
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
 input_shape= (28, 28, 1)
 data_size  = 20000
-home       = './'
-namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
-namein     = home + 'KLE/fields/sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
+home       = './KLE/fields/'
+namein     = home + 'sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
+namein     = home + 'sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
 porous     = True
-#namein     = home + 'KLE/fields/porosity_sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_2000.mat'
+infoperm   = perm_info(namein, porous, input_shape, data_size)
+#==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[1]
+dataname   = data_name[0]
 preprocess = True
-train_images, test_images = load_dataset(dataname,preprocess,namein,
-                                         input_shape,data_size)
+train_images, test_images = load_dataset(dataname,preprocess,infoperm)
 plot_examples(train_images)
-
 ###############################################################################
 # Parameters ==================================================================
 train_size = np.size(train_images,0)
@@ -40,14 +39,14 @@ test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 300
+epochs     = 30
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 20
+latent_dim = 40
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [64, 64, 64]#, 64, 32, 32]
+conv_filters = [64, 64, 64, 64, 32, 32]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
@@ -131,7 +130,12 @@ if dataname == 'MNIST':
         plot_label_clusters(vae, x_train, y_train)
         # Display a grid of sampled digits ====================================
         plot_latent_space(vae)
-
-
-plot_latent_stat(vae, train_images, latent_dim)
+#==============================================================================
+###############################################################################
+# Show latent space ===========================================================
+Zparam = plot_latent_hist(vae, train_images, latent_dim, 16)
+#==============================================================================
+###############################################################################
+# Comparison between data and predictions =====================================
 conference(vae, train_images, latent_dim, input_shape)
+#==============================================================================

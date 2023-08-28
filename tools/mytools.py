@@ -20,11 +20,12 @@ import scipy.stats as stats
 ###############################################################################
 class perm_info:
     '''Class to store the information of the permeability dataset'''
-    def __init__(self, namein, porous, input_shape, data_size):
+    def __init__(self, namein, porous, input_shape, data_size, porosity):
         self.namein = namein
         self.porous = porous
         self.input_shape = input_shape
         self.data_size = data_size
+        self.porosity = porosity
 ###############################################################################
 
 ###############################################################################
@@ -69,17 +70,17 @@ def load_dataset(dataname,prep,infoperm):
         train, test = load_PERM(infoperm.namein, infoperm.input_shape, 
                                 infoperm.data_size)
 #==========================================================
-    train = preprocess_images(train,dataname,prep)
-    test  = preprocess_images(test,dataname,prep)
+    train = preprocess_images(train,dataname,prep,infoperm)
+    test  = preprocess_images(test,dataname,prep,infoperm)
     return train, test
 ###############################################################################
 
 ###############################################################################
 ###############################################################################
-def preprocess_images(images,dataname,prep):
+def preprocess_images(images,dataname,prep,infoperm):
     '''Normalize and reshape the images'''
-    poros = True
-    porosity = 0.15
+    poros    = infoperm.porous
+    porosity = infoperm.porosity
     if dataname == 'PERM':
         nx  = images.shape[1]
         ny  = images.shape[2]
@@ -185,8 +186,8 @@ class VAE(keras.Model):
             reconstruction = self.decoder(z)
             reconstruction_loss = tf.reduce_mean(
                 tf.reduce_sum(
-#                    keras.losses.MeanSquaredError(reduction="none")(data, reconstruction), axis=(1, 2)
-                    keras.losses.binary_crossentropy(data, reconstruction), axis=(1, 2)
+                    keras.losses.MeanSquaredError(reduction="none")(data, reconstruction), axis=(1, 2)
+#                    keras.losses.binary_crossentropy(data, reconstruction), axis=(1, 2)
                 )
             )
             beta = 1.0
@@ -296,6 +297,7 @@ def reparameterize(mean, logvar):
 ###############################################################################
 ###############################################################################
 def conference(vae, images, latent_dim, inputshape):
+    '''Display a 2D plot of the digit classes in the latent space'''
     z_mean, z_log_var, z = vae.encoder.predict(images)
     fig = plt.figure(figsize=(10,10))
     n   = random.randint(0,np.size(images,axis=0))
@@ -317,6 +319,7 @@ def conference(vae, images, latent_dim, inputshape):
 ###############################################################################
 ###############################################################################
 def plot_latent_hist(vae, images, latent_dim, nf):
+    '''Display the distribution of latent variables'''
     z_mean, z_log_var, z = vae.encoder.predict(images)
     #==========================================================================
     statZ = np.zeros((latent_dim, 2))

@@ -19,12 +19,13 @@ from mytools import load_dataset, plot_examples, conference, plot_latent_hist
 ###############################################################################
 # Load data base ==============================================================
 input_shape= (28, 28, 1)
-data_size  = 20000
+data_size  = 2000
 home       = './KLE/fields/'
 namein     = home + 'sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
-namein     = home + 'sexp_1.00x1.00x0.06_28x28x1_l0.10x0.10x0.05_20000.mat'
-porous     = True
-infoperm   = perm_info(namein, porous, input_shape, data_size)
+namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_2000.mat'
+porous     = False
+porosity   = 0.20
+infoperm   = perm_info(namein, porous, input_shape, data_size, porosity)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[1]

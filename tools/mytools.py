@@ -41,7 +41,7 @@ def Gfunction(x, porosity):
 
 ###############################################################################
 ###############################################################################
-def plot_examples(images):
+def plot_examples(images, namefig):
     '''Display a 5x7 plot of 35 images'''
     fig = plt.figure(figsize=(10,10))
     M = np.size(images,0)
@@ -53,8 +53,8 @@ def plot_examples(images):
         plt.imshow(img, cmap=cor, aspect='equal', interpolation='none', 
                    alpha = 1.0, origin='upper')
         plt.axis('off')
-    #name = 'figuras/example_' + namep + '.png'
-    #plt.savefig(name, transparent=True, dpi=300)
+    name = namefig + '_data_examples.png'
+    plt.savefig(name, transparent=True, dpi=300)
     plt.show()
 ###############################################################################
 
@@ -208,7 +208,7 @@ class VAE(keras.Model):
 
 ###############################################################################
 ###############################################################################
-def plot_latent_space(vae, n=15, figsize=15):
+def plot_latent_space(vae, namefig, n=15, figsize=15):
     '''Display a n*n 2D manifold of digits'''
     # display an n*n 2D manifold of digits
     digit_size = 28
@@ -243,12 +243,14 @@ def plot_latent_space(vae, n=15, figsize=15):
     plt.xlabel("z[0]")
     plt.ylabel("z[1]")
     plt.imshow(figure, cmap="Greys_r")
+    name = namefig + '_predicted.png'
+    plt.savefig(name, transparent=True, dpi=300)
     plt.show()
 ###############################################################################
 
 ###############################################################################
 ###############################################################################
-def fieldgenerator(model,latent_dim,inputshape,Z,nf):
+def fieldgenerator(model,latent_dim,inputshape,Z,namefig,nf):
     '''Display a n*n 2D manifold of digits'''
     zmean = Z[:,0]
     zvar  = Z[:,1]
@@ -270,12 +272,15 @@ def fieldgenerator(model,latent_dim,inputshape,Z,nf):
             plt.imshow(img, cmap="jet", aspect='equal', interpolation='none',
                        alpha = 1.0, origin='upper')
             plt.axis('off')
+    name = namefig + '_predicted_examples.png'
+    plt.savefig(name, transparent=True, dpi=300)
+    plt.show()
     return zmean, zvar, z
 ###############################################################################
 
 ###############################################################################
 ###############################################################################
-def plot_label_clusters(vae, data, labels):
+def plot_label_clusters(vae, data, labels, namefig):
     '''Display a 2D plot of the digit classes in the latent space'''
     z_mean, _, _ = vae.encoder.predict(data)
     plt.figure(figsize=(12, 10))
@@ -283,6 +288,8 @@ def plot_label_clusters(vae, data, labels):
     plt.colorbar()
     plt.xlabel("z[0]")
     plt.ylabel("z[1]")
+    name = namefig + '_post_clusters.png'
+    plt.savefig(name, transparent=True, dpi=300)
     plt.show()
 ###############################################################################
 
@@ -296,10 +303,10 @@ def reparameterize(mean, logvar):
 
 ###############################################################################
 ###############################################################################
-def conference(vae, images, latent_dim, inputshape):
+def conference(vae, images, latent_dim, inputshape, namefig):
     '''Display a 2D plot of the digit classes in the latent space'''
     z_mean, z_log_var, z = vae.encoder.predict(images)
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(10,5))
     n   = random.randint(0,np.size(images,axis=0))
     img = images[n,:,:,:]
     img = img.reshape(inputshape[0],inputshape[1])
@@ -313,12 +320,15 @@ def conference(vae, images, latent_dim, inputshape):
 #    prd = np.where(prd > .5, 1.0, 0.0).astype('float32')
     fig.add_subplot(1,2,2)
     plt.imshow(prd, cmap="jet", aspect='equal', interpolation='none',
-               alpha = 1.0, origin='upper')    
+               alpha = 1.0, origin='upper')
+    name = namefig + '_data_x_predicted.png'
+    plt.savefig(name, transparent=True, dpi=300)
+    plt.show()
 ###############################################################################
 
 ###############################################################################
 ###############################################################################
-def plot_latent_hist(vae, images, latent_dim, nf):
+def plot_latent_hist(vae, images, latent_dim, namefig, nf):
     '''Display the distribution of latent variables'''
     z_mean, z_log_var, z = vae.encoder.predict(images)
     #==========================================================================
@@ -367,6 +377,8 @@ def plot_latent_hist(vae, images, latent_dim, nf):
             n += 1
             # Tweak spacing to prevent clipping of ylabel
     fig.tight_layout()
+    name = namefig + '_hist_latent.png'
+    plt.savefig(name, transparent=True, dpi=300)
     plt.show()
     return statZ
 ###############################################################################

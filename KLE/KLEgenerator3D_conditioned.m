@@ -66,7 +66,7 @@ else
     eta1  = 0.10;       % correlation length in the x direction
     eta2  = 0.10;       % correlation length in the y direction
     eta3  = 0.10;       % correlation length in the z direction
-    Nrand = 100000;      % total number of realizations
+    Nrand = 2000;      % total number of realizations
     M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
     TIPOINPUT = 10;     % if == 1 reads the conditioned points from the file
@@ -345,10 +345,12 @@ if(estatistica==1)
     fprintf('Maximum of Y....: %f\n',max(X));
 end
 
-fig3D(Xi,Lx,Ly,Lz,NX,NY,NZ,fig)
-name = [home_fig tipo 'field_' num2str(NX,5),...
-    'x' num2str(NY,5) 'x' num2str(NZ,5) '_' lb '_' num2str(M,5)];
-print('-depsc','-r300',name);
+if NZ > 1
+    fig3D(Xi,Lx,Ly,Lz,NX,NY,NZ,fig)
+    name = [home_fig tipo 'field_' num2str(NX,5),...
+        'x' num2str(NY,5) 'x' num2str(NZ,5) '_' lb '_' num2str(M,5)];
+    print('-depsc','-r300',name);
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('############################################');
 disp(['TOTAL TIME: ' num2str(tElapsed) ' seg.']);

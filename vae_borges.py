@@ -27,31 +27,31 @@ porous     = True
 infoperm   = perm_info(namein, porous, input_shape, data_size)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[0]
+dataname   = data_name[1]
 preprocess = True
 train_images, test_images = load_dataset(dataname,preprocess,infoperm)
 plot_examples(train_images)
 ###############################################################################
 # Parameters ==================================================================
 train_size = np.size(train_images,0)
-batch_size = 64
+batch_size = 128
 test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 30
+epochs     = 100
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 40
+latent_dim = 64
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [64, 64, 64, 64, 32, 32]
+conv_filters = [64, 64, 64, 64, 64, 64]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [64]#, 256, 256, 256]
+dens_neurons = [256, 128, 64]
 dens_activat = ["relu", "relu", "relu", "relu"]
 #==============================================================================
 encoder_inputs = keras.Input(shape=input_shape)
@@ -118,10 +118,6 @@ vae.compile(optimizer=optimizer)
 vae.fit(train_images, epochs=epochs, batch_size=batch_size)
 #==============================================================================
 ###############################################################################
-# Generator ===================================================================
-zmu,zvar,z = fieldgenerator(vae,latent_dim,input_shape,36)
-#==============================================================================
-###############################################################################
 # Display how the latent space clusters different digit classes ===============
 if dataname == 'MNIST':
     if latent_dim == 2:
@@ -133,7 +129,11 @@ if dataname == 'MNIST':
 #==============================================================================
 ###############################################################################
 # Show latent space ===========================================================
-Zparam = plot_latent_hist(vae, train_images, latent_dim, 16)
+Zparam = plot_latent_hist(vae, train_images, latent_dim, 64)
+#==============================================================================
+###############################################################################
+# Generator ===================================================================
+zmu,zvar,z = fieldgenerator(vae,latent_dim,input_shape,Zparam,36)
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================

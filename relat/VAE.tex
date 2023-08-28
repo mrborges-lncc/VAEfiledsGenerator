@@ -7,7 +7,8 @@ Variational auto-encoder\index{variational auto-encoding} (\VAE) model is a stoc
 This is a generative technique whose central idea is the development of representations in a low-dimensional latent space that can be mapped back into a realistic-looking image.
 
 
-\cite{Higgins2016betaVAELB}
+\cite{Higgins2016betaVAELB} introduced the \bVAE, a modification of the original \VAE, that introduces an adjustable hyperparameter $\beta$ to balance latent channel capacity and independence constraints with reconstruction accuracy.
+They demonstrate that with tuned values of $\beta$ ($\beta>1$) the \bVAE\ outperforms \VAE\ ($\beta=1$).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\cite{Zhang2022}}

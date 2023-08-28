@@ -19,6 +19,7 @@ import scipy.stats as stats
 ###############################################################################
 ###############################################################################
 class perm_info:
+    '''Class to store the information of the permeability dataset'''
     def __init__(self, namein, porous, input_shape, data_size):
         self.namein = namein
         self.porous = porous
@@ -29,6 +30,7 @@ class perm_info:
 ###############################################################################
 ###############################################################################
 def Gfunction(x, porosity):
+    '''G-function to generate porous media'''
     g = stats.norm.ppf(porosity)
     if x <= g:
         return 1.0
@@ -187,9 +189,10 @@ class VAE(keras.Model):
                     keras.losses.binary_crossentropy(data, reconstruction), axis=(1, 2)
                 )
             )
+            beta = 1.0
             kl_loss = -0.5 * (1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var))
             kl_loss = tf.reduce_mean(tf.reduce_sum(kl_loss, axis=1))
-            total_loss = reconstruction_loss + kl_loss
+            total_loss = reconstruction_loss + beta * kl_loss
         grads = tape.gradient(total_loss, self.trainable_weights)
         self.optimizer.apply_gradients(zip(grads, self.trainable_weights))
         self.total_loss_tracker.update_state(total_loss)
@@ -244,22 +247,11 @@ def plot_latent_space(vae, n=15, figsize=15):
 
 ###############################################################################
 ###############################################################################
-def fieldgenerator(model,latent_dim,inputshape,nf):
+def fieldgenerator(model,latent_dim,inputshape,Z,nf):
     '''Display a n*n 2D manifold of digits'''
-    outputs = [layer.output for layer in model.encoder.layers]
-    cont = 0
-    for i in outputs:
-      name = i.name
-      if name[0:6] == 'z_mean':
-        j = cont
-      if name[0:6] == 'z_log_':
-        m = cont
-      cont += 1
-    
-    mean_layer = model.encoder.layers[j]
-    std_layer  = model.encoder.layers[m]
-    zmean      = mean_layer.get_weights()[1]
-    zlogvar    = std_layer.get_weights()[1]   
+    zmean = Z[:,0]
+    zvar  = Z[:,1]
+    cov   = np.diag(zvar)
     
     nx = np.int_(np.sqrt(nf, dtype = None))
     ny = nx
@@ -270,15 +262,14 @@ def fieldgenerator(model,latent_dim,inputshape,nf):
         for j in range(0,ny):
             n += 1
             fig.add_subplot(nx, ny, n)
-            z = reparameterize(zmean, zlogvar)
-            z = z.numpy()
+            z = np.random.multivariate_normal(zmean, cov, 1).T
             z = z.reshape((1, latent_dim))
             x_decoded  = model.decoder.predict(z)
             img = x_decoded[0].reshape(inputshape[0],inputshape[1])
             plt.imshow(img, cmap="jet", aspect='equal', interpolation='none',
                        alpha = 1.0, origin='upper')
             plt.axis('off')
-    return zmean, zlogvar, z
+    return zmean, zvar, z
 ###############################################################################
 
 ###############################################################################

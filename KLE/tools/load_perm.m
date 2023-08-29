@@ -20,18 +20,18 @@ function [K] = load_perm(G,meshInfo,namex,namey,namez,depth,nini,nD)
     [yx, Llx, Lly, Llz, nnx, nny, nnz] = perm_reader(namex,nini,nD);
     if(nD == '2D') Llz = Lz; dp = 0.0; end;
     if(abs(Llx-Lx)>TOL || abs(Lly-Ly)>TOL || abs(Llz-Lz+dp)>TOL )
-        error('Wrong dimention'); 
+        error('Wrong dimention (1)'); 
     end
     [yy, Llx, Lly, Llz, nnx, nny, nnz] = perm_reader(namey,nini,nD);
     if(nD == '2D') Llz = Lz; dp = 0.0; end;
     if(abs(Llx-Lx)>TOL || abs(Lly-Ly)>TOL || abs(Llz-Lz+dp)>TOL )
-        error('Wrong dimention');
+        error('Wrong dimention (2)');
     end
     if(nD == '3D')
         [yz, Llx, Lly, Llz, nnx, nny, nnz] = perm_reader(namez,nini,nD);
         if(nD == '2D') Llz = Lz; dp = 0.0; end;
         if(abs(Llx-Lx)>TOL || abs(Lly-Ly)>TOL || abs(Llz-Lz+dp)>TOL )
-            error('Wrong dimention');
+            error('Wrong dimention (3)');
         end
     else
         yz = zeros(nnx*nny*nnz,1);

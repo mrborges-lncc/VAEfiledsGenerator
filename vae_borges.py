@@ -42,9 +42,9 @@ test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 50
+epochs     = 500
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 64
+latent_dim = 32
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################

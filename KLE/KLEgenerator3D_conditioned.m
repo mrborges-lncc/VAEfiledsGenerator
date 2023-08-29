@@ -47,14 +47,14 @@ else
     ntipo = 3; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% physical dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    Lx = 1.0;
-    Ly = 1.0;
-    Lz = 0.01;
+    Lx = 1.08;
+    Ly = 1.08;
+    Lz = 0.24;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% mesh for covariance matrix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    nx = 28;
-    ny = 28;
-    nz = 1;
+    nx = 36;
+    ny = 36;
+    nz = 8;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Mesh for interpolation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     NX = 34;
@@ -63,10 +63,10 @@ else
     interpolacao = 10; % if == 1 the eigenvector are interpolated to this mesh
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    eta1  = 0.10;       % correlation length in the x direction
-    eta2  = 0.10;       % correlation length in the y direction
-    eta3  = 0.10;       % correlation length in the z direction
-    Nrand = 2000;      % total number of realizations
+    eta1  = 0.054;       % correlation length in the x direction
+    eta2  = 0.054;       % correlation length in the y direction
+    eta3  = 0.027;       % correlation length in the z direction
+    Nrand = 200;      % total number of realizations
     M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
     TIPOINPUT = 10;     % if == 1 reads the conditioned points from the file

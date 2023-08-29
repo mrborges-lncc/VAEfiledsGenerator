@@ -414,6 +414,27 @@ def plot_latent_hist(vae, images, latent_dim, namefig, nf):
 
 ###############################################################################
 ###############################################################################
+def random_generator(model,latent_dim,inputshape,Z,home,nf):
+    zmean = Z[:,0]
+    zvar  = Z[:,1]
+    cov   = np.diag(zvar)
+    nx    = inputshape[0]
+    ny    = inputshape[1]
+    nz    = inputshape[2]
+    # loop ====================================================================
+    for i in range(0,nf): 
+        z = np.random.multivariate_normal(zmean, cov, 1).T
+        z = z.reshape((1, latent_dim))
+        X = model.predict(z)
+        img = X[0].reshape(nx * ny * nz)
+        fname = home + str(i) + '.dat'
+        print(fname)
+        np.savetxt(fname, img, fmt='%.8e', delimiter=' ', newline='\n', 
+                   header='', footer='', comments='# ', encoding=None)
+###############################################################################
+
+###############################################################################
+###############################################################################
 ###############################################################################
 
 ###############################################################################

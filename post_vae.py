@@ -14,6 +14,7 @@ import sys
 sys.path.append("./tools/")
 from mytools import load_model_weights, VAE, plot_latent_hist, fieldgenerator
 from mytools import conference, perm_info, load_dataset, plot_examples
+from mytools import random_generator
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
@@ -63,3 +64,8 @@ zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam, namefig, 36)
 # Comparison between data and predictions =====================================
 conference(vae, train_images, latent_dim, input_shape, namefig)
 #==============================================================================
+###############################################################################
+# Random generation ===========================================================
+fname = './KLE/fields/field_' + dataname + '_'
+N = 5000
+random_generator(decoder, latent_dim, input_shape, Zparam, fname, N)

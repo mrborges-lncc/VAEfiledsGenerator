@@ -13,7 +13,7 @@ from tensorflow.keras import layers
 import sys
 sys.path.append("./tools/")
 from mytools import Sampling, VAE, fieldgenerator, plot_latent_space
-from mytools import plot_label_clusters, perm_info
+from mytools import plot_label_clusters, perm_info, save_model_weights
 from mytools import load_dataset, plot_examples, conference, plot_latent_hist
 ###############################################################################
 ###############################################################################
@@ -42,9 +42,9 @@ test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 200
+epochs     = 50
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 128
+latent_dim = 64
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
@@ -117,18 +117,9 @@ decoder.summary()
 # Train the VAE ===============================================================
 vae = VAE(encoder, decoder)
 vae.compile(optimizer=optimizer)
-#vae.compile(optimizer=keras.optimizers.Adam())
 vae.fit(train_images, epochs=epochs, batch_size=batch_size)
-#==============================================================================
 # saving model ================================================================
-outname = 'out/encoder_model_' + dataname + '.keras'
-vae.encoder.save(outname)
-outname = 'out/decoder_model_' + dataname + '.keras'
-vae.decoder.save(outname)
-outname = 'out/encoder_weights_' + dataname + '.dat'
-vae.encoder.save_weights(outname)
-outname = 'out/decoder_weights_' + dataname + '.dat'
-vae.decoder.save_weights(outname)
+save_model_weights(vae, dataname)
 #==============================================================================
 ###############################################################################
 # Display how the latent space clusters different digit classes ===============

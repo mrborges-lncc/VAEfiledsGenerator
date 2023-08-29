@@ -16,6 +16,35 @@ import random
 import math
 import scipy.stats as stats
 
+
+###############################################################################
+###############################################################################
+def load_model_weights(dataname):
+    outname = 'model/encoder_model_' + dataname + '.h5'
+    encoder = tf.keras.models.load_model(outname, 
+                                         custom_objects={'Sampling':Sampling})
+    outname = 'model/decoder_model_' + dataname + '.h5'
+    decoder = tf.keras.models.load_model(outname)
+    outname = 'model/encoder_weights_' + dataname
+    encoder.load_weights(outname)
+    outname = 'model/decoder_weights_' + dataname
+    decoder.load_weights(outname)
+    return encoder, decoder
+###############################################################################
+
+###############################################################################
+###############################################################################
+def save_model_weights(vae, dataname):
+    outname = 'model/encoder_model_' + dataname + '.h5'
+    vae.encoder.save(outname)
+    outname = 'model/decoder_model_' + dataname + '.h5'
+    vae.decoder.save(outname)
+    outname = 'model/encoder_weights_' + dataname
+    vae.encoder.save_weights(outname)
+    outname = 'model/decoder_weights_' + dataname
+    vae.decoder.save_weights(outname)
+###############################################################################
+
 ###############################################################################
 ###############################################################################
 class perm_info:

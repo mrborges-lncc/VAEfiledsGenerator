@@ -9,7 +9,7 @@
   \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
   \selectfont}%
 \fi\endgroup%
-\begin{picture}(17166,4273)(-1607,-5750)
+\begin{picture}(17166,4489)(-1607,-5750)
 \put(3916,-3841){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\mathsf{P}_{\theta}\left( \mathbb{Z} | \mathbb{X}  \right)$}%
 }}}}
 \put(3916,-3346){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Encoder}%
@@ -29,5 +29,13 @@
 \put(9901,-3841){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\mathsf{P}_{\varphi}\left( \mathbb{X}^{\prime} | \mathbb{Z}  \right)$}%
 }}}}
 \put(7882,-3717){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}${\mathbb{Z}}$}%
+}}}}
+\put(6526,-1636){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}distributions}%
+}}}}
+\put(6526,-1411){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Latent state}%
+}}}}
+\put(7876,-2536){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}distributions}%
+}}}}
+\put(7876,-2266){\makebox(0,0)[b]{\smash{{\SetFigFont{8}{9.6}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Sampled from}%
 }}}}
 \end{picture}%

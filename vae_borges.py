@@ -19,20 +19,21 @@ from mytools import load_dataset, plot_examples, conference, plot_latent_hist
 ###############################################################################
 # Load data base ==============================================================
 input_shape= (28, 28, 1)
-data_size  = 2000
+data_size  = 20000
 home       = './KLE/fields/'
 namein     = home + 'sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
-namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_2000.mat'
+namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[0]
+dataname   = data_name[1]
 namefig    = './figuras/' + dataname
 preprocess = False
 train_images, test_images = load_dataset(dataname,preprocess,infoperm)
 plot_examples(train_images, namefig)
+print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 ###############################################################################
 # Parameters ==================================================================
 train_size = np.size(train_images,0)
@@ -41,14 +42,14 @@ test_size  = np.size(test_images,0)
 input_shape= train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 20
+epochs     = 200
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 64
+latent_dim = 128
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [64, 64]#, 64, 64, 64, 64]
+conv_filters = [64, 64, 64, 64, 64, 64]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
@@ -108,7 +109,7 @@ for i in range(nconv,-1,-1):
                              padding = conv_padding[i])(x)
 decoder_outputs = layers.Conv2DTranspose(filters = input_shape[-1],
                                          kernel_size = conv_kernels[0],
-                                         activation="relu", padding="same")(x)
+                                         activation="linear", padding="same")(x)
 decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
 decoder.summary()
 #==============================================================================
@@ -118,6 +119,16 @@ vae = VAE(encoder, decoder)
 vae.compile(optimizer=optimizer)
 #vae.compile(optimizer=keras.optimizers.Adam())
 vae.fit(train_images, epochs=epochs, batch_size=batch_size)
+#==============================================================================
+# saving model ================================================================
+outname = 'out/encoder_model_' + dataname + '.keras'
+vae.encoder.save(outname)
+outname = 'out/decoder_model_' + dataname + '.keras'
+vae.decoder.save(outname)
+outname = 'out/encoder_weights_' + dataname + '.dat'
+vae.encoder.save_weights(outname)
+outname = 'out/decoder_weights_' + dataname + '.dat'
+vae.decoder.save_weights(outname)
 #==============================================================================
 ###############################################################################
 # Display how the latent space clusters different digit classes ===============

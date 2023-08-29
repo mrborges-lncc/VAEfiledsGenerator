@@ -6,7 +6,6 @@
 Variational auto-encoder\index{variational auto-encoding} (\VAE) model is a stochastic inference and learning algorithm based on variational Bayes (VB) inference proposed by \cite{kingma2014}.
 This is a generative technique whose central idea is the development of representations in a low-dimensional latent space that can be mapped back into a realistic-looking image.
 
-
 \cite{Higgins2016betaVAELB} introduced the \bVAE, a modification of the original \VAE, that introduces an adjustable hyperparameter $\beta$ to balance latent channel capacity and independence constraints with reconstruction accuracy.
 They demonstrate that with tuned values of $\beta$ ($\beta>1$) the \bVAE\ outperforms \VAE\ ($\beta=1$).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,6 +32,12 @@ Consider the input data $\dataset{X} = \set{\dataeln{x}{i}}{i=1}{\N}$ consisting
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The Kullback–Leibler divergence (also called relative entropy and I-divergence) is a measure of divergence between two distributions \citep{KLD1951,csiszar1975}:
+
+\begin{equation}
+ \dkl{\pdf{\va{P}}}{\pdf{\va{Q}}} =
+\end{equation}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

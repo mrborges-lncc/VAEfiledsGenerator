@@ -44,7 +44,7 @@ lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
 epochs     = 500
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 32
+latent_dim = 2
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
@@ -119,7 +119,7 @@ vae = VAE(encoder, decoder)
 vae.compile(optimizer=optimizer)
 vae.fit(train_images, epochs=epochs, batch_size=batch_size)
 # saving model ================================================================
-save_model_weights(vae, dataname)
+save_model_weights(vae, dataname, latent_dim)
 #==============================================================================
 ###############################################################################
 # Display how the latent space clusters different digit classes ===============

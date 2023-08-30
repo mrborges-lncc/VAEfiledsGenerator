@@ -19,7 +19,8 @@ import scipy.stats as stats
 
 ###############################################################################
 ###############################################################################
-def load_model_weights(dataname):
+def load_model_weights(dataname, ld):
+    dataname= dataname + '_' + str(ld)
     outname = 'model/encoder_model_' + dataname + '.h5'
     encoder = tf.keras.models.load_model(outname, 
                                          custom_objects={'Sampling':Sampling})
@@ -34,7 +35,8 @@ def load_model_weights(dataname):
 
 ###############################################################################
 ###############################################################################
-def save_model_weights(vae, dataname):
+def save_model_weights(vae, dataname, ld):
+    dataname = dataname + '_' + str(ld)
     outname = 'model/encoder_model_' + dataname + '.h5'
     vae.encoder.save(outname)
     outname = 'model/decoder_model_' + dataname + '.h5'

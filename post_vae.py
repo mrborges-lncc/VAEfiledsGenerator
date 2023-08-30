@@ -35,7 +35,8 @@ train_images, test_images = load_dataset(dataname,preprocess,infoperm)
 plot_examples(train_images, namefig)
 print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 ###############################################################################
-encoder, decoder = load_model_weights(dataname)
+ld = 2
+encoder, decoder = load_model_weights(dataname, ld)
 print(encoder.summary())
 print(decoder.summary())
 #==============================================================================

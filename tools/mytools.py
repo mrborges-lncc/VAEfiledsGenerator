@@ -15,6 +15,169 @@ import sys
 import random
 import math
 import scipy.stats as stats
+import pyvista as pv
+import vtk
+
+###############################################################################
+###############################################################################
+class net_info:
+    '''Class to store the information of the permeability dataset'''
+    def __init__(self, conv_filters, conv_strides, conv_kernels, conv_activat,
+                 conv_padding, dens_neurons, dens_activat):
+        self.conv_filters = conv_filters
+        self.conv_strides = conv_strides
+        self.conv_kernels = conv_kernels
+        self.conv_activat = conv_activat
+        self.conv_padding = conv_padding
+        self.dens_neurons = dens_neurons
+        self.dens_activat = dens_activat
+###############################################################################
+
+###############################################################################
+###############################################################################
+def build_encoder3D(net, input_shape, latent_dim):
+    print(net.conv_filters,input_shape)
+    encoder_inputs = keras.Input(shape=input_shape)
+    x = layers.Conv3D(filters = net.conv_filters[0], 
+                      kernel_size = net.conv_kernels[0],
+                      strides = net.conv_strides[0], 
+                      activation = net.conv_activat[0],
+                      padding = net.conv_padding[0])(encoder_inputs)
+
+    for i in range(1,len(net.conv_filters)):
+      x = layers.Conv3D(filters = net.conv_filters[i], 
+                        kernel_size = net.conv_kernels[i],
+                        strides = net.conv_strides[i], 
+                        activation = net.conv_activat[i],
+                        padding = net.conv_padding[i])(x)
+    x = layers.Flatten()(x)
+    for i in range(len(net.dens_neurons)):
+      x = layers.Dense(net.dens_neurons[i], activation= net.dens_activat[i])(x)
+    z_mean = layers.Dense(latent_dim, name="z_mean")(x)
+    z_log_var = layers.Dense(latent_dim, name="z_log_var")(x)
+    z = Sampling(name='z')([z_mean, z_log_var])
+    encoder = keras.Model(encoder_inputs, [z_mean, z_log_var, z], name="encoder")
+    encoder.summary()
+    return encoder
+###############################################################################
+
+###############################################################################
+###############################################################################
+def build_decoder3D(net, input_shape, latent_dim, ndens, layer_shape, nconv):
+    latent_inputs = keras.Input(shape=(latent_dim,))
+    x = layers.Dense(net.dens_neurons[ndens],
+                     activation = net.dens_activat[ndens])(latent_inputs)
+    for i in range(ndens-1,-1,-1):
+      x = layers.Dense(net.dens_neurons[i], 
+                       activation = net.dens_activat[i])(x)
+
+    x = layers.Dense(layer_shape[0] * layer_shape[1] * layer_shape[2] *
+                     layer_shape[3], activation = "relu")(x)
+    x = layers.Reshape(layer_shape)(x)
+
+    for i in range(nconv,-1,-1):
+      x = layers.Conv3DTranspose(filters = net.conv_filters[i], 
+                                 kernel_size = net.conv_kernels[i],
+                                 strides = net.conv_strides[i], 
+                                 activation = net.conv_activat[i],
+                                 padding = net.conv_padding[i])(x)
+    decoder_outputs = layers.Conv3DTranspose(filters = input_shape[-1],
+                                             kernel_size = net.conv_kernels[0],
+                                             activation="linear", 
+                                             padding="same")(x)
+    decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
+    decoder.summary()
+    return decoder
+###############################################################################
+
+###############################################################################
+###############################################################################
+def build_encoder2D(net, input_shape, latent_dim):
+    encoder_inputs = keras.Input(shape=input_shape)
+    x = layers.Conv2D(filters = net.conv_filters[0], 
+                      kernel_size = net.conv_kernels[0],
+                      strides = net.conv_strides[0], 
+                      activation = net.conv_activat[0],
+                      padding = net.conv_padding[0])(encoder_inputs)
+    for i in range(1,len(net.conv_filters)):
+      x = layers.Conv2D(filters = net.conv_filters[i], 
+                        kernel_size = net.conv_kernels[i],
+                        strides = net.conv_strides[i], 
+                        activation = net.conv_activat[i],
+                        padding = net.conv_padding[i])(x)
+    x = layers.Flatten()(x)
+    for i in range(len(net.dens_neurons)):
+      x = layers.Dense(net.dens_neurons[i], activation= net.dens_activat[i])(x)
+    z_mean = layers.Dense(latent_dim, name="z_mean")(x)
+    z_log_var = layers.Dense(latent_dim, name="z_log_var")(x)
+    z = Sampling(name='z')([z_mean, z_log_var])
+    encoder = keras.Model(encoder_inputs, [z_mean, z_log_var, z], name="encoder")
+    encoder.summary()
+    return encoder
+###############################################################################
+
+###############################################################################
+###############################################################################
+def build_decoder2D(net, input_shape, latent_dim, ndens, layer_shape, nconv):
+    latent_inputs = keras.Input(shape=(latent_dim,))
+    x = layers.Dense(net.dens_neurons[ndens],
+                     activation = net.dens_activat[ndens])(latent_inputs)
+    for i in range(ndens-1,-1,-1):
+      x = layers.Dense(net.dens_neurons[i], activation= net.dens_activat[i])(x)
+
+    x = layers.Dense(layer_shape[0] * layer_shape[1] * layer_shape[2], 
+                     activation="relu")(x)
+    x = layers.Reshape(layer_shape)(x)
+
+    for i in range(nconv,-1,-1):
+      x = layers.Conv2DTranspose(filters = net.conv_filters[i], 
+                                 kernel_size = net.conv_kernels[i],
+                                 strides = net.conv_strides[i], 
+                                 activation = net.conv_activat[i],
+                                 padding = net.conv_padding[i])(x)
+    decoder_outputs = layers.Conv2DTranspose(filters = input_shape[-1],
+                                             kernel_size = net.conv_kernels[0],
+                                             activation="linear", 
+                                             padding="same")(x)
+    decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
+    decoder.summary()
+    return decoder
+###############################################################################
+
+###############################################################################
+###############################################################################
+def fieldplot3D(f,Lx,Ly,Lz,nx,ny,nz,name):
+    field = f[:,:,0:nz]
+    field = np.reshape(field,(nx*ny*nz))
+    dx  = Lx/nx
+    dy  = Ly/ny
+    dz  = Lz/nz
+    # mesh ####################################################################
+    #values = np.linspace(0, 10, nx * ny * nz).reshape((nx, ny, nz))
+    values = field.reshape((nx, ny, nz))
+    values.shape
+    # Create the spatial reference ############################################
+    grid = pv.UniformGrid()
+    # Initialize from a vtk.vtkImageData object ###############################
+    vtkgrid = vtk.vtkImageData()
+    grid = pv.UniformGrid(vtkgrid)
+    # Set the grid dimensions: shape + 1 because we want to inject our values on
+    # the CELL data
+    grid.dimensions = np.array(values.shape) + 1
+    # Edit the spatial reference
+    grid.origin = (0, 0, 0)  # The bottom left corner of the data set
+    grid.spacing = (dx, dy, dz)  # These are the cell sizes along each axis
+    # Add the data values to the cell data
+    grid['data'] = values.flatten(order="F")  # Flatten the array!
+    # Now plot the grid!
+    boring_cmap = plt.cm.get_cmap("viridis", 10)
+    boring_cmap = 'jet'
+    grid.plot(off_screen=False, interactive=False, eye_dome_lighting=False,
+              return_viewer=False, show_edges=True, cmap = boring_cmap, 
+              cpos=[-2, 5, 3], show_bounds=True, show_axes=True)
+#    threshed = grid.threshold_percent([0.15, 0.50], invert=True)
+#    threshed.plot(show_grid=True, cpos=[-2, 5, 3])
+###############################################################################
 
 
 ###############################################################################
@@ -215,6 +378,9 @@ class VAE(keras.Model):
         with tf.GradientTape() as tape:
             z_mean, z_log_var, z = self.encoder(data)
             reconstruction = self.decoder(z)
+ #           print(type(reconstruction),type(data))
+ #           print(reconstruction.shape, data.shape)
+ #           sys.exit()
             reconstruction_loss = tf.reduce_mean(
                 tf.reduce_sum(
                     keras.losses.MeanSquaredError(reduction="none")(data, reconstruction), axis=(1, 2)

@@ -15,14 +15,27 @@ sys.path.append("./tools/")
 from mytools import Sampling, VAE, fieldgenerator, plot_latent_space
 from mytools import plot_label_clusters, perm_info, save_model_weights
 from mytools import load_dataset, plot_examples, conference, plot_latent_hist
+from mytools import build_encoder3D, build_decoder3D, build_encoder2D
+from mytools import build_decoder2D, net_info, fieldplot3D
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
-input_shape= (28, 28, 1)
+Lx  = 1.0
+Ly  = 1.0
+Lz  = 0.25
+nx  = 28
+ny  = 28
+nz  = 1
+num_channel = 1
+if nz == 1:
+    input_shape= (nx, ny, num_channel)
+else:
+    input_shape= (nx, ny, nz, num_channel)
+#==============================================================================
 data_size  = 20000
 home       = './KLE/fields/'
-namein     = home + 'sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
-namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
+namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.05x0.05x0.05_20000.mat'
+#namein     = home + 'sexp_1.00x1.00x0.25_28x28x7_l0.05x0.05x0.02_200.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity)
@@ -34,17 +47,18 @@ preprocess = False
 train_images, test_images = load_dataset(dataname,preprocess,infoperm)
 plot_examples(train_images, namefig)
 print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
+#fieldplot3D(train_images[0,:,:,:],Lx,Ly,Lz,nx,ny,nz,dataname)
 ###############################################################################
 # Parameters ==================================================================
 train_size = np.size(train_images,0)
 batch_size = 128
 test_size  = np.size(test_images,0)
-input_shape= train_images.shape[1:]
+inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 500
+epochs     = 1000
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 2
+latent_dim = 8
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
@@ -56,23 +70,13 @@ conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
 dens_neurons = [256, 128, 128]
 dens_activat = ["relu", "relu", "relu", "relu"]
+net          = net_info(conv_filters, conv_strides, conv_kernels, conv_activat, 
+                        conv_padding, dens_neurons, dens_activat)
 #==============================================================================
-encoder_inputs = keras.Input(shape=input_shape)
-x = layers.Conv2D(filters = conv_filters[0], kernel_size = conv_kernels[0],
-                  strides = conv_strides[0], activation = conv_activat[0],
-                  padding = conv_padding[0])(encoder_inputs)
-for i in range(1,len(conv_filters)):
-  x = layers.Conv2D(filters = conv_filters[i], kernel_size = conv_kernels[i],
-                    strides = conv_strides[i], activation = conv_activat[i],
-                    padding = conv_padding[i])(x)
-x = layers.Flatten()(x)
-for i in range(len(dens_neurons)):
-  x = layers.Dense(dens_neurons[i], activation = dens_activat[i])(x)
-z_mean = layers.Dense(latent_dim, name="z_mean")(x)
-z_log_var = layers.Dense(latent_dim, name="z_log_var")(x)
-z = Sampling(name='z')([z_mean, z_log_var])
-encoder = keras.Model(encoder_inputs, [z_mean, z_log_var, z], name="encoder")
-encoder.summary()
+if input_shape[2] == 1:
+    encoder = build_encoder2D(net, input_shape, latent_dim)
+else:
+    encoder = build_encoder3D(net, input_shape, latent_dim)
 #==============================================================================
 ###############################################################################
 # Collecting information for building the mirrored decoder ====================
@@ -91,27 +95,12 @@ nconv = len(conv_filters) - 1
 #==============================================================================
 ###############################################################################
 # Build the decoder ===========================================================
-latent_inputs = keras.Input(shape=(latent_dim,))
-x = layers.Dense(dens_neurons[ndens],
-                 activation = dens_activat[ndens])(latent_inputs)
-for i in range(ndens-1,-1,-1):
-  x = layers.Dense(dens_neurons[i], activation = dens_activat[i])(x)
-
-x = layers.Dense(layer_shape[0] * layer_shape[1] * layer_shape[2], 
-                 activation="relu")(x)
-x = layers.Reshape((layer_shape[0], layer_shape[1], layer_shape[2]))(x)
-
-for i in range(nconv,-1,-1):
-  x = layers.Conv2DTranspose(filters = conv_filters[i], 
-                             kernel_size = conv_kernels[i],
-                             strides = conv_strides[i], 
-                             activation = conv_activat[i],
-                             padding = conv_padding[i])(x)
-decoder_outputs = layers.Conv2DTranspose(filters = input_shape[-1],
-                                         kernel_size = conv_kernels[0],
-                                         activation="linear", padding="same")(x)
-decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
-decoder.summary()
+if input_shape[2] == 1: 
+    decoder = build_decoder2D(net, input_shape, latent_dim, ndens,
+                              layer_shape, nconv)
+else:        
+    decoder = build_decoder3D(net, input_shape, latent_dim, ndens,
+                              layer_shape, nconv)
 #==============================================================================
 ###############################################################################
 # Train the VAE ===============================================================

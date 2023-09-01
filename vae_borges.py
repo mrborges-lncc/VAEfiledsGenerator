@@ -33,8 +33,8 @@ else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
 data_size  = 20000
-home       = './KLE/fields/'
-namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.05x0.05x0.05_20000.mat'
+home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
+namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
 #namein     = home + 'sexp_1.00x1.00x0.25_28x28x7_l0.05x0.05x0.02_200.mat'
 porous     = False
 porosity   = 0.20
@@ -56,7 +56,7 @@ test_size  = np.size(test_images,0)
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 1000
+epochs     = 500
 # set the dimensionality of the latent space to a plane for visualization later
 latent_dim = 8
 num_examples_to_generate = 16

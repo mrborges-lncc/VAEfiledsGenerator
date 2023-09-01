@@ -18,8 +18,8 @@ inputbox = 10; % if == 1 display a dialog box to input data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% INPUT DATA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tStart = tic;
-home     = '/media/mrborges/m4borges/fields/';
-home     = './fields/';
+home     = '~/Dropbox/fieldsCNN/';
+%home     = './fields/';
 homeT    = './out/';
 %homeT    = '/media/mrborges/m4borges/kle_matrix/';
 home_fig = './figuras/';
@@ -49,12 +49,12 @@ else
     %%%%% physical dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Lx = 1.0;
     Ly = 1.0;
-    Lz = 0.01;
+    Lz = 0.2857;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% mesh for covariance matrix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     nx = 28;
     ny = 28;
-    nz = 1;
+    nz = 8;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Mesh for interpolation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     NX = 34;
@@ -63,10 +63,10 @@ else
     interpolacao = 10; % if == 1 the eigenvector are interpolated to this mesh
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    eta1  = 0.05;       % correlation length in the x direction
-    eta2  = 0.05;       % correlation length in the y direction
+    eta1  = 0.1;       % correlation length in the x direction
+    eta2  = 0.1;       % correlation length in the y direction
     eta3  = 0.05;       % correlation length in the z direction
-    Nrand = 20000;      % total number of realizations
+    Nrand = 100000;      % total number of realizations
     M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
     TIPOINPUT = 10;     % if == 1 reads the conditioned points from the file

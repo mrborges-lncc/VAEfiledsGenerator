@@ -17,6 +17,57 @@ import math
 import scipy.stats as stats
 import pyvista as pv
 import vtk
+import matplotlib.ticker as ticker
+#==============================================================================
+plt.rcParams['text.usetex'] = True
+plt.rcParams.update({'font.family':'Times'})
+###############################################################################
+###############################################################################
+def plot_losses(history, namefig):
+    lista_metric = list() 
+    for i in history.history.keys():
+        lista_metric.append(i)
+    #total_loss   = lista_metric[0]
+    reconstruction_loss  = lista_metric[1]
+    kl_loss      = lista_metric[2]
+    #=========================================================================
+    fig = plt.figure(constrained_layout=True, figsize=(10,50))
+    fig, axs = plt.subplots(nrows=1,ncols=2, constrained_layout=True)
+    #=========================================================================
+    ya = np.min(history.history[reconstruction_loss]) * .95
+    yb = np.max(history.history[reconstruction_loss]) * 1.05
+    dy = (yb-ya)/4
+    axy = np.arange(ya,yb+1e-5,dy)
+    axs[0].plot(history.history[reconstruction_loss],'tab:blue',linewidth=3)
+    axs[0].set_title(r'Reconstruction loss',fontsize=18)
+#    axs[0].legend([], loc='upper right')
+    axs[0].set_ylim((ya,yb))
+    axs[0].set_yticks(axy)
+    axs[0].tick_params(axis="x", labelsize=16)
+    axs[0].tick_params(axis="y", labelsize=16)
+    axs[0].set_xlabel(r'\textbf{Epoch}', fontsize=18, weight='bold', color='k')
+    axs[0].set_ylabel(r'$\mathsf{MSE}$', fontsize=18, weight='bold', color='k')
+    axs[0].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
+    #=========================================================================
+    ya = np.min(history.history[kl_loss]) * .95
+    yb = np.max(history.history[kl_loss]) * 1.05
+    dy = (yb-ya)/4
+    axy = np.arange(ya,yb+1e-5,dy)
+    axs[1].plot(history.history[kl_loss],'tab:orange',linewidth=3)
+    axs[1].set_title(r'KL-divergence loss',fontsize=18)
+#    axs[1].legend([], loc='upper right')
+    axs[1].set_ylim((ya,yb))
+    axs[1].set_yticks(axy)
+    axs[1].tick_params(axis="x", labelsize=16)
+    axs[1].tick_params(axis="y", labelsize=16)
+    axs[1].set_xlabel(r'\textbf{Epoch}', fontsize=18, weight='bold', color='k')
+    axs[1].set_ylabel(r'$\mathcal{D}_{\mathsf{KL}}$', fontsize=18, 
+                      weight='bold', color='k')
+    axs[1].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
+    name = namefig + '_losses.png'
+    plt.savefig(name, transparent=True, dpi=300)
+    plt.show()
+###############################################################################
 
 ###############################################################################
 ###############################################################################
@@ -383,7 +434,8 @@ class VAE(keras.Model):
  #           sys.exit()
             reconstruction_loss = tf.reduce_mean(
                 tf.reduce_sum(
-                    keras.losses.MeanSquaredError(reduction="none")(data, reconstruction), axis=(1, 2)
+                    keras.losses.MeanSquaredError(
+                        reduction="none")(data, reconstruction), axis=(1, 2)
 #                    keras.losses.binary_crossentropy(data, reconstruction), axis=(1, 2)
                 )
             )
@@ -542,16 +594,14 @@ def plot_latent_hist(vae, images, latent_dim, namefig, nf):
     nf = nx * ny
     nseq= np.random.choice(seq, nf, replace = False)
     fig= plt.figure(figsize=(10,10))
-#    fig= plt.subplots(nrows=nx, ncols=ny, constrained_layout=True)
     a, b = -4.5, 4.5
     c, d = 0., 0.5
     x = np.arange(a, b, 0.001) 
-    num_bins = 40
+    num_bins = 20
     n = 0
     for i in range(0,nx):
         for j in range(0,ny):
             zn   = z[:, nseq[n]]
-#            zn   = np.exp(0.5 * z_log_var[:, nseq[n]])
             mu_z = np.mean(zn)
             var_z= np.var(zn)
             std_z= np.std(zn)
@@ -559,18 +609,20 @@ def plot_latent_hist(vae, images, latent_dim, namefig, nf):
                                                                  mu_z, var_z))
             #==================================================================
             fig.add_subplot(nx, ny, n+1)
-            nb, bins, patches = plt.hist(zn, num_bins, density=1)
+            nb, bins, patches = plt.hist(zn, num_bins, density=1, alpha=1.0, 
+                                         edgecolor='black')
 #            x = np.arange(np.min(zn),np.max(zn),0.001) 
             # add a 'best fit' line
-            y = ((1 / (np.sqrt(2 * np.pi) * std_z)) *
-                 np.exp(-0.5 * (1 / std_z * (x - mu_z))**2))
+            y = ((1. / (np.sqrt(2. * np.pi) * std_z)) *
+                 np.exp(-0.5 * (1. / std_z * (x - mu_z))**2))
             plt.plot(x, y, '-',linewidth=3,markersize=6, marker='',
                     markerfacecoloralt='tab:red', fillstyle='none')
             plt.xlim(a,b)
             plt.ylim(c,d)
             xlabels = 'z_' + str(nseq[n])
-            plt.xlabel(xlabels)
-            plt.ylabel('Pdf')
+            plt.xlabel(xlabels, fontsize=22, weight='bold', color='k')
+            plt.ylabel('Pdf', fontsize=22, weight='bold', color='k')
+            plt.tick_params(labelsize=20)
             n += 1
             # Tweak spacing to prevent clipping of ylabel
     fig.tight_layout()

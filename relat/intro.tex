@@ -2,7 +2,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introdution}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Natural reservoirs display a high degree of variability in their hydraulic properties in multiple length scales \citep{dagan89, gelhar93}.
+Such variability plays a strong impact on fluid flow patterns in subsurface formations \citep{glimm92}.
+Due to operational difficulties and high cost, direct measurements of the properties of interest are scarce and, therefore, a deterministic description of the reservoirs cannot be achieved.
+Alternatively, a stochastic approach should be adopted to characterize uncertainties in reservoir parameters that, according to \cite{efendiev2006},  are the primary factor contributing to reservoir forecasting uncertainties.
+In other words, the predictability of computational models is severely limited by the lack of an adequate description of reservoir properties.
 
+Data acquisition along with the use of high-performance computing has encouragedThe growing data acquisition along with the use of high-performance computing has encouraged the use of dynamic data directly in simulations to reduce the associated uncertainties and increase the predictability of the models.
+Well tests, production history, pressure variation on monitors, and tracer tests, among others, are direct measures of reservoir responses and can provide important information about the flow processes.
+
+Matching field dynamic data with reservoir simulation results is a stochastic inverse problem that can be formalized in terms of Bayesian inference and Markov chain Monte Carlo methods (\mcmc).
+The Bayesian inference is convenient in quantifying the added value of information from several sources, while \mcmc\ methods provide a computational framework for sampling from \apost\ distribution \citep{casella05, liu2008}.
+Within this context \mcmc\ methods have been
+widely used in the last decade in porous media flow problems
+\citep{liu2003,efendiev05,efendiev2006,ma2008,dostert10,das10,mondal10,ginting11,ginting12,iglesias13,emerick2013}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{\mcmc}

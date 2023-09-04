@@ -16,7 +16,7 @@ from mytools import Sampling, VAE, fieldgenerator, plot_latent_space
 from mytools import plot_label_clusters, perm_info, save_model_weights
 from mytools import load_dataset, plot_examples, conference, plot_latent_hist
 from mytools import build_encoder3D, build_decoder3D, build_encoder2D
-from mytools import build_decoder2D, net_info, fieldplot3D
+from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
@@ -33,9 +33,8 @@ else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
 data_size  = 20000
-home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
+home       = '/home/mrborges/Dropbox/fieldsCNN/'
 namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
-#namein     = home + 'sexp_1.00x1.00x0.25_28x28x7_l0.05x0.05x0.02_200.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity)
@@ -56,9 +55,9 @@ test_size  = np.size(test_images,0)
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 500
+epochs     = 1000
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 8
+latent_dim = 2
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
@@ -106,9 +105,10 @@ else:
 # Train the VAE ===============================================================
 vae = VAE(encoder, decoder)
 vae.compile(optimizer=optimizer)
-vae.fit(train_images, epochs=epochs, batch_size=batch_size)
+history = vae.fit(train_images, epochs=epochs, batch_size=batch_size)
 # saving model ================================================================
 save_model_weights(vae, dataname, latent_dim)
+plot_losses(history, namefig)
 #==============================================================================
 ###############################################################################
 # Display how the latent space clusters different digit classes ===============

@@ -57,7 +57,7 @@ lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
 epochs     = 1000
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 2
+latent_dim = 4
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################

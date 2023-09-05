@@ -3,7 +3,7 @@
 \section{Introdution}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Natural reservoirs display a high degree of variability in their hydraulic properties in multiple length scales \citep{dagan89, gelhar93}.
-Such variability plays a strong impact on fluid flow patterns in subsurface formations \citep{glimm92}.
+Such variability plays a strong impact on flu-id flow patterns in subsurface formations \citep{glimm92}.
 Due to operational difficulties and high cost, direct measurements of the properties of interest are scarce and, therefore, a deterministic description of the reservoirs cannot be achieved.
 Alternatively, a stochastic approach should be adopted to characterize uncertainties in reservoir parameters that, according to \cite{efendiev2006},  are the primary factor contributing to reservoir forecasting uncertainties.
 In other words, the predictability of computational models is severely limited by the lack of an adequate description of reservoir properties.
@@ -13,15 +13,19 @@ Well tests, production history, pressure variation on monitors, and tracer tests
 
 Matching field dynamic data with reservoir simulation results is a stochastic inverse problem that can be formalized in terms of Bayesian inference and Markov chain Monte Carlo methods (\mcmc).
 The Bayesian inference is convenient in quantifying the added value of information from several sources, while \mcmc\ methods provide a computational framework for sampling from \apost\ distribution \citep{casella05, liu2008}.
+
+Despite its high computational cost that, in some cases, can be prohibitive, \mcmc\ methods are regarded as the gold standard technique for Bayesian inference \citep{Nemeth2021}.
+In 2000, Computing in Science \& Engineering, a joint publication of the IEEE Computer Society and the American Institute of Physics, placed the Metropolis Algorithm on the list of the 10 algorithms with the greatest impact on the development of science and engineering practice in the 20th century (“ Top Ten Algorithms of the Century”  \citep{top10}).
+
 Within this context \mcmc\ methods have been
-widely used in the last decade in porous media flow problems
+widely used in the last decades in porous media flow problems
 \citep{liu2003,efendiev05,efendiev2006,ma2008,dostert10,das10,mondal10,ginting11,ginting12,iglesias13,emerick2013}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{\mcmc}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textcolor{red}{
+\mcmc\ algorithms typically require the design of proposal mechanisms to generate candidate hypotheses.
+Many existing machine learning algorithms can be adapted to become proposal mechanisms \citep{n2013variational}.
+This is often essential to obtain \mcmc\ algorithms that converge quickly.}
 
-In 2000, Computing in Science \& Engineering, a joint publication of the IEEE Computer Society and the American Institute of Physics, placed the Metropolis Algorithm on the list of the 10 algorithms with the greatest impact on the development of science and engineering practice in the 20th century (“ Top Ten Algorithms of the Century”  \citep{top10}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,3 +70,5 @@ Depending on how fast the eigenvalues decay one may be able to  retain only a sm
 In uncertainty quantification methods for porous media flows, the \kl\ expansion has been widely used to reduce the number of parameters used to represent the permeability field \citep{efendiev05,efendiev2006,das10,mondal10,ginting11,ginting12}.
 Another advantage of \kl\ expansion lies on the fact that it provides orthogonal deterministic basis functions and uncorrelated random coefficients, allowing for the optimal encapsulation of the information contained in the random process into a set of discrete uncorrelated random variables \citep{GhanemSpanos}.
 This remarkable feature can be used to simplify the Metropolis-Hastings \mcmc\ Algorithm in the sense of the search may be performed in the space of discrete uncorrelated random variables ($\vtheta$), no longer in the space of permeabilities which have a more complex statistical structure.
+
+In summary, we may have the reduction of the stochastic dimension and the sampling in the space of uncorrelated Gaussian variables.

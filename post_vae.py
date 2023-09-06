@@ -29,14 +29,16 @@ infoperm   = perm_info(namein, porous, input_shape, data_size, porosity)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[1]
-namefig    = './figuras/' + dataname
+name_ext   = '_3D'
+namefig    = './figuras/' + dataname + name_ext
 preprocess = False
 train_images, test_images = load_dataset(dataname,preprocess,infoperm)
 plot_examples(train_images, namefig)
 print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 ###############################################################################
 ld = 2
-encoder, decoder = load_model_weights(dataname, ld)
+name = dataname + name_ext
+encoder, decoder = load_model_weights(name, ld)
 print(encoder.summary())
 print(decoder.summary())
 #==============================================================================

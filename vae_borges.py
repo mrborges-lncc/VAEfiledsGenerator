@@ -16,7 +16,7 @@ from mytools import Sampling, VAE, fieldgenerator, plot_latent_space
 from mytools import plot_label_clusters, perm_info, save_model_weights
 from mytools import load_dataset, plot_examples, conference, plot_latent_hist
 from mytools import build_encoder3D, build_decoder3D, build_encoder2D
-from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses
+from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses, plot_3D
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
@@ -25,28 +25,33 @@ Ly  = 1.0
 Lz  = 0.25
 nx  = 28
 ny  = 28
-nz  = 1
+nz  = 8
 num_channel = 1
 if nz == 1:
     input_shape= (nx, ny, num_channel)
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 20000
-home       = '/home/mrborges/Dropbox/fieldsCNN/'
+data_size  = 2000
+home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
 namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
+namein     = home + 'exp_1.00x1.00x0.29_28x28x8_l0.10x0.10x0.05_2000.mat'
 porous     = False
 porosity   = 0.20
-infoperm   = perm_info(namein, porous, input_shape, data_size, porosity)
+infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
+                       Lx, Ly, Lz, nx, ny, nz)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[1]
-namefig    = './figuras/' + dataname
+name_ext   = '_3D'
+namefig    = './figuras/' + dataname + name_ext
 preprocess = False
 train_images, test_images = load_dataset(dataname,preprocess,infoperm)
 plot_examples(train_images, namefig)
 print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
-#fieldplot3D(train_images[0,:,:,:],Lx,Ly,Lz,nx,ny,nz,dataname)
+if nz > 1:
+    #fieldplot3D(train_images[0,:,:,:],Lx,Ly,Lz,nx,ny,nz,dataname) 
+    plot_3D(train_images[0,:,:,:], infoperm, namefig)
 ###############################################################################
 # Parameters ==================================================================
 train_size = np.size(train_images,0)
@@ -55,9 +60,9 @@ test_size  = np.size(test_images,0)
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 1000
+epochs     = 1
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 4
+latent_dim = 40
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
@@ -107,7 +112,8 @@ vae = VAE(encoder, decoder)
 vae.compile(optimizer=optimizer)
 history = vae.fit(train_images, epochs=epochs, batch_size=batch_size)
 # saving model ================================================================
-save_model_weights(vae, dataname, latent_dim)
+name = dataname + name_ext
+save_model_weights(vae, name, latent_dim)
 plot_losses(history, namefig)
 #==============================================================================
 ###############################################################################
@@ -122,13 +128,14 @@ if dataname == 'MNIST':
 #==============================================================================
 ###############################################################################
 # Show latent space ===========================================================
-Zparam = plot_latent_hist(vae, train_images, latent_dim, namefig, 64)
+Zparam = plot_latent_hist(vae, train_images, latent_dim, namefig, 16)
 #==============================================================================
 ###############################################################################
 # Generator ===================================================================
-zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam, namefig, 36)
+zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam, 
+                            namefig, infoperm, 16)
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-conference(vae, train_images, latent_dim, input_shape, namefig)
+conference(vae, train_images, latent_dim, input_shape, namefig, infoperm)
 #==============================================================================

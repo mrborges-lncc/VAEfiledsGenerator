@@ -11,6 +11,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 #import tensorflow_probability as tfp
 import matplotlib.pyplot as plt
+import matplotlib.colors
 import sys
 import random
 import math
@@ -18,12 +19,14 @@ import scipy.stats as stats
 import pyvista as pv
 import vtk
 import matplotlib.ticker as ticker
+from mpl_toolkits.mplot3d import Axes3D
 #==============================================================================
 plt.rcParams['text.usetex'] = True
 plt.rcParams.update({'font.family':'Times'})
 ###############################################################################
 ###############################################################################
 def plot_losses(history, namefig):
+    '''Plot the losses of the training process'''
     lista_metric = list() 
     for i in history.history.keys():
         lista_metric.append(i)
@@ -31,41 +34,50 @@ def plot_losses(history, namefig):
     reconstruction_loss  = lista_metric[1]
     kl_loss      = lista_metric[2]
     #=========================================================================
-    fig = plt.figure(constrained_layout=True, figsize=(10,50))
+    fig = plt.figure(constrained_layout=True, figsize=(30,25))
     fig, axs = plt.subplots(nrows=1,ncols=2, constrained_layout=True)
     #=========================================================================
     ya = np.min(history.history[reconstruction_loss]) * .95
     yb = np.max(history.history[reconstruction_loss]) * 1.05
     dy = (yb-ya)/4
     axy = np.arange(ya,yb+1e-5,dy)
+    axx = np.arange(0, len(history.history['reconstruction_loss'])+1,
+                    len(history.history['reconstruction_loss'])/4)
     axs[0].plot(history.history[reconstruction_loss],'tab:blue',linewidth=3)
-    axs[0].set_title(r'Reconstruction loss',fontsize=18)
+    axs[0].set_title(r'Reconstruction loss',fontsize=14)
 #    axs[0].legend([], loc='upper right')
     axs[0].set_ylim((ya,yb))
-    axs[0].set_yticks(axy)
-    axs[0].tick_params(axis="x", labelsize=16)
-    axs[0].tick_params(axis="y", labelsize=16)
-    axs[0].set_xlabel(r'\textbf{Epoch}', fontsize=18, weight='bold', color='k')
-    axs[0].set_ylabel(r'$\mathsf{MSE}$', fontsize=18, weight='bold', color='k')
+#    axs[0].set_yticks(axy)
+    axs[0].set_xticks(axx)
+    axs[0].tick_params(axis="x", labelsize=12)
+    axs[0].tick_params(axis="y", labelsize=12)
+    axs[0].set_yscale('log')
+    axs[0].set_xlabel(r'\textbf{Epoch}', fontsize=14, weight='bold', color='k')
+    axs[0].set_ylabel(r'$\mathsf{MSE}$', fontsize=14, weight='bold', color='k')
+    axs[0].set_box_aspect(1)
     axs[0].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
+#    axs[0].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1f'))
     #=========================================================================
     ya = np.min(history.history[kl_loss]) * .95
     yb = np.max(history.history[kl_loss]) * 1.05
     dy = (yb-ya)/4
     axy = np.arange(ya,yb+1e-5,dy)
     axs[1].plot(history.history[kl_loss],'tab:orange',linewidth=3)
-    axs[1].set_title(r'KL-divergence loss',fontsize=18)
+    axs[1].set_title(r'KL-divergence loss',fontsize=14)
 #    axs[1].legend([], loc='upper right')
     axs[1].set_ylim((ya,yb))
     axs[1].set_yticks(axy)
-    axs[1].tick_params(axis="x", labelsize=16)
-    axs[1].tick_params(axis="y", labelsize=16)
-    axs[1].set_xlabel(r'\textbf{Epoch}', fontsize=18, weight='bold', color='k')
-    axs[1].set_ylabel(r'$\mathcal{D}_{\mathsf{KL}}$', fontsize=18, 
+    axs[1].set_xticks(axx)
+    axs[1].tick_params(axis="x", labelsize=12)
+    axs[1].tick_params(axis="y", labelsize=12)
+    axs[1].set_yscale('log')
+    axs[1].set_xlabel(r'\textbf{Epoch}', fontsize=14, weight='bold', color='k')
+    axs[1].set_ylabel(r'$\mathcal{D}_{\mathsf{KL}}$', fontsize=14, 
                       weight='bold', color='k')
+    axs[1].set_box_aspect(1)
     axs[1].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
     name = namefig + '_losses.png'
-    plt.savefig(name, transparent=True, dpi=300)
+    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
 ###############################################################################
 
@@ -87,6 +99,7 @@ class net_info:
 ###############################################################################
 ###############################################################################
 def build_encoder3D(net, input_shape, latent_dim):
+    '''Build the encoder network for 3D data'''
     print(net.conv_filters,input_shape)
     encoder_inputs = keras.Input(shape=input_shape)
     x = layers.Conv3D(filters = net.conv_filters[0], 
@@ -115,6 +128,7 @@ def build_encoder3D(net, input_shape, latent_dim):
 ###############################################################################
 ###############################################################################
 def build_decoder3D(net, input_shape, latent_dim, ndens, layer_shape, nconv):
+    '''Build the decoder network for 3D data'''
     latent_inputs = keras.Input(shape=(latent_dim,))
     x = layers.Dense(net.dens_neurons[ndens],
                      activation = net.dens_activat[ndens])(latent_inputs)
@@ -144,6 +158,7 @@ def build_decoder3D(net, input_shape, latent_dim, ndens, layer_shape, nconv):
 ###############################################################################
 ###############################################################################
 def build_encoder2D(net, input_shape, latent_dim):
+    '''Build the encoder network for 2D data'''
     encoder_inputs = keras.Input(shape=input_shape)
     x = layers.Conv2D(filters = net.conv_filters[0], 
                       kernel_size = net.conv_kernels[0],
@@ -170,6 +185,7 @@ def build_encoder2D(net, input_shape, latent_dim):
 ###############################################################################
 ###############################################################################
 def build_decoder2D(net, input_shape, latent_dim, ndens, layer_shape, nconv):
+    '''Build the decoder network for 2D data'''
     latent_inputs = keras.Input(shape=(latent_dim,))
     x = layers.Dense(net.dens_neurons[ndens],
                      activation = net.dens_activat[ndens])(latent_inputs)
@@ -198,6 +214,7 @@ def build_decoder2D(net, input_shape, latent_dim, ndens, layer_shape, nconv):
 ###############################################################################
 ###############################################################################
 def fieldplot3D(f,Lx,Ly,Lz,nx,ny,nz,name):
+    '''Plot the 3D field'''
     field = f[:,:,0:nz]
     field = np.reshape(field,(nx*ny*nz))
     dx  = Lx/nx
@@ -234,6 +251,7 @@ def fieldplot3D(f,Lx,Ly,Lz,nx,ny,nz,name):
 ###############################################################################
 ###############################################################################
 def load_model_weights(dataname, ld):
+    '''Load the weights of the encoder and decoder networks'''
     dataname= dataname + '_' + str(ld)
     outname = 'model/encoder_model_' + dataname + '.h5'
     encoder = tf.keras.models.load_model(outname, 
@@ -250,6 +268,7 @@ def load_model_weights(dataname, ld):
 ###############################################################################
 ###############################################################################
 def save_model_weights(vae, dataname, ld):
+    '''Save the weights of the encoder and decoder networks'''
     dataname = dataname + '_' + str(ld)
     outname = 'model/encoder_model_' + dataname + '.h5'
     vae.encoder.save(outname)
@@ -265,12 +284,19 @@ def save_model_weights(vae, dataname, ld):
 ###############################################################################
 class perm_info:
     '''Class to store the information of the permeability dataset'''
-    def __init__(self, namein, porous, input_shape, data_size, porosity):
+    def __init__(self, namein, porous, input_shape, data_size, porosity,
+                 Lx, Ly, Lz, nx, ny, nz):
         self.namein = namein
         self.porous = porous
         self.input_shape = input_shape
         self.data_size = data_size
         self.porosity = porosity
+        self.Lx = Lx
+        self.Ly = Ly
+        self.Lz = Lz
+        self.nx = nx
+        self.ny = ny
+        self.nz = nz
 ###############################################################################
 
 ###############################################################################
@@ -299,7 +325,7 @@ def plot_examples(images, namefig):
                    alpha = 1.0, origin='upper')
         plt.axis('off')
     name = namefig + '_data_examples.png'
-    plt.savefig(name, transparent=True, dpi=300)
+    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
 ###############################################################################
 
@@ -388,7 +414,6 @@ def load_PERM(namein,inputshape,datasize):
     random.shuffle(lista)
     train  = data[lista[0:ntrain],:,:,:]
     test   = data[lista[ntrain:data_size],:,:,:]
-    
     return train, test
 ###############################################################################
 
@@ -493,38 +518,8 @@ def plot_latent_space(vae, namefig, n=15, figsize=15):
     plt.ylabel("z[1]")
     plt.imshow(figure, cmap="Greys_r")
     name = namefig + '_predicted.png'
-    plt.savefig(name, transparent=True, dpi=300)
+    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
-###############################################################################
-
-###############################################################################
-###############################################################################
-def fieldgenerator(model,latent_dim,inputshape,Z,namefig,nf):
-    '''Display a n*n 2D manifold of digits'''
-    zmean = Z[:,0]
-    zvar  = Z[:,1]
-    cov   = np.diag(zvar)
-    
-    nx = np.int_(np.sqrt(nf, dtype = None))
-    ny = nx
-    nf = nx * ny
-    fig= plt.figure(figsize=(10,10))
-    n  = 0
-    for i in range(0,nx):
-        for j in range(0,ny):
-            n += 1
-            fig.add_subplot(nx, ny, n)
-            z = np.random.multivariate_normal(zmean, cov, 1).T
-            z = z.reshape((1, latent_dim))
-            x_decoded  = model.decoder.predict(z)
-            img = x_decoded[0].reshape(inputshape[0],inputshape[1])
-            plt.imshow(img, cmap="jet", aspect='equal', interpolation='none',
-                       alpha = 1.0, origin='upper')
-            plt.axis('off')
-    name = namefig + '_predicted_examples.png'
-    plt.savefig(name, transparent=True, dpi=300)
-    plt.show()
-    return zmean, zvar, z
 ###############################################################################
 
 ###############################################################################
@@ -538,7 +533,7 @@ def plot_label_clusters(vae, data, labels, namefig):
     plt.xlabel("z[0]")
     plt.ylabel("z[1]")
     name = namefig + '_post_clusters.png'
-    plt.savefig(name, transparent=True, dpi=300)
+    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
 ###############################################################################
 
@@ -548,31 +543,6 @@ def reparameterize(mean, logvar):
     '''Reparameterization trick by sampling from an isotropic unit Gaussian.'''
     eps = tf.random.normal(shape=mean.shape)
     return eps * tf.exp(logvar * .5) + mean
-###############################################################################
-
-###############################################################################
-###############################################################################
-def conference(vae, images, latent_dim, inputshape, namefig):
-    '''Display a 2D plot of the digit classes in the latent space'''
-    z_mean, z_log_var, z = vae.encoder.predict(images)
-    fig = plt.figure(figsize=(10,5))
-    n   = random.randint(0,np.size(images,axis=0))
-    img = images[n,:,:,:]
-    img = img.reshape(inputshape[0],inputshape[1])
-    fig.add_subplot(1,2,1)
-    plt.imshow(img, cmap="jet", aspect='equal', interpolation='none',
-               alpha = 1.0, origin='upper')
-    zz  = z[n,:]
-    zz  = zz.reshape((1, latent_dim))
-    prd = vae.decoder.predict(zz)
-    prd = prd.reshape(inputshape[0],inputshape[1])
-#    prd = np.where(prd > .5, 1.0, 0.0).astype('float32')
-    fig.add_subplot(1,2,2)
-    plt.imshow(prd, cmap="jet", aspect='equal', interpolation='none',
-               alpha = 1.0, origin='upper')
-    name = namefig + '_data_x_predicted.png'
-    plt.savefig(name, transparent=True, dpi=300)
-    plt.show()
 ###############################################################################
 
 ###############################################################################
@@ -596,7 +566,7 @@ def plot_latent_hist(vae, images, latent_dim, namefig, nf):
     fig= plt.figure(figsize=(10,10))
     a, b = -4.5, 4.5
     c, d = 0., 0.5
-    x = np.arange(a, b, 0.001) 
+    x = np.arange(a, b, 0.01) 
     num_bins = 20
     n = 0
     for i in range(0,nx):
@@ -619,15 +589,16 @@ def plot_latent_hist(vae, images, latent_dim, namefig, nf):
                     markerfacecoloralt='tab:red', fillstyle='none')
             plt.xlim(a,b)
             plt.ylim(c,d)
-            xlabels = 'z_' + str(nseq[n])
-            plt.xlabel(xlabels, fontsize=22, weight='bold', color='k')
-            plt.ylabel('Pdf', fontsize=22, weight='bold', color='k')
-            plt.tick_params(labelsize=20)
+            plt.xlabel(r'$z_{_{' + str(nseq[n]) + '}}$', fontsize=18,
+                       weight='bold', color='k')
+            plt.ylabel(r'$f(z_{_{' + str(nseq[n]) + '}})$', fontsize=18,
+                       weight='bold', color='k')
+            plt.tick_params(labelsize=16)
             n += 1
             # Tweak spacing to prevent clipping of ylabel
     fig.tight_layout()
     name = namefig + '_hist_latent.png'
-    plt.savefig(name, transparent=True, dpi=300)
+    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
     return statZ
 ###############################################################################
@@ -635,6 +606,7 @@ def plot_latent_hist(vae, images, latent_dim, namefig, nf):
 ###############################################################################
 ###############################################################################
 def random_generator(model,latent_dim,inputshape,Z,home,nf):
+    '''Display a n*n 2D manifold of digits'''
     zmean = Z[:,0]
     zvar  = Z[:,1]
     cov   = np.diag(zvar)
@@ -655,8 +627,196 @@ def random_generator(model,latent_dim,inputshape,Z,home,nf):
 
 ###############################################################################
 ###############################################################################
+def midpoints(x):
+    '''Compute midpoints of a grid'''
+    sl = ()
+    for i in range(x.ndim):
+        x = (x[sl + np.index_exp[:-1]] + x[sl + np.index_exp[1:]]) / 2.0
+        sl += np.index_exp[:]
+    return x
 ###############################################################################
 
+###############################################################################
+###############################################################################
+def plot_3D(img, infoperm, namefig):
+    '''Plot the 3D field'''
+    minx = np.min(img)
+    maxx = np.max(img)
+    img = (img - minx) / (maxx - minx)
+    m   = max(max(infoperm.Lx, infoperm.Ly), infoperm.Lz)
+    # prepare some coordinates, and attach rgb values to each 
+    x = np.linspace(0, infoperm.Lx, infoperm.nx+1) 
+    y = np.linspace(0, infoperm.Ly, infoperm.ny+1) 
+    z = np.linspace(0, infoperm.Lz, infoperm.nz+1)
+    X, Y, Z = np.meshgrid(x, y, z)
+
+    r, g, b = np.indices((infoperm.nx+1, infoperm.ny+1, infoperm.nz+1)) / 28.0
+    rc = midpoints(X) 
+    sphere = rc > -2
+    # combine the color components 
+    colors = np.zeros(sphere.shape + (3,)) 
+    colors[..., 0] = img
+    colors[..., 1] = img 
+    colors[..., 2] = img
+#    colors = matplotlib.colors.hsv_to_rgb(colors)
+    
+    # and plot everything 
+    fig = plt.figure(constrained_layout=True) 
+    ax = plt.axes(projection='3d')
+    ax.set_box_aspect((infoperm.Lx / m , infoperm.Ly / m, infoperm.Lz / m))
+    ax.voxels(r, g, b, sphere, 
+              facecolors=colors, #              edgecolors='k',  # brighter 
+              linewidth=0.5) 
+    ax.set_xlim(0,infoperm.Lx)
+    ax.set_ylim(0,infoperm.Ly)
+    ax.set_zlim(0,infoperm.Lz)
+    ax.set_xlabel(r'$x$', fontsize=14, weight='bold', color='k')
+    ax.set_ylabel(r'$y$', fontsize=14, weight='bold', color='k')
+    ax.set_zlabel(r'$z$', fontsize=14, weight='bold', color='k')
+    ax.tick_params(axis="x", labelsize=12)
+    ax.tick_params(axis="y", labelsize=12)
+    ax.tick_params(axis="z", labelsize=12)
+    zz = np.arange(0,infoperm.Lz*1.01,infoperm.Lz/2)
+    ax.set_zticks(zz[1:])
+#    plt.axis('off')
+    name = namefig + '_3D.png'
+    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.show()
+###############################################################################
+
+###############################################################################
+###############################################################################
+def fieldgenerator(model,latent_dim,inputshape,Z,namefig,infoperm,nf):
+    '''Plot the 2D or 3D fields generated by the decoder'''
+    zmean = Z[:,0]
+    zvar  = Z[:,1]
+    cov   = np.diag(zvar)
+    nz    = inputshape[2]
+    #==========================================================================
+    if nz > 1:
+        # prepare some coordinates, and attach rgb values to each 
+        x = np.linspace(0, infoperm.Lx, infoperm.nx+1) 
+        y = np.linspace(0, infoperm.Ly, infoperm.ny+1) 
+        z = np.linspace(0, infoperm.Lz, infoperm.nz+1)
+        X, Y, Z = np.meshgrid(x, y, z)
+    
+        r, g, b = np.indices((infoperm.nx+1, infoperm.ny+1, infoperm.nz+1)) / 28.0
+        rc = midpoints(X) 
+        sphere = rc > -2
+        # combine the color components 
+        colors = np.zeros(sphere.shape + (3,)) 
+
+    nx = np.int_(np.sqrt(nf, dtype = None))
+    ny = nx
+    nf = nx * ny
+    fig= plt.figure(figsize=(10,10))
+    n  = 0
+    for i in range(0,nx):
+        for j in range(0,ny):
+            n += 1
+            z = np.random.multivariate_normal(zmean, cov, 1).T
+            z = z.reshape((1, latent_dim))
+            x_decoded  = model.decoder.predict(z)
+            if nz == 1:
+                fig.add_subplot(nx, ny, n)
+                img = x_decoded[0].reshape(inputshape[0],inputshape[1])
+                plt.imshow(img, cmap="jet", aspect='equal', 
+                           interpolation='none', alpha = 1.0, origin='upper')
+                plt.axis('off')
+            else:
+                img = x_decoded[0].reshape(inputshape[0],inputshape[1],
+                                           inputshape[2])
+                minx = np.min(img)
+                maxx = np.max(img)
+                img = (img - minx) / (maxx - minx)
+                m   = max(max(infoperm.Lx, infoperm.Ly), infoperm.Lz)
+                colors[..., 0] = img 
+                colors[..., 1] = img 
+                colors[..., 2] = img
+                ax = fig.add_subplot(nx, ny, n, projection='3d')
+                ax.set_box_aspect((infoperm.Lx / m , infoperm.Ly / m,
+                                   infoperm.Lz / m)) 
+                ax.voxels(r, g, b, sphere, facecolors=colors, 
+                          #              edgecolors='k',  # brighter 
+                          linewidth=0.0) 
+                plt.axis('off')
+    name = namefig + '_predicted_examples.png'
+    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.show()
+    return zmean, zvar, z
+###############################################################################
+
+###############################################################################
+###############################################################################
+def conference(vae, images, latent_dim, inputshape, namefig, infoperm):
+    '''Display a 2D plot of the digit classes in the latent space'''
+    z_mean, z_log_var, z = vae.encoder.predict(images)
+    n   = random.randint(0,np.size(images,axis=0))
+    zz  = z[n,:]
+    zz  = zz.reshape((1, latent_dim))
+    prd = vae.decoder.predict(zz)
+    #==========================================================================
+    fig = plt.figure(figsize=(10,5))
+    if infoperm.nz == 1:
+        img = images[n,:,:,:]
+        img = img.reshape(inputshape[0],inputshape[1])
+        fig.add_subplot(1,2,1)
+        plt.imshow(img, cmap="jet", aspect='equal', interpolation='none',
+                   alpha = 1.0, origin='upper')
+        prd = prd.reshape(inputshape[0],inputshape[1])
+        #    prd = np.where(prd > .5, 1.0, 0.0).astype('float32')
+        fig.add_subplot(1,2,2)
+        plt.imshow(prd, cmap="jet", aspect='equal', interpolation='none',
+                   alpha = 1.0, origin='upper')
+    else:
+        img = images[n,:,:,:]
+        x = np.linspace(0, infoperm.Lx, infoperm.nx+1) 
+        y = np.linspace(0, infoperm.Ly, infoperm.ny+1) 
+        z = np.linspace(0, infoperm.Lz, infoperm.nz+1)
+        X, Y, Z = np.meshgrid(x, y, z)
+        r, g, b = np.indices((infoperm.nx+1, infoperm.ny+1, infoperm.nz+1)) / 28.0
+        rc = midpoints(X) 
+        sphere = rc > -2
+        colors = np.zeros(sphere.shape + (3,)) 
+        minx = np.min(img)
+        maxx = np.max(img)
+        img  = (img - minx) / (maxx - minx)
+        m    = max(max(infoperm.Lx, infoperm.Ly), infoperm.Lz)
+        colors[..., 0] = img 
+        colors[..., 1] = img 
+        colors[..., 2] = img
+        #======================================================================
+        ax = fig.add_subplot(1,2,1, projection='3d')
+        ax.set_box_aspect((infoperm.Lx / m , infoperm.Ly / m,
+                           infoperm.Lz / m)) 
+        ax.voxels(r, g, b, sphere, facecolors=colors, linewidth=0.0) 
+        plt.axis('off')
+        #======================================================================
+        #======================================================================
+        prd = prd[0].reshape(inputshape[0],inputshape[1],inputshape[2])
+        prd = (prd - minx) / (maxx - minx)
+        colors[..., 0] = prd 
+        colors[..., 1] = prd 
+        colors[..., 2] = prd
+        ax = fig.add_subplot(1,2,2, projection='3d')
+        ax.set_box_aspect((infoperm.Lx / m , infoperm.Ly / m,
+                           infoperm.Lz / m)) 
+        ax.voxels(r, g, b, sphere, facecolors=colors, linewidth=0.0) 
+        plt.axis('off')
+    name = namefig + '_data_x_predicted.png'
+    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.show()
+###############################################################################
+
+
+
+###############################################################################
+
+
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
 ###############################################################################
 ###############################################################################
 ###############################################################################

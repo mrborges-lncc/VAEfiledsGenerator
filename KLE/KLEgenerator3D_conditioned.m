@@ -47,26 +47,26 @@ else
     ntipo = 3; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% physical dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    Lx = 1.0;
-    Ly = 1.0;
-    Lz = 0.2;
+    Lx = 2.0;
+    Ly = 1.50;
+    Lz = 0.01;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% mesh for covariance matrix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    nx = 25;
-    ny = 25;
-    nz = 10;
+    nx = 200;
+    ny = 150;
+    nz = 1;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Mesh for interpolation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     NX = 50;
     NY = 50;
     NZ = 10;
-    interpolacao = 1; % if == 1 the eigenvector are interpolated to this mesh
+    interpolacao = 10; % if == 1 the eigenvector are interpolated to this mesh
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     eta1  = 0.1;       % correlation length in the x direction
     eta2  = 0.1;       % correlation length in the y direction
-    eta3  = 0.025;       % correlation length in the z direction
-    Nrand = 20000;      % total number of realizations
+    eta3  = 0.001;       % correlation length in the z direction
+    Nrand = 1;      % total number of realizations
     M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
     TIPOINPUT = 10;     % if == 1 reads the conditioned points from the file
@@ -88,7 +88,7 @@ tipo_prt = 4;             % if == 1 print the fields in the LNCC format,
                           % if == 4 Neural Network
                           % otherwise print both formats
 paraview_print = 10;      % if == 1 print paraview visualization
-printa         = 10;       % if == 1 save the T matrix = sqrt(lambda)*phi
+printa         = 1;       % if == 1 save the T matrix = sqrt(lambda)*phi
 printabin      = 1;       % if == 1 save the T in a binary file
 print2python   = false;
 estatistica    = 10;
@@ -220,7 +220,7 @@ if(printa==1)
     save(name_autoval,'lamb','-ascii');
     clear lamb
     if printabin == 1
-        name_autovet= [name_autovet(1:end-3) 'bin']
+        name_autovet = [name_autovet(1:end-3) 'bin']
         if print2python
             save(name_autovet, 'phi', '-v7');
         else

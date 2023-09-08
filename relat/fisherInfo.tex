@@ -1,0 +1,96 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Fisher Information}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Let $\pdfc{x}{\theta}$ be the probability density function of the random variable $\va{X}$ conditioned on the parameter $\theta$.
+The Fisher information measures the amount of information that an observation of $\va{X}$ carries about the unknown parameter $\theta$.
+The partial derivative of the natural logarithm of the likelihood function is called \textbf{score} ($\score$):
+
+\begin{equation}
+ \score\fxp = \dep{}{\theta}\log\left[ \pdfc{x}{\theta} \right].
+ \label{score}
+\end{equation}
+
+\noindent Fisher information is defined as the variance of the score $\score$:
+
+\begin{equation}
+ \begin{array}{rcl}
+ \FIx{\theta} = \mean{\score^2 | \theta} &=& \mean{\left( \dep{}{\theta}\log\left[ \pdfc{x}{\theta} \right]\right)^2  \Big| \theta}\\ \\
+ &=& \displaystyle\int_{\real} \left( \dep{}{\theta}\log\left[ \pdfc{x}{\theta} \right] \right)^2 \pdfc{x}{\theta} \dx
+ \end{array}.
+ \label{FI}
+\end{equation}
+
+If $\log\left[ \pdfc{x}{\theta} \right]$ is twice differentiable with respect to $\theta$ and under certain regularuty conditions, Fisher information can be written as
+
+\begin{equation}
+ \FIx{\theta} = \mean{ -\depp{}{\theta}\log\left[ \pdfc{x}{\theta} \right]  \Big| \theta}.
+ \label{FI2}
+\end{equation}
+
+Let $\va{X}$ be a scalar Gaussian random variable \ie $\va{X}\sim \normalf{\mu}{\sigma^2}$.
+Then the probability density function is parameterized by the parameters $\mu$ and $\sigma$:
+
+\begin{equation}
+ \pdfc{x}{\mu,\sigma} = \dfrac{1}{\sigma\sqrt{2\pi}}\exp\left[ -\dfrac{1}{2} \left( \dfrac{x - \mu}{\sigma}  \right)^2  \right].
+ \label{pdfnormal}
+\end{equation}
+
+\noindent Substituting \eq{pdfnormal} in \eq{FI2} where $\theta = \mu$ or $\sigma$ we can compute de Fisher information for a Gaussian variable as:
+
+\begin{equation}
+ \begin{array}{rcl}
+  \FIx{\mu} &=& \mean{ -\depp{}{\mu}\left[\log\left( \dfrac{1}{\sigma\sqrt{2\pi}} \right) -\dfrac{1}{2} \left( \dfrac{\va{X} - \mu}{\sigma}  \right)^2 \right] \Big| \mu}\\ \\
+  &=& \mean{-\dep{}{\mu}\left( - \dfrac{\va{X} - \mu}{\sigma^2} \right) \Big| \mu} \\ \\
+  &=& \mean{\dfrac{1}{\sigma^2}} = \dfrac{1}{\sigma^2}
+ \end{array}
+\label{FImu}
+\end{equation}
+
+\begin{equation}
+ \begin{array}{rcl}
+  \FIx{\sigma} &=& \mean{ -\dep{}{\sigma}\left[ -\dfrac{1}{\sigma} + \dfrac{\left(\va{X} - \mu  \right)^2}{\sigma^{3}} \right] \Big| \sigma}\\ \\
+  &=& \mean{-\dfrac{1}{\sigma^{2}} + \dfrac{3\left(\va{X} - \mu  \right)^2}{\sigma^{4}} \Big| \sigma} \\ \\
+  &=& -\dfrac{1}{\sigma^2} + \dfrac{3\sigma^2}{\sigma^{4}} = \dfrac{2}{\sigma^{2}}
+ \end{array}
+\label{FImu}
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

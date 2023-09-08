@@ -22,20 +22,21 @@ from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses, plot_3D
 # Load data base ==============================================================
 Lx  = 1.0
 Ly  = 1.0
-Lz  = 0.25
-nx  = 28
-ny  = 28
-nz  = 8
+Lz  = 0.01
+nx  = 100
+ny  = 100
+nz  = 1
 num_channel = 1
 if nz == 1:
     input_shape= (nx, ny, num_channel)
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 2000
-home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
+data_size  = 20000
+home       = '/home/mrborges/Dropbox/fieldsCNN/'
 namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
 namein     = home + 'exp_1.00x1.00x0.29_28x28x8_l0.10x0.10x0.05_2000.mat'
+namein     = home + 'exp_1.00x1.00x0.01_100x100x1_l0.20x0.20x0.00_20000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
@@ -43,7 +44,7 @@ infoperm   = perm_info(namein, porous, input_shape, data_size, porosity,
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[1]
-name_ext   = '_3D'
+name_ext   = '_teste'
 namefig    = './figuras/' + dataname + name_ext
 preprocess = False
 train_images, test_images = load_dataset(dataname,preprocess,infoperm)
@@ -52,6 +53,7 @@ print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 if nz > 1:
     #fieldplot3D(train_images[0,:,:,:],Lx,Ly,Lz,nx,ny,nz,dataname) 
     plot_3D(train_images[0,:,:,:], infoperm, namefig)
+#sys.exit()
 ###############################################################################
 # Parameters ==================================================================
 train_size = np.size(train_images,0)
@@ -60,9 +62,9 @@ test_size  = np.size(test_images,0)
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 1
+epochs     = 1000
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 40
+latent_dim = 128
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################

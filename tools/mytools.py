@@ -320,7 +320,7 @@ def plot_examples(images, namefig):
     for n in range(1, 37):
         fig.add_subplot(6, 6, n)
         nr  = random.randint(0,M-1)
-        img = images[nr,:,:,0]
+        img = images[nr,:,:,0].T
         plt.imshow(img, cmap=cor, aspect='equal', interpolation='none', 
                    alpha = 1.0, origin='upper')
         plt.axis('off')

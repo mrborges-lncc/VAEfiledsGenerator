@@ -3,11 +3,16 @@ function T = TlambdaMatrix(phi,lambda,M,num_elem,nome)
 %     T=phi(:,1:M) * diag(sqrt(lambda(1:M)));
     T = phi(:,1:M) .* (sqrt(lambda(1:M))).';
     max_energy = sum(lambda);
+    sgn80 = 1;
     sgn90 = 1;
     sgn94 = 1;
     sgn96 = 1;
     for i = 1 : size(lambda,1)
         energy = sum(lambda(1:i)) * 100 / max_energy;
+        if energy >= 80.0 && sgn80 == 1
+            newM80 = i - 1;
+            sgn80  = 0;
+        end
         if energy >= 90.0 && sgn90 == 1
             newM90 = i - 1;
             sgn90  = 0;
@@ -25,10 +30,11 @@ function T = TlambdaMatrix(phi,lambda,M,num_elem,nome)
             break
         end
     end
-    p = [90; 94; 96; 98];
-    e = [newM90; newM94; newM96; newM];
+    p = [80; 90; 94; 96; 98];
+    e = [newM80; newM90; newM94; newM96; newM];
     v = [p e];
     fprintf('\n####################################')
+    fprintf('\n80 percent energy => M = %d',newM80)
     fprintf('\n90 percent energy => M = %d',newM90)
     fprintf('\n94 percent energy => M = %d',newM94)
     fprintf('\n96 percent energy => M = %d',newM96)

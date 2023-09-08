@@ -44,13 +44,19 @@ st = sqrt(25)
 md = 5.0;
 hold on
 for i = 1 : 20
-    xi = md + st * randn(1,1)
+    xi = md + st * randn(1,1);
     y  = double(fl(xi,mu,st));
     plot(mu,y,'-');
 end
 st = sqrt(1.)
 for i = 1 : 20
-    xi = md + st * randn(1,1)
+    xi = md + st * randn(1,1);
     y  = double(fl(xi,mu,st));
     plot(mu,y,'--');
 end
+
+f(x,m,s) = (1. / (sqrt(2. * pi * s))) * exp(-(1/2) *((x - m)^2) / (s));
+logf(x,m,s) = log(f(x,m,s));
+dlogfmu(x,m,s) = diff(diff(logf(x,m,s),m),m)
+dlogfsg(x,m,s) = simplify(diff(diff(logf(x,m,s),s),s))
+

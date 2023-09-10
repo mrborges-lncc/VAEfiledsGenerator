@@ -21,6 +21,7 @@ tStart = tic;
 home     = '~/Dropbox/fieldsCNN/';
 %home     = './fields/';
 homeT    = './out/';
+homeT    = home;
 %homeT    = '/media/mrborges/m4borges/kle_matrix/';
 home_fig = './figuras/';
 homep    = './paraview/';
@@ -44,16 +45,16 @@ if(inputbox==1)
         varY,Nrand,interpolacao,M,ntipo,TIPOINPUT,...
         file_input_cond]=finputbox();
 else
-    ntipo = 3; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
+    ntipo = 1; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% physical dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    Lx = 2.0;
-    Ly = 1.50;
+    Lx = 1.0;
+    Ly = 1.0;
     Lz = 0.01;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% mesh for covariance matrix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    nx = 200;
-    ny = 150;
+    nx = 100;
+    ny = 100;
     nz = 1;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Mesh for interpolation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,7 +67,7 @@ else
     eta1  = 0.1;       % correlation length in the x direction
     eta2  = 0.1;       % correlation length in the y direction
     eta3  = 0.001;       % correlation length in the z direction
-    Nrand = 1;      % total number of realizations
+    Nrand = 100000;      % total number of realizations
     M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
     TIPOINPUT = 10;     % if == 1 reads the conditioned points from the file

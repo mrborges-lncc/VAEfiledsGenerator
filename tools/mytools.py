@@ -23,6 +23,22 @@ from mpl_toolkits.mplot3d import Axes3D
 #==============================================================================
 plt.rcParams['text.usetex'] = True
 plt.rcParams.update({'font.family':'Times'})
+
+###############################################################################
+###############################################################################
+def save_original_fields(data,inputshape,home,nf):
+    nx    = inputshape[0]
+    ny    = inputshape[1]
+    nz    = inputshape[2]
+    # loop ====================================================================
+    for i in range(0,nf): 
+        img = data[0,:,:,:].reshape(nx * ny * nz)
+        fname = home + str(i) + '.dat'
+        print(fname)
+        np.savetxt(fname, img, fmt='%.8e', delimiter=' ', newline='\n', 
+                   header='', footer='', comments='# ', encoding=None)
+###############################################################################
+
 ###############################################################################
 ###############################################################################
 def plot_losses(history, namefig):
@@ -465,7 +481,8 @@ class VAE(keras.Model):
                 )
             )
             beta = 1.0
-            kl_loss = -0.5 * (1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var))
+            kl_loss = -0.5 * (1 + z_log_var - tf.square(z_mean) - 
+                              tf.exp(z_log_var))
             kl_loss = tf.reduce_mean(tf.reduce_sum(kl_loss, axis=1))
             total_loss = reconstruction_loss + beta * kl_loss
         grads = tape.gradient(total_loss, self.trainable_weights)

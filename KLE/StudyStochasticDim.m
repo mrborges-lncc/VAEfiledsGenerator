@@ -12,11 +12,11 @@ nx  = 100;
 ny  = 100;
 nz  = 1;
 depth = 1e3;
-eta1  = 0.2;       % correlation length in the x direction
-eta2  = 0.2;       % correlation length in the y direction
+eta1  = 0.1;       % correlation length in the x direction
+eta2  = 0.1;       % correlation length in the y direction
 eta3  = 0.001;       % correlation length in the z direction
 home_fig = './figuras/';
-ntipo = 1;
+ntipo = 3;
 nu = 0.5;
 beta = 1;
 num_elem = nx * ny;
@@ -47,18 +47,19 @@ G   = computeGeometry(G);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % stoch= load('out/energy_sexp_autoval_100x100x1_0-1x0-1_10000.dat');
 % file = 'out/avet_sexp_3_1x1x0.01_100x100x1_0.05x0.1x0.001_M10000.bin';
-stoch= load('out/energy_exp_autoval_100x100x1_0-2x0-2_10000.dat');
-file = 'out/avet_exp_1_1x1x0.01_100x100x1_0.2x0.2x0.001_M10000.bin';
+% stoch= load('out/energy_exp_autoval_100x100x1_0-2x0-2_10000.dat');
+% file = 'out/avet_exp_1_1x1x0.01_100x100x1_0.2x0.2x0.001_M10000.bin';
 % stoch= load('out/energy_sexp_autoval_100x100x1_0-1x0-1_10000.dat');
-% file = 'out/avet_sexp_3_1x1x0.01_100x100x1_0.1x0.1x0.001_M10000.bin';
+stoch= load('out/energy_sexp_autoval_200x150x1_0-1x0-1_30000.dat');
+file = 'out/avet_sexp_3_1x1x0.01_100x100x1_0.1x0.1x0.001_M10000.bin';
 fid  = fopen(file,"r");
 T    = fread(fid, "single");
 T    = reshape(T,[num_elem,M]);
 fclose(fid);
-lambda  = load("out/aval_exp_1_1x1x0.01_100x100x1_0.2x0.2x0.001_M10000.dat");
-lambdaB = load("out/aval_exp_1_2x1.5x0.01_200x150x1_0.2x0.2x0.001_M30000.dat");
-% lambda  = load("out/aval_sexp_3_1x1x0.01_100x100x1_0.1x0.1x0.001_M10000.dat");
-% lambdaB = load("out/aval_sexp_3_1x1x0.01_100x100x1_0.1x0.1x0.001_M10000.dat");
+% lambda  = load("out/aval_exp_1_1x1x0.01_100x100x1_0.2x0.2x0.001_M10000.dat");
+% lambdaB = load("out/aval_exp_1_2x1.5x0.01_200x150x1_0.2x0.2x0.001_M30000.dat");
+lambda  = load("out/aval_sexp_3_1x1x0.01_100x100x1_0.1x0.1x0.001_M10000.dat");
+lambdaB = load("out/aval_sexp_3_2x1.5x0.01_200x150x1_0.1x0.1x0.001_M30000.dat");
 mm = 30000;
 [nom,lb] = loglambdafig([1:mm],lambdaB,mm,home_fig,nx,ny,nz,eta1,...
     eta2,eta3,beta,nu,ntipo,tipo);
@@ -69,13 +70,14 @@ print('-dpng','-r300',name);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 mu = 0.0;
 sig= 1.0;
-K = 5;
-m = [M : -K : K].';
+K = 1;
+m = [300 : -K : K].';
 Tenergy = sum(lambdaB);
 err     = zeros(size(m,1),1);
 energy  = zeros(size(m,1),1);
 for i = 1 : size(m,1)
     energy(i) = sum(lambdaB(1:m(i))) / Tenergy;
+    [m(i) energy(i)]
 end
 theta = single(lhsnorm(mu,sig,M));
 Y   = T(:,1:M) * theta(1:M);
@@ -104,15 +106,16 @@ theta = single(lhsnorm(mu,sig,M));
 Y   = T(:,1:M) * theta(1:M);
 err = zeros(length(m),1);
 for i = 1 : length(m)
+    close all
     Xi    = T(:,1:m(i)) * theta(1:m(i));
     err(i)= norm(Y - Xi)/norm(Y);
     lim = [0 0];
-    % plot_rock(Xi,G,'Yn','$Y$',color,lim,vw,1);
-    % base=['figuras/Y_' nome '_5'];
-    % set(gcf,'PaperPositionMode','auto');
-    % print('-dpng','-r600', base);
-    % pause(0.5)
-    % close all
+    plot_rock(Xi,G,'Yn','$Y$',color,lim,vw,1);
+    base=['figuras/Y_' tipo 'M' num2str(m(i))];
+    set(gcf,'PaperPositionMode','manual',...
+        'PaperPosition',[0.1 0.1 3.5 4.15]);
+    print('-dpng','-r300', base);
+    pause(0.5)
 end
 two2Dplot(str, [err err], 'Power', 'Relative error', 'dat1', 'dat2', 56)
 close all

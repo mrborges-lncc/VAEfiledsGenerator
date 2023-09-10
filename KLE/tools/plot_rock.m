@@ -37,9 +37,9 @@ function plot_rock(rock,g,flag,titlen,color,lim,vw,n)
     title(titlen,'FontSize',14,'Interpreter','latex');
 
     % Create labels
-    zlabel('$z (m)$','FontSize',14,'Interpreter','latex');
-    ylabel('$y (m)$','FontSize',14,'Interpreter','latex');
-    xlabel('$x (m)$','FontSize',14,'Interpreter','latex');
+    zlabel('$z$','FontSize',14,'Interpreter','latex');
+    ylabel('$y$','FontSize',14,'Interpreter','latex');
+    xlabel('$x$','FontSize',14,'Interpreter','latex');
 %     [hc,hh]=colorbarHist(rock,lim,'South', 80);
 %     pos=get(hc,'Position'); set(hc,'Position',pos - [.02 0 .2 -.01],'FontSize',12);
 %     pos=get(hh,'Position'); set(hh,'Position',pos - [.02 0.02 .2 -.01]);

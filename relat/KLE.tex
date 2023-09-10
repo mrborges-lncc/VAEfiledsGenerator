@@ -4,13 +4,38 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[H]
  \centering
- \subfigure[]{\includegraphics[scale=0.475]{./figuras/Energy_sexp_100x100x1_0-1x0-1_10000.png}
+ \subfigure[Squared exponential covariance]{\includegraphics[scale=0.475]{./figuras/Energy_sexp_100x100x1_0-1x0-1_10000.png}
  \includegraphics[scale=0.485]{./figuras/sexp_autoval_100x100x1_0-1x0-1_10000.png}}
- \subfigure[]{\includegraphics[scale=0.475]{./figuras/Energy_exp_100x100x1_0-2x0-2_10000.png}
+ \subfigure[Exponential covariance]{\includegraphics[scale=0.475]{./figuras/Energy_exp_100x100x1_0-2x0-2_10000.png}
  \includegraphics[scale=0.485]{./figuras/exp_autoval_100x100x1_0-2x0-2_10000.png}}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[H]
+\caption{Number of \kl\ expansion terms needed to obtain an given energy level}
+\label{tab:KLE}
+{%
+\newcommand{\mc}[3]{\multicolumn{#1}{#2}{#3}}
+\begin{center}
+\begin{tabular}{l|cc}\hline\hline
+\textbf{Energy} & \mc{2}{c}{$\m$}\\\cline{2-3}
+$(\%)$ & Exponential & Squared exp.\\
+\hline
+\textbf{80} & 201 & 83\\
+\textbf{90} & 781 & 120\\
+\textbf{94} & 1928 & 148\\
+\textbf{96} & 3416 & 170\\
+\textbf{98} & 6111 & 208\\
+\textbf{100} & $\sim$30,000 & $\sim$\\
+\hline\hline
+\end{tabular}
+\end{center}
+}%
+\end{table}
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

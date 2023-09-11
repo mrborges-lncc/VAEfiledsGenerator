@@ -64,10 +64,10 @@ else
     interpolacao = 10; % if == 1 the eigenvector are interpolated to this mesh
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    eta1  = 0.1;       % correlation length in the x direction
-    eta2  = 0.1;       % correlation length in the y direction
+    eta1  = 0.2;       % correlation length in the x direction
+    eta2  = 0.2;       % correlation length in the y direction
     eta3  = 0.001;       % correlation length in the z direction
-    Nrand = 100000;      % total number of realizations
+    Nrand = 5000;      % total number of realizations
     M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
     TIPOINPUT = 10;     % if == 1 reads the conditioned points from the file
@@ -92,7 +92,7 @@ paraview_print = 10;      % if == 1 print paraview visualization
 printa         = 1;       % if == 1 save the T matrix = sqrt(lambda)*phi
 printabin      = 1;       % if == 1 save the T in a binary file
 print2python   = false;
-estatistica    = 10;
+estatistica    = 1;
 if ntipo == 1, tipo = 'exp_'; end
 if ntipo == 2, tipo = 'frac_'; end
 if ntipo == 3, tipo = 'sexp_'; end
@@ -310,6 +310,9 @@ for nr=1:Nrand
 %******* impressao dos campos *********************************************
     if tipo_prt == 4
         fwrite(fileIDin ,Xi ,'single');
+        if nr < 5000
+            imprime3D(Lx,Ly,Lz,NX,NY,NZ,ntipo,beta,Xi,nr,home,name,0);
+        end
     else
         if(nz==1000)
             imprime(Lx,Ly,NX,NY,ntipo,beta,Xi,nr,home,name,tipo_prt);

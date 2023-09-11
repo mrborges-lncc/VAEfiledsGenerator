@@ -5,19 +5,19 @@ clear
 close all
 addpath ./tools/
 
-Lx  = 1;
-Ly  = 1;
+Lx  = 1.;
+Ly  = 1.;
 Lz  = 0.01;
-nx  = 28;
-ny  = 28;
+nx  = 100;
+ny  = 100;
 nz  = 1;
 tipo_prt = 0;
 ntipo = 3;
 beta  = 0.5;
-Nrand = 5000;
+Nrand = 500;
 home ='../KLE/fields/';
-% home ='../fields/';
-name = 'field_PERM_'
+home ='~/Dropbox/fieldsCNN/';
+name = 'exp_1x1_100x100_0-2x0-2_'
 nameout='./out/';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 X    = zeros(nx*ny*nz,1);

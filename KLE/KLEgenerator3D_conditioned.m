@@ -1,4 +1,4 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                        RANDOM FIELDS GENERATOR
 %                    BASED ON KARHUNEN-LOEVE EXPANSION
@@ -64,8 +64,8 @@ else
     interpolacao = 10; % if == 1 the eigenvector are interpolated to this mesh
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    eta1  = 0.2;       % correlation length in the x direction
-    eta2  = 0.2;       % correlation length in the y direction
+    eta1  = 0.1;       % correlation length in the x direction
+    eta2  = 0.1;       % correlation length in the y direction
     eta3  = 0.001;       % correlation length in the z direction
     Nrand = 5000;      % total number of realizations
     M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 

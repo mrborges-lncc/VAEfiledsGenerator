@@ -14,7 +14,7 @@ import sys
 sys.path.append("./tools/")
 from mytools import Sampling, VAE, fieldgenerator, plot_latent_space
 from mytools import plot_label_clusters, perm_info, save_model_weights
-from mytools import load_dataset, plot_examples, conference, plot_latent_hist
+from mytools import load_dataset, plot_examples, comparison, plot_latent_hist
 from mytools import build_encoder3D, build_decoder3D, build_encoder2D
 from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses, plot_3D
 ###############################################################################
@@ -33,7 +33,7 @@ else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
 data_size  = 20000
-home       = '/home/mrborges/Dropbox/fieldsCNN/'
+home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
 namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
 namein     = home + 'exp_1.00x1.00x0.29_28x28x8_l0.10x0.10x0.05_2000.mat'
 namein     = home + 'exp_1.00x1.00x0.01_100x100x1_l0.20x0.20x0.00_20000.mat'
@@ -62,7 +62,7 @@ test_size  = np.size(test_images,0)
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 100
+epochs     = 1000
 # set the dimensionality of the latent space to a plane for visualization later
 latent_dim = 128
 num_examples_to_generate = 16
@@ -139,5 +139,5 @@ zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam,
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-conference(vae, train_images, latent_dim, input_shape, namefig, infoperm)
+comparison(vae, train_images, latent_dim, input_shape, namefig, infoperm)
 #==============================================================================

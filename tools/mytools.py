@@ -20,6 +20,7 @@ import pyvista as pv
 import vtk
 import matplotlib.ticker as ticker
 from mpl_toolkits.mplot3d import Axes3D
+from sklearn.metrics import mean_squared_error
 #==============================================================================
 plt.rcParams['text.usetex'] = True
 plt.rcParams.update({'font.family':'Times'})
@@ -765,7 +766,7 @@ def fieldgenerator(model,latent_dim,inputshape,Z,namefig,infoperm,nf):
 
 ###############################################################################
 ###############################################################################
-def conference(vae, images, latent_dim, inputshape, namefig, infoperm):
+def comparison(vae, images, latent_dim, inputshape, namefig, infoperm):
     '''Display a 2D plot of the digit classes in the latent space'''
     z_mean, z_log_var, z = vae.encoder.predict(images)
     n   = random.randint(0,np.size(images,axis=0))
@@ -823,6 +824,46 @@ def conference(vae, images, latent_dim, inputshape, namefig, infoperm):
     name = namefig + '_data_x_predicted.png'
     plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
+    #==========================================================================
+    ndata = np.size(images, axis = 0)
+    rel_error = np.zeros((ndata,1))
+    for i in range(ndata):
+        zz  = z[i,:]
+        zz  = zz.reshape((1, latent_dim))
+        prd = vae.decoder.predict(zz)
+        prd = prd.reshape(inputshape[0],inputshape[1])
+        rel_error[i] = mean_squared_error(images[i] - prd) / mean_squared_error(images[i])
+    #==========================================================================
+    fig= plt.figure(figsize=(10,10))
+    a, b = np.minimum(rel_error), np.maximum(rel_error)
+    c, d = 0., 0.5
+    x = np.arange(a, b, 0.01) 
+    num_bins = 20
+    mu = np.mean(rel_error)
+    desv = np.std(rel_error)
+    print('Relative Mean Squared Error => mean: %5.3f \t\t sigma: %5.3f' % (mu, desv))
+    #==========================================================================
+    fig.add_subplot(1)
+    nb, bins, patches = plt.hist(rel_error, num_bins, density=1, alpha=1.0, 
+                                         edgecolor='black')
+#            x = np.arange(np.min(zn),np.max(zn),0.001) 
+            # add a 'best fit' line
+    y = ((1. / (np.sqrt(2. * np.pi) * desv)) * 
+         np.exp(-0.5 * (1. / desv * (x - mu))**2)) 
+    plt.plot(x, y, '-',linewidth=3,markersize=6, marker='',
+             markerfacecoloralt='tab:red', fillstyle='none')
+    plt.xlim(a,b)
+    plt.ylim(c,d)
+    plt.xlabel(r'$RMSE$', fontsize=18,
+               weight='bold', color='k')
+    plt.ylabel(r'$f(x)$', fontsize=18,
+               weight='bold', color='k')
+    plt.tick_params(labelsize=16)
+    fig.tight_layout()
+    name = namefig + '_hist_latent.png'
+    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.show()
+
 ###############################################################################
 
 

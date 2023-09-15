@@ -13,7 +13,7 @@ from tensorflow.keras import layers
 import sys
 sys.path.append("./tools/")
 from mytools import load_model_weights, VAE, plot_latent_hist, fieldgenerator
-from mytools import conference, perm_info, load_dataset, plot_examples
+from mytools import comparison, perm_info, load_dataset, plot_examples
 from mytools import random_generator, save_original_fields, plot_3D
 ###############################################################################
 ###############################################################################
@@ -83,7 +83,7 @@ zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam,
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-conference(vae, train_images, latent_dim, input_shape, namefig, infoperm)
+comparison(vae, train_images, latent_dim, input_shape, namefig, infoperm)
 #==============================================================================
 ###############################################################################
 # Random generation ===========================================================

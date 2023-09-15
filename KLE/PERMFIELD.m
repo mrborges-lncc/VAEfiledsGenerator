@@ -18,8 +18,8 @@ startup
 Lx  = 1.0;
 Ly  = 1.0;
 Lz  = 0.01;
-nx  = 28;
-ny  = 28;
+nx  = 100;
+ny  = 100;
 nz  = 1;
 depth = 1e3;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,8 +27,8 @@ rho = 1.0;
 beta= [100] * milli() * darcy();      %% Factor to permeability
 nome= 'ref';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[FILENAME, PATHNAME] =uigetfile({'./fields/*.dat'}, 'LOAD DATA');
-%[FILENAME, PATHNAME] =uigetfile({'~/Dropbox/mrstBorges/out/*.dat'}, 'LOAD DATA');
+%[FILENAME, PATHNAME] =uigetfile({'./fields/*.dat'}, 'LOAD DATA');
+[FILENAME, PATHNAME] =uigetfile({'~/Dropbox/fieldsCNN/campos/*.dat'}, 'LOAD DATA');
 filen=sprintf('%s%s', PATHNAME,FILENAME);
 lf = length(filen);
 filem = filen(1:end-4);

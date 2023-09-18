@@ -45,20 +45,20 @@ G   = computeGeometry(G);
 [dim, nD, fine_grid, coarse_grid, dims, meshInfo] = preproc(Lx,Ly,Lz,...
     nx,ny,nz,nx,ny,nz);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-M    = 30000;
-n    = 10000;
+M    = 300 * 100;
+n    = 100 * 100;
 mu   = 0.0;
 sig  = 1.0;
 home = '~/Dropbox/fieldsCNN/';
 file = '/home/mrborges/Dropbox/fieldsCNN/avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin';
-file = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin';
+%file = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin';
 fid  = fopen(file,"r");
 T    = fread(fid, "single");
 T    = reshape(T,[M,M]);
 fclose(fid);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 lb = '0-2x0-2';
-Nrand = 5000;
+Nrand = 100000;
 name2 = [tipo num2str(Lx,'%3.2f') 'x' num2str(Ly,'%3.2f') 'x' ...
     num2str(Lz,'%3.2f') '_' num2str(NX,'%d') 'x' ...
     num2str(NY,'%d') 'x' num2str(NZ,'%d') '_l' num2str(eta1,'%3.2f')...
@@ -79,6 +79,7 @@ T = T(1:n, 1:M);
 for nr = 1 : Nrand
     theta = single(lhsnorm(mu,sig,M));
     Y     = T * theta(1:M);
+    fprintf('Real.: %d \t Mean: %4.2f \t Std: %4.2f\n',nr,mean(Y),std(Y));
     fwrite(fileIDin ,Y ,'single');
     % imprime3D(Lx,Ly,Lz,NX,NY,NZ,ntipo,beta,Y,nr,home,name,0);
 end

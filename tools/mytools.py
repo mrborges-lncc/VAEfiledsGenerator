@@ -832,10 +832,12 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm):
         zz  = zz.reshape((1, latent_dim))
         prd = vae.decoder.predict(zz)
         prd = prd.reshape(inputshape[0],inputshape[1])
-        rel_error[i] = mean_squared_error(images[i] - prd) / mean_squared_error(images[i])
+        img = images[n,:,:,:]
+        img = img.reshape(inputshape[0],inputshape[1])
+        rel_error[i] = np.linalg.norm(img - prd) / np.linalg.norm(img)
     #==========================================================================
     fig= plt.figure(figsize=(10,10))
-    a, b = np.minimum(rel_error), np.maximum(rel_error)
+    a, b = np.min(rel_error), np.max(rel_error)
     c, d = 0., 0.5
     x = np.arange(a, b, 0.01) 
     num_bins = 20
@@ -843,22 +845,20 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm):
     desv = np.std(rel_error)
     print('Relative Mean Squared Error => mean: %5.3f \t\t sigma: %5.3f' % (mu, desv))
     #==========================================================================
-    fig.add_subplot(1)
     nb, bins, patches = plt.hist(rel_error, num_bins, density=1, alpha=1.0, 
                                          edgecolor='black')
-#            x = np.arange(np.min(zn),np.max(zn),0.001) 
-            # add a 'best fit' line
+    d =  np.max(nb) * 1.1
     y = ((1. / (np.sqrt(2. * np.pi) * desv)) * 
          np.exp(-0.5 * (1. / desv * (x - mu))**2)) 
     plt.plot(x, y, '-',linewidth=3,markersize=6, marker='',
              markerfacecoloralt='tab:red', fillstyle='none')
     plt.xlim(a,b)
     plt.ylim(c,d)
-    plt.xlabel(r'$RMSE$', fontsize=18,
+    plt.xlabel(r'$RMSE$', fontsize=22,
                weight='bold', color='k')
-    plt.ylabel(r'$f(x)$', fontsize=18,
+    plt.ylabel(r'Density', fontsize=22,
                weight='bold', color='k')
-    plt.tick_params(labelsize=16)
+    plt.tick_params(labelsize=20)
     fig.tight_layout()
     name = namefig + '_hist_latent.png'
     plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')

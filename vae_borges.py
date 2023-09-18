@@ -32,11 +32,11 @@ if nz == 1:
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 20000
-home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
+data_size  = 5000
+home       = '/home/mrborges/Dropbox/fieldsCNN/'
 namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
 namein     = home + 'exp_1.00x1.00x0.29_28x28x8_l0.10x0.10x0.05_2000.mat'
-namein     = home + 'exp_1.00x1.00x0.01_100x100x1_l0.20x0.20x0.00_20000.mat'
+namein     = home + 'exp_1.00x1.00x0.01_100x100x1_l0.20x0.20x0.00_5000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 

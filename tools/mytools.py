@@ -832,7 +832,7 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm):
         zz  = zz.reshape((1, latent_dim))
         prd = vae.decoder.predict(zz)
         prd = prd.reshape(inputshape[0],inputshape[1])
-        img = images[n,:,:,:]
+        img = images[i,:,:,:]
         img = img.reshape(inputshape[0],inputshape[1])
         rel_error[i] = np.linalg.norm(img - prd) / np.linalg.norm(img)
     #==========================================================================

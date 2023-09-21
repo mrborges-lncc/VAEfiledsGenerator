@@ -1,0 +1,32 @@
+#!/bin/bash
+#SBATCH --account=simulreserv
+#SBATCH --nodes=1                #Número de Nós
+#SBATCH --ntasks-per-node=1      #Número de tarefas por Nó
+#SBATCH --ntasks=1               #Numero total de tarefas MPI
+#SBATCH -p sequana_gpu           #Fila (partition) a ser utilizada
+#SBATCH -J VAEborges             #Nome job
+#SBATCH --time=24:00:00          #Obrigatório
+
+#Exibe os nós alocados para o Job
+echo $SLURM_JOB_NODELIST
+nodeset -e $SLURM_JOB_NODELIST
+
+cd  $SLURM_SUBMIT_DIR
+
+## 1) Carrega o módulo sequana
+module load sequana/current
+
+## 2) Carrega o OpenMPI com GNU
+module load openmpi/gnu/2.0.4.14_sequana
+
+## 3) Configura o módulo de Deep Learning
+module load deepl/deeplearn-py3.7_sequana
+
+#Configura o executavel
+EXEC=/scratch/simulreserv/marcio.borges/VAEfiledsGenerator/vae_borges.py
+#exibe informações sobre o executável
+/usr/bin/ldd $EXEC
+
+srun -n $SLURM_NTASKS python3 $EXEC
+#srun --ntasks=1 --ntasks-per-node=1 python3 GAtoCNN.py
+

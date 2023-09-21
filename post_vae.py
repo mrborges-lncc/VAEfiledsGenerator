@@ -88,7 +88,7 @@ comparison(vae, train_images, latent_dim, input_shape, namefig, infoperm)
 ###############################################################################
 # Random generation ===========================================================
 fname = './KLE/fields/field_' + dataname + '_'
-N = 5000
+N = 50
 random_generator(decoder, latent_dim, input_shape, Zparam, fname, N)
 #==============================================================================
 ###############################################################################

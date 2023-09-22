@@ -20,7 +20,7 @@ ntipo = 1;
 nu = 0.5;
 beta = 1;
 num_elem = nx * ny;
-M = 100 * 100;
+M = 300 * 100;
 if ntipo == 1, tipo = 'exp_'; end
 if ntipo == 2, tipo = 'frac_'; end
 if ntipo == 3, tipo = 'sexp_'; end
@@ -48,18 +48,16 @@ G   = computeGeometry(G);
 % stoch= load('out/energy_sexp_autoval_100x100x1_0-1x0-1_10000.dat');
 % file = 'out/avet_sexp_3_1x1x0.01_100x100x1_0.05x0.1x0.001_M10000.bin';
 % stoch= load('out/energy_exp_autoval_100x100x1_0-2x0-2_10000.dat');
-file = 'out/avet_exp_1_1x1x0.01_100x100x1_0.2x0.2x0.001_M10000.bin';
-stoch= load('out/energy_sexp_autoval_100x100x1_0-1x0-1_10000.dat');
-% stoch= load('out/energy_sexp_autoval_200x150x1_0-1x0-1_30000.dat');
-% file = 'out/avet_sexp_3_1x1x0.01_100x100x1_0.1x0.1x0.001_M10000.bin';
+home = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/';
+file = [ home 'avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin'];
+stoch= load([home 'energy_exp_autoval_100x300x1_0-2x0-2_30000.dat']);
 fid  = fopen(file,"r");
 T    = fread(fid, "single");
-T    = reshape(T,[num_elem,M]);
 fclose(fid);
-lambda  = load("out/aval_exp_1_1x1x0.01_100x100x1_0.2x0.2x0.001_M10000.dat");
-lambdaB = load("out/aval_exp_1_2x1.5x0.01_200x150x1_0.2x0.2x0.001_M30000.dat");
-% lambda  = load("out/aval_sexp_3_1x1x0.01_100x100x1_0.1x0.1x0.001_M10000.dat");
-% lambdaB = load("out/aval_sexp_3_2x1.5x0.01_200x150x1_0.1x0.1x0.001_M30000.dat");
+T    = reshape(T,[M,M]);
+T    = T(1:num_elem,:);
+lambda  = load([home 'aval_exp_1_1x1x0.01_100x100x1_0.2x0.2x0.001_M10000.dat']);
+lambdaB = load([home 'aval_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.dat']);
 mm = 30000;
 [nom,lb] = loglambdafig([1:mm],lambdaB,mm,home_fig,nx,ny,nz,eta1,...
     eta2,eta3,beta,nu,ntipo,tipo);
@@ -70,8 +68,8 @@ print('-dpng','-r300',name);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 mu = 0.0;
 sig= 1.0;
-K = 1;
-m = [300 : -K : K].';
+K = 10;
+m = [30000 : -K : 1].';
 Tenergy = sum(lambdaB);
 err     = zeros(size(m,1),1);
 energy  = zeros(size(m,1),1);
@@ -81,18 +79,12 @@ for i = 1 : size(m,1)
 end
 theta = single(lhsnorm(mu,sig,M));
 Y   = T(:,1:M) * theta(1:M);
-
 for i = 1 : length(m)
+    close all
     Xi    = T(:,1:m(i)) * theta(1:m(i));
     err(i)= norm(Y - Xi)/norm(Y);
-    lim = [0 0];
-    % plot_rock(Xi,G,'Yn','$Y$',color,lim,vw,1);
-    % base=['figuras/Y_' nome '_5'];
-    % set(gcf,'PaperPositionMode','auto');
-    % print('-dpng','-r600', base);
-    % pause(0.5)
-    % close all
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 plot2Y(m,energy,err, '$\mathsf{M}$', '\textbf{Energy (\%)}',...
     '\textbf{Relative error (\%)}')
 name = [home_fig 'Energy_' tipo num2str(nx,5) 'x' num2str(ny,5) 'x'...
@@ -100,7 +92,8 @@ name = [home_fig 'Energy_' tipo num2str(nx,5) 'x' num2str(ny,5) 'x'...
 % print('-depsc','-r300',name);
 print('-dpng','-r300',name);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-m  = [stoch(:,2)' M];
+m  = [stoch(:,2)' M 128 256];
+m  = sort(m);
 str= [stoch(:,1)' 100]';
 theta = single(lhsnorm(mu,sig,M));
 Y   = T(:,1:M) * theta(1:M);
@@ -113,10 +106,11 @@ for i = 1 : length(m)
     plot_rock(Xi,G,'Yn','$Y$',color,lim,vw,1);
     base=['figuras/Y_' tipo 'M' num2str(m(i))];
     set(gcf,'PaperPositionMode','manual',...
-        'PaperPosition',[0.1 0.1 3.5 4.15]);
+        'PaperPosition',[0.01 0.01 4 4.5]);
     print('-dpng','-r300', base);
     pause(0.5)
 end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 two2Dplot(str, [err err], 'Power', 'Relative error', 'dat1', 'dat2', 56)
 close all
 plot2Y([stoch(:,2);M],str,err, '$\mathsf{M}$', '\textbf{Energy}',...
@@ -125,3 +119,4 @@ name = [home_fig 'Energy2_' tipo num2str(nx,5) 'x' num2str(ny,5) 'x'...
     num2str(nz,5) '_' lb '_' num2str(M,5)];
 % print('-depsc','-r300',name);
 print('-dpng','-r300',name);
+clear

@@ -17,7 +17,7 @@ for I=1:1
     clear base_aux base_name
     home1 = './out/';
     home_fig = '../figuras/'
-    home = [home1 'gs*x.dat']
+    home = [home1 'g*x.dat']
     [FILENAME, PATHNAME] = uigetfile(home,...
         arqq);
     line_file=sprintf('%s%s', PATHNAME,FILENAME);
@@ -235,7 +235,7 @@ end
                         ddstr = [num2str(dd,'%3.2f') '{d}'];
                     end
                 end
-                equation1=['$\begin{array}{rcl}\mathcal{\ C}_{\mathsf{Y}} ({d})\! &=&'...
+                equation1=['$\begin{array}{rcl}\hat{\mathcal{\ C}_{\mathsf{Y}}} ({d})\! &=&'...
                     cc  Xx '^{^{- \frac{1}{2} \left(\frac{d}{' aa '}\right)^{2} '...
                     ddstr ' }} \\ R^{2} &=& ' CR '\end{array}$'];
                 equation12=['$\quad R^{2} = \ $' CR];

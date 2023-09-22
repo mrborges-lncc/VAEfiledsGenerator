@@ -8,6 +8,8 @@
  \includegraphics[scale=0.485]{./figuras/sexp_autoval_100x100x1_0-1x0-1_10000.png}}
  \subfigure[Exponential covariance]{\includegraphics[scale=0.475]{./figuras/Energy_exp_100x100x1_0-2x0-2_10000.png}
  \includegraphics[scale=0.485]{./figuras/exp_autoval_100x100x1_0-2x0-2_10000.png}}
+ \label{eigenvalues}
+ \caption{Decay of eigenvalues and contained energy as a function of the number of terms in the expansion.}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,10 +35,23 @@ $(\%)$ & Exponential & Squared exp.\\
 }%
 \end{table}
 
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+ \centering
+ \subfigure[$x$ direction]{\includegraphics[scale=0.45]{./figuras/e_gsexp_1x1_100x100_0-2x0-2_5000_Yx.png}}
+ \subfigure[$y$ direction]{\includegraphics[scale=0.45]{./figuras/e_gsexp_1x1_100x100_0-2x0-2_5000_Yy.png}}
+ \label{covar_expKL}
+ \caption{Estimated covariance in a sample of $5,000$ fields generate by \kle\ with $30,000$ terms. Exponential case with $\clen = 0.2$.}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+ \centering
+ \subfigure[$x$ direction]{\includegraphics[scale=0.45]{./figuras/e_gssexp_1x1_100x100_0-1x0-1_5000_Yx.png}}
+ \subfigure[$y$ direction]{\includegraphics[scale=0.45]{./figuras/e_gssexp_1x1_100x100_0-1x0-1_5000_Yy.png}}
+ \label{covar_sexpKL}
+ \caption{Estimated covariance in a sample of $5,000$ fields generate by \kle\ with $30,000$ terms. Squared exponential case with $\clen = 0.1$.}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

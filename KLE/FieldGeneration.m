@@ -17,7 +17,7 @@ eta1  = 0.2;       % correlation length in the x direction
 eta2  = 0.2;       % correlation length in the y direction
 eta3  = 0.001;       % correlation length in the z direction
 home_fig = './figuras/';
-ntipo = 1;
+ntipo = 3;
 nu = 0.5;
 beta = 1;
 num_elem = nx * ny;
@@ -51,13 +51,14 @@ mu   = 0.0;
 sig  = 1.0;
 home = '~/Dropbox/fieldsCNN/';
 file = '/home/mrborges/Dropbox/fieldsCNN/avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin';
-%file = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin';
+file = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/avet_exp_1_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.bin';
+file = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/avet_sexp_3_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.bin';
 fid  = fopen(file,"r");
 T    = fread(fid, "single");
 T    = reshape(T,[M,M]);
 fclose(fid);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-lb = '0-2x0-2';
+lb = '0-1x0-1';
 Nrand = 100000;
 name2 = [tipo num2str(Lx,'%3.2f') 'x' num2str(Ly,'%3.2f') 'x' ...
     num2str(Lz,'%3.2f') '_' num2str(NX,'%d') 'x' ...
@@ -66,12 +67,11 @@ name2 = [tipo num2str(Lx,'%3.2f') 'x' num2str(Ly,'%3.2f') 'x' ...
 namein= [home name2 '_' num2str(Nrand,'%d') '.mat'];
 if(nz==1)
     name = ['campos/' tipo num2str(Lx,5) 'x' num2str(Ly,5) '_'...
-        num2str(NX,5) 'x' num2str(NY,5) '_' ...
-        lb '_'];
+        num2str(NX,5) 'x' num2str(NY,5) '_' lb '_'];
 else
-    name = ['campos/' tipo num2str(Lx,5) 'x' num2str(Ly,5) 'x' num2str(Lz,5) '_'...
-        num2str(NX,5) 'x' num2str(NY,5) 'x' num2str(NZ,5) '_'...
-        lb '_'];
+    name = ['campos/' tipo num2str(Lx,5) 'x' num2str(Ly,5) 'x' ...
+        num2str(Lz,5) '_' num2str(NX,5) 'x' num2str(NY,5) 'x' ...
+        num2str(NZ,5) '_' lb '_'];
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fileIDin  = fopen(namein,'w');
@@ -82,5 +82,6 @@ for nr = 1 : Nrand
     fprintf('Real.: %d \t Mean: %4.2f \t Std: %4.2f\n',nr,mean(Y),std(Y));
     fwrite(fileIDin ,Y ,'single');
     % imprime3D(Lx,Ly,Lz,NX,NY,NZ,ntipo,beta,Y,nr,home,name,0);
+    clear Y
 end
 fclose(fileIDin)

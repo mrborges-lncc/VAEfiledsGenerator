@@ -15,6 +15,7 @@ depth = 1e3;
 eta1  = 0.2;       % correlation length in the x direction
 eta2  = 0.2;       % correlation length in the y direction
 eta3  = 0.001;       % correlation length in the z direction
+clen = '02';
 home_fig = './figuras/';
 ntipo = 1;
 nu = 0.5;
@@ -45,9 +46,6 @@ G   = computeGeometry(G);
 [dim, nD, fine_grid, coarse_grid, dims, meshInfo] = preproc(Lx,Ly,Lz,...
     nx,ny,nz,nx,ny,nz);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% stoch= load('out/energy_sexp_autoval_100x100x1_0-1x0-1_10000.dat');
-% file = 'out/avet_sexp_3_1x1x0.01_100x100x1_0.05x0.1x0.001_M10000.bin';
-% stoch= load('out/energy_exp_autoval_100x100x1_0-2x0-2_10000.dat');
 home = '/home/mrborges/Dropbox/fieldsCNN/';
 file = [ home 'avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin'];
 stoch= load([home 'energy_exp_autoval_100x300x1_0-2x0-2_30000.dat']);
@@ -68,70 +66,29 @@ print('-dpng','-r300',name);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 mu = 0.0;
 sig= 1.0;
-K = 200;
-n = [K : - 50 : 1].'
-m = [30000 : -K : K+1].';
-m = [m;n;1]
-Tenergy = sum(lambdaB);
-err     = zeros(size(m,1),1);
-energy  = zeros(size(m,1),1);
-for i = 1 : size(m,1)
-    energy(i) = sum(lambdaB(1:m(i))) / Tenergy;
-    [m(i) energy(i)];
-end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nfields = 500;
-for j = 1 : nfields
-    j
-    theta = single(lhsnorm(mu,sig,M));
-    Y   = T(:,1:M) * theta(1:M);
-    normY = norm(Y);
-    for i = 1 : length(m)
-        Xi    = T(:,1:m(i)) * theta(1:m(i));
-        err(i)= err(i) + norm(Y - Xi)/normY;
-    end
-end
-err = err / nfields
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-plot2Y(m,energy,err, '$\mathsf{M}$', '\textbf{Energy (\%)}',...
-    '\textbf{Relative error (\%)}')
-name = [home_fig 'Energy_' tipo num2str(nx,5) 'x' num2str(ny,5) 'x'...
-    num2str(nz,5) '_' lb '_' num2str(M,5)];
-% print('-depsc','-r300',name);
-print('-dpng','-r300',name);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-m  = [stoch(:,2)' M 128 256 512];
+m  = [stoch(1,2); stoch(4,2); M];
 m  = sort(m);
-str= [stoch(:,1)' 100]';
+str= [stoch(1,1); stoch(4,1); 100];
 err = zeros(length(m),1);
 energy  = zeros(length(m),1);
-nfields = 500;
-for j = 1 : nfields
-    j
-    theta = single(lhsnorm(mu,sig,M));
-    Y   = T(:,1:M) * theta(1:M);
-    normY = norm(Y);
-    for i = 1 : length(m)
-        close all
-        Xi    = T(:,1:m(i)) * theta(1:m(i));
-        err(i)= err(i) + norm(Y - Xi)/normY;
-        if j == 1, energy(i) = sum(lambdaB(1:m(i))) / Tenergy; end
-        clear Xi
-    end
+theta = single(lhsnorm(mu,sig,M));
+Y   = T(:,1:M) * theta(1:M);
+normY = norm(Y);
+for i = 1 : length(m)
+    close all
+    Xi    = T(:,1:m(i)) * theta(1:m(i));
+    lim = [0 0];
+    plot_rock(Xi,G,'Yn','$Y$',color,lim,vw,1);
+    base=['figuras/Y_' tipo clen '_E' num2str(str(i))];
+    set(gcf,'PaperPositionMode','manual',...
+        'PaperPosition',[0.01 0.01 4 4.5]);
+    print('-dpng','-r300', base);
+    pause(0.5)
+    clear Xi
 end
-err = err / nfields;
 for i = 1 : length(m)
     fprintf('M = %d \t Energy = %4.2f \t Error = %4.2f\n', m(i), energy(i), err(i))
 end
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% two2Dplot(m, [err err], 'Power', 'Relative error', 'dat1', 'dat2', 56)
-% close all
-% plot2Y([stoch(:,2);M],str,err, '$\mathsf{M}$', '\textbf{Energy}',...
-%     '\textbf{Relative error}')
-% name = [home_fig 'Energy2_' tipo num2str(nx,5) 'x' num2str(ny,5) 'x'...
-%     num2str(nz,5) '_' lb '_' num2str(M,5)];
-% % print('-depsc','-r300',name);
-% print('-dpng','-r300',name);
-% clear
+clear all

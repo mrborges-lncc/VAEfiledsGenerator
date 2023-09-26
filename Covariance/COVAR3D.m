@@ -17,7 +17,7 @@ beta  = 0.5;
 Nrand = 5000;
 home ='../KLE/fields/';
 home ='~/Dropbox/fieldsCNN/campos/';
-name = 'exp_1x1_100x100_0-1x0-1_'
+name = 'sexp_1x1_100x100_0-1x0-1_M211_'
 nameout='./out/';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 X    = zeros(nx*ny*nz,1);

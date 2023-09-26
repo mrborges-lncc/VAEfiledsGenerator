@@ -74,7 +74,7 @@ B = max(X1);
 C = min(Y1);
 D = max(Y1);
 C = 1.0e-2;
-D = 1.0e+03;
+D = 1.0e+02;
 aspec = (B - A) / (D - C);
 
 % Create figure

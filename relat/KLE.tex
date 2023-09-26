@@ -1,17 +1,131 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{KLE}
+\section{\KL\ expansion}\label{fieldgeneratio}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Due to incomplete knowledge about the rock properties that show variability at multiple length scales, input parameters such as the permeability field, $\perm(\vx,\ale)$, are treated as random space functions with statistics inferred from geostatistical models (here $\vx =\left( x_{1},x_{2},x_{3}  \right)^{\! ^{\mathsf{T}}}\in \mathbb{R}^{3}$ and $\ale$ is a random element in the probability space).
+In line with \cite{dagan89} and \cite{gelhar93} the permeability field is modeled as a log-normally distributed random space function
+%
+\begin{equation}
+  \perm\fxw = \beta\exp\Big[\rho\Y\fxw\Big],
+\label{field}
+\end{equation}
+%
+\noindent where $\beta,\rho\in\mathbb{R}^{+}$ and $\Y\fxw \sim \normalf{\me{\Y}}{\covn{\Y}}$ is a Gaussian random field
+characterized by its mean $\me{\Y} = \med{\Y}$ and two-point covariance function
+
+\begin{equation}
+ \covv{\Y} = \covar{\Y\fx}{\Y\fy} = \mathsf{E}\Big[ \big( \Y\fx - \med{\Y\fx}  \big) \big( \Y\fy - \med{\Y\fy}  \big) \Big].
+ \label{covg}
+\end{equation}
+%
+\textcolor{black}{Moreover, in this work, $\Y$ is a second-order stationary process\index{second-order stationary process} \citep{gelhar93}, that is:}
+
+\begin{equation}
+ \begin{array}{rcl}
+    \med{\Y\fx} &=& \me{\Y},\quad \mbox{(constant)}\\ \\
+    \covv{\Y}   &=& \covn{\Y}\left(\lVert \vx - \vy \rVert \right) = \covn{\Y}\left(d\right).
+ \end{array}
+\end{equation}
+
+
+The Gaussian field $\Y$ can be represented as a series expansion involving a complete set of deterministic functions with correspondent random coefficients using the \KL\ (\kl) expansion proposed independently by \cite{karhunen46} and \cite{loeve55}.
+It is based on the eigen-decomposition of the covariance function.
+Depending on how fast the eigenvalues decay one may be able to  retain only a small number of terms in a truncated expansion and, consequently, this procedure may reduce the search to a smaller parameter space.
+In uncertainty quantification methods for porous media flows, the \kl\ expansion has been widely used to reduce the number of parameters used to represent the permeability field \citep{efendiev05,efendiev2006,das10,mondal10,ginting11,ginting12}.
+Another advantage of \kl\ expansion lies on the fact that it provides orthogonal deterministic basis functions and uncorrelated random coefficients, allowing for the optimal encapsulation of the information contained in the random process into a set of discrete uncorrelated random variables \citep{GhanemSpanos}.
+This remarkable feature can be used to simplify the Metropolis-Hastings \mcmc\ Algorithm in the sense of the search may be performed in the space of discrete uncorrelated random variables ($\vtheta$), no longer in the space of permeabilities which have a more complex statistical structure.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Here we recall the basic facts about the \KL\ expansion.
+Consider a random field $\Y(\vx,\ale)$ defined on a probability space $(\Omega,\events,\probab)$ composed by the sample space, the ensemble of events and a probability measure, respectively, and indexed on a bounded domain $\D \in \mathbb{R}^{3}$.
+The process $\Y$ can be expressed as
+%
+\begin{equation}
+  \Yxw = \med{\Y(\vx)} +\sum_{i=1}^{\infty}\sqrt{\avai} \avei(\vx)
+\theta_{i}(\ale),
+\label{kl}
+\end{equation}
+%
+\noindent where $\avai$ and $\avei$ are the eigenvalues and eigenfunctions of the covariance function $\covv{\Y}$, respectively.
+By definition, $\covv{\Y}$ is bounded, symmetric and positive definite and has the following eigen-decomposition:
+%
+\begin{equation*}
+  \covv{\Y} = \sum_{i=1}^{\infty} \avai\avei(\vx)\avei(\vy).
+\label{klcov}
+\end{equation*}
+%
+
+The eigenvalues and eigenfunctions of \eq{kl} are the solution of the homogeneous Fredholm integral equation of second kind given by
+%
+\begin{equation}
+  \int_{\D} \covv{\Y} \ave(\vx) d\vx = \ava\ave(\vy).
+\label{fred}
+\end{equation}
+%
+\noindent The solution of \eq{fred} forms a complete set of a square-integrable
+orthogonal eigenfunctions that satisfy the equation
+%
+\begin{equation*}
+  \int_{\D} \avei(\vx) \avej(\vx)=\delta_{ij},
+\label{ortho}
+\end{equation*}
+%
+\noindent in which $\delta_{ij}$ is the Kronecker-delta function.
+$\theta_{i}(\ale)$ is a set of independent random variables which
+can be expressed as
+%
+\begin{equation*}
+  \theta_{i}(\ale) = \displaystyle
+\frac{1}{\sqrt{\avai}}\int_{\D}\flu{\Y}\avei(\vx) d\vx,
+\end{equation*}
+%
+\noindent where $\flu{\Y}=\Y-\med{\Y}$ is the fluctuation.
+For practical implementations of the \kl\ expansion the eigenvalues are arranged from the largest to smallest and the series is approximated by a finite number of terms, say the first $\mm$, giving
+%
+\begin{equation}
+  \Y\fxw \approx \med{\Y(\vx)} +\sum_{i=1}^{\mm}\sqrt{\avai} \avei(\vx)
+\theta_{i}(\ale).
+\label{klM}
+\end{equation}
+%
+The corresponding covariance function is given by
+%
+\begin{equation*}
+  \covv{\Ym} = \sum_{i=1}^{\mm} \avai\avei(\vx)\avei(\vy).
+\label{klcovM}
+\end{equation*}
+%
+
+The factors affecting the convergence of the \KL\ series are the ratio of the length of the process over correlation parameter, the form of the covariance function, and the solution method for the eigensolutions of the covariance function (see \cite{huang01}).
+Next we discuss the field conditioning using the \kl\ expansion.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The number of terms used in the series can be chosen based on the energy represented by the sum of the eigenvalues.
+Then we define the relative energy for $n$ terms as
+
+\begin{equation}
+ \re{n} = \dfrac{\sum_{i=1}^{n}\avai}{\sum_{j=1}^{m\rightarrow\infty}\avaj}.
+\end{equation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 
 The eigenvalues associated with the eigenfunctions provide
 a measure of the energy contained in the respective mode.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 To quantify the energy involved in a truncated \kl\ expansion (with $\m$ modes) we define the total relative energy as
 \begin{equation}
- \Enn{\m} = \dfrac{\displaystyle\sum_{j=1}^{\m}\avaj}{\displaystyle\sum_{i=1}^{\infty}\avai},
+ \Enn{\m} = \dfrac{\sum_{j=1}^{\m}\avaj}{\sum_{i=1}^{m\rightarrow\infty}\avai},
 \end{equation}
 
-\noindent in which the denominator will be approximated using $30,000$ eigenvalues ($\sum_{i=1}^{30,000}\avai$).
+\noindent in which the denominator will be approximated by $m=30,000$ eigenvalues.
 
 
 The \fig{eigenvalues} shows the behavior of the eigenvalues, the energy contained, and the average error as a function of the number of modes ($\m$) for the three covariance functions considered in this study.

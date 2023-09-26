@@ -123,8 +123,6 @@ err = err / nfields;
 for i = 1 : length(m)
     fprintf('M = %d \t Energy = %4.2f \t Error = %4.2f\n', m(i), energy(i), err(i))
 end
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % two2Dplot(m, [err err], 'Power', 'Relative error', 'dat1', 'dat2', 56)
 % close all
@@ -134,4 +132,4 @@ end
 %     num2str(nz,5) '_' lb '_' num2str(M,5)];
 % % print('-depsc','-r300',name);
 % print('-dpng','-r300',name);
-% clear
+clear

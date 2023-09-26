@@ -22,6 +22,7 @@ import matplotlib.ticker as ticker
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.metrics import mean_squared_error
 #==============================================================================
+plt.rcParams.update(plt.rcParamsDefault)
 plt.rcParams['text.usetex'] = True
 plt.rcParams.update({'font.family':'Times'})
 

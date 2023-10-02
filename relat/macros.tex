@@ -1,3 +1,12 @@
+\newcommand{\ls}{\va{Z}}
+\newcommand{\decoder}{\mathsf{D}}
+\newcommand{\encoder}{\mathsf{E}}
+\newcommand{\Nb}{\N_{b}}
+\newcommand{\Nz}{\N_{z}}
+\newcommand{\eparam}{\theta}
+\newcommand{\dparam}{\phi}
+\newcommand{\lmse}{\mathcal{L}_{_{\mathsf{MSE}}}}
+\newcommand{\MSE}{\textsf{MSE}}
 \newcommand{\En}{\mathcal{E}}
 \newcommand{\Enn}[1]{\En_{_{#1}}}
 \newcommand{\expo}{Exponential}
@@ -20,8 +29,8 @@
 \newcommand{\DRAM}{\texttt{DRAM}}
 \newcommand{\DREAM}{\texttt{DREAM}}
 \newcommand{\SCAM}{\texttt{SCAM}}
-
-\newcommand{\dkl}[2]{\mathcal{D}_{\mathsf{KL}}\left(#1 || #2  \right)}
+\newcommand{\dkl}{\mathcal{D_{\mathsf{KL}}}}
+\newcommand{\dklf}[2]{\dkl\left(#1 || #2  \right)}
 \newcommand{\va}[1]{\mathbb{#1}}
 \newcommand{\VAE}{\textsf{VAE}}
 \newcommand{\bVAE}{$\color{black}{\beta}$-\VAE}
@@ -47,6 +56,7 @@
 \newcommand{\dataeln}[2]{\boldsymbol{#1}^{(#2)}}
 \newcommand{\datav}[1]{\textbf{#1}}
 \newcommand{\N}{\mathsf{N}}
+\newcommand{\Nx}{\N_{x}}
 \newcommand{\iid}{\textit{i.i.d.}}
 
 \newcommand{\econd}{\texttt{COND}}
@@ -89,6 +99,8 @@
 \newcommand{\acceptc}[2]{\alpha_{\coarse}(#1, #2)}
 \newcommand{\acceptn}[3]{\alpha_{#1}\left(#2, #3\right)}
 \newcommand{\apriori}{\textit{a priori}}
+\newcommand{\prior}{\textit{prior}}
+\newcommand{\posterior}{\textit{posterior}}
 \newcommand{\maxit}{\mathsf{MaxIter}}
 \newcommand{\coarse}{\mathsf{c}}
 \newcommand{\fine}{\mathsf{f}}
@@ -213,6 +225,8 @@
 %\renewcommand{\prob}{\mathcal{P}} % probability
 \newcommand{\hilbert}[1]{H^{#1}}
 \newcommand{\pdf}{f}
+\newcommand{\fp}[1]{p(#1)}
+\newcommand{\fq}[1]{q(#1)}
 \newcommand{\pdfn}[1]{\pdf_{#1}}
 \newcommand{\pdfx}[1]{\pdf\left(#1\right)}
 \newcommand{\pdfc}[2]{\pdf\left(#1 ; #2\right)}

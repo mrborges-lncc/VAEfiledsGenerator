@@ -33,7 +33,7 @@ else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
 data_size  = 800
-home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
+home       = '/home/mrborges/Dropbox/fieldsCNN/'
 namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
 namein     = home + 'exp_1.00x1.00x0.29_28x28x8_l0.10x0.10x0.05_2000.mat'
 namein     = home + 'exp_1.00x1.00x0.01_100x100x1_l0.20x0.20x0.00_5000.mat'
@@ -71,6 +71,7 @@ num_examples_to_generate = 16
 ###############################################################################
 # Build the encoder ===========================================================
 conv_filters = [64, 64, 64, 64, 64, 64]
+conv_filters = [64, 64, 64]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]

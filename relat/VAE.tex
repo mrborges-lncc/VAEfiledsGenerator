@@ -4,7 +4,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Variational auto-encoder\index{variational auto-encoding} (\VAE) model is a stochastic inference and learning algorithm based on variational Bayes (VB) inference proposed by \cite{kingma2014}.
-This is a generative technique whose central idea is the development of representations in a low-dimensional latent space that can be mapped back into a realistic-looking image.
+This is a generative that enforces a \prior\ on the low-dimensional latent space that can be mapped back into a realistic-looking image.
+Therefore, the most important characteristic of \VAE s, in the context of Monte Carlo methods with Markov chains, is their ability to represent high-dimensional parametric spaces in a low-dimensional latent space.
 
 \cite{Higgins2016betaVAELB} introduced the \bVAE, a modification of the original \VAE, that introduces an adjustable hyperparameter $\beta$ to balance latent channel capacity and independence constraints with reconstruction accuracy.
 They demonstrate that with tuned values of $\beta$ ($\beta>1$) the \bVAE\ outperforms \VAE\ ($\beta=1$).
@@ -14,14 +15,11 @@ They demonstrate that with tuned values of $\beta$ ($\beta>1$) the \bVAE\ outper
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\cite{Zhang2022}}
 
-Variational auto-encoder (\VAE) model is a generative network based on variational Bayes (VB) inference proposed by \cite{kingma2014}.
-
 \cite{Zhang2022} proposed a method to reconstruct porous media based on \VAE\ and Fisher information with good quality and efficiency.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Consider the input data $\dataset{X} = \set{\dataeln{x}{i}}{i=1}{\N}$ consisting of $\N$
-\textit{i}ndependent and \textit{i}dentically \textit{d}istributed (\iid) samples of the continuous (or discrete) variable $\datael{x}$.
+Consider the input data set $\dataset{X} = \set{\dataeln{x}{i}}{i=1}{\N}$ ($\dataeln{x}{i}\in\real^{\Nx}$) consisting of $\N$ \textit{i}ndependent and \textit{i}dentically \textit{d}istributed (\iid) samples of the continuous (or discrete) variable drawn from the \prior\ distribution $\fp{\datael{x}}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[H]
@@ -34,10 +32,23 @@ Consider the input data $\dataset{X} = \set{\dataeln{x}{i}}{i=1}{\N}$ consisting
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The Kullback–Leibler divergence (also called relative entropy and I-divergence) is a measure of divergence between two distributions \citep{KLD1951,csiszar1975}:
+The reconstruction loss is used to ensures that input image is reconstructes at the output one and, here, is given by the mean squared error (\MSE):
 
 \begin{equation}
- \dkl{\pdfn{\va{P}}}{\pdfn{\va{Q}}} = \displaystyle\int_{-\infty}^{\infty}
+ \lmse(\eparam, \dparam, \datael{x}) = \dfrac{1}{\Nb}\displaystyle \sum_{i=1}^{\Nb}\left[\dataeln{x}{i} - \decoder_{\dparam} \left( \encoder_{\eparam} \left( \dataeln{x}{i} \right) \right) \right]^2,
+\end{equation}
+
+\noindent where $\encoder$ and $\decoder$ represent the encoder and decoder and $\eparam$, $\dparam$ are their parameters, respectively.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In \VAE, we assume that both \prior\ distribution $\fp{\ls}\simeq\normalf{0}{1}$ and \posterior\ approximation of the latent space follow a standard Gaussian distribution, i.e., $\fq{\ls|\datael{x}}\simeq\normalf{0}{1}$.
+
+To keep the encoder outputs $\ls$ close to a standard normal distribution and sufficiently diverse we use the Kullback–Leibler divergence ($\dkl$, also called relative entropy and I-divergence).
+$\dkl$ is a measure of divergence between two distributions \citep{KLD1951,csiszar1975}:
+
+\begin{equation}
+ \dklf{\fp{\ls}}{{\normalf{0}{1}}} = -\dfrac{1}{2} \displaystyle\sum_{i=1}^{\Nz} \left[1 + \log\left({\vari{\ls_{i}}}\right) -  \me{\ls_{i}}^2 - \vari{\ls_{i}} \right]
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

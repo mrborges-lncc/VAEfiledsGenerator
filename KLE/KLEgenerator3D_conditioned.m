@@ -64,13 +64,13 @@ else
     interpolacao = 10; % if == 1 the eigenvector are interpolated to this mesh
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    eta1  = 0.3;       % correlation length in the x direction
-    eta2  = 0.3;       % correlation length in the y direction
-    eta3  = 0.001;       % correlation length in the z direction
-    Nrand = 1;      % total number of realizations
-    M     = 0;      % number of terms used in the KL expansion. OBS: if == 0 it 
+    eta1  = 0.4;       % correlation length in the x direction
+    eta2  = 0.4;       % correlation length in the y direction
+    eta3  = 0.001;     % correlation length in the z direction
+    Nrand = 1;         % total number of realizations
+    M     = 0;         % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
-    TIPOINPUT = 10;     % if == 1 reads the conditioned points from the file
+    TIPOINPUT = 10;                     % if == 1 reads the conditioned points from the file
                        % indicated in "file_input_cond"
 %     file_input_cond = './in/inputdata.dat';
     file_input_cond = './in/inputdata.dat';

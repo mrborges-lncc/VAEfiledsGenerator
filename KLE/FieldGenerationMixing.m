@@ -36,21 +36,20 @@ home = '~/Dropbox/fieldsCNN/';
 file = {[home 'avet_exp_1_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.bin'],...
     [home 'avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin'],...
     [home 'avet_exp_1_1x3x0.01_100x300x1_0.3x0.3x0.001_M30000.bin'],...
-    [home 'avet_exp_1_1x3x0.01_100x300x1_0.4x0.4x0.001_M30000.bin'],...
-    [home 'avet_sexp_3_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.bin']};
-file = {[home 'avet_sexp_3_1x1x0.01_100x100x1_0.2x0.2x0.001_M10000.bin'],...
-    [home 'avet_sexp_3_1x1x0.01_100x100x1_0.1x0.1x0.001_M10000.bin'],...
-    [home 'avet_sexp_3_1x1x0.01_100x100x1_0.3x0.3x0.001_M10000.bin'],...
-    [home 'avet_sexp_3_1x1x0.01_100x100x1_0.05x0.05x0.001_M10000.bin']};
-MM   = {10000, 10000, 10000, 10000, 10000, 30000, 30000, 30000, 30000};
+    [home 'avet_exp_1_1x3x0.01_100x300x1_0.4x0.4x0.001_M30000.bin']};
+% file = {[home 'avet_sexp_3_1x1x0.01_100x100x1_0.2x0.2x0.001_M10000.bin'],...
+%     [home 'avet_sexp_3_1x1x0.01_100x100x1_0.1x0.1x0.001_M10000.bin'],...
+%     [home 'avet_sexp_3_1x1x0.01_100x100x1_0.3x0.3x0.001_M10000.bin'],...
+%     [home 'avet_sexp_3_1x1x0.01_100x100x1_0.05x0.05x0.001_M10000.bin']};
+MM   = {30000, 30000, 30000, 30000, 10000, 30000, 30000, 30000, 30000};
 mu   = 0.0;
 sig  = 1.0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Nrand = 5000;
+Nrand = 25000;
 name2 = ['mix_' num2str(Lx,'%3.2f') 'x' num2str(Ly,'%3.2f') 'x' ...
     num2str(Lz,'%3.2f') '_' num2str(NX,'%d') 'x' ...
     num2str(NY,'%d') 'x' num2str(NZ,'%d')];
-namein= [home name2 '_' num2str(Nrand*length(file),'%d') '.mat'];
+namein= [home name2 '_' num2str(Nrand*length(file),'%d') '.mat']
 fileIDin  = fopen(namein,'w');
 cont = 0;
 for i = 1 : length(file)
@@ -66,9 +65,9 @@ for i = 1 : length(file)
         Y     = T * theta(1:M);
         fprintf('Real.: %d \t Mean: %4.2f \t Std: %4.2f\n',cont,mean(Y),std(Y));
         fwrite(fileIDin ,Y ,'single');
-        clear Y
+        clear Y theta
     end
-    clear T
+    % clear T
 end
 fclose(fileIDin);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

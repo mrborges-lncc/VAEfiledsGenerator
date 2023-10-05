@@ -12,12 +12,12 @@ nx  = 100;
 ny  = 100;
 nz  = 1;
 depth = 1e3;
-eta1  = 0.2;       % correlation length in the x direction
-eta2  = 0.2;       % correlation length in the y direction
+eta1  = 0.1;       % correlation length in the x direction
+eta2  = 0.1;       % correlation length in the y direction
 eta3  = 0.001;       % correlation length in the z direction
-clen = '02';
+clen = '01';
 home_fig = './figuras/';
-ntipo = 1;
+ntipo = 3;
 nu = 0.5;
 beta = 1;
 num_elem = nx * ny;
@@ -48,7 +48,11 @@ G   = computeGeometry(G);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 home = '/home/mrborges/Dropbox/fieldsCNN/';
 file = [ home 'avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin'];
+file = [ home 'avet_exp_1_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.bin'];
+file = [ home 'avet_sexp_3_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.bin'];
 stoch= load([home 'energy_exp_autoval_100x300x1_0-2x0-2_30000.dat']);
+stoch= load([home 'energy_exp_autoval_100x300x1_0-1x0-1_30000.dat']);
+stoch= load([home 'energy_sexp_autoval_100x300x1_0-1x0-1_30000.dat']);
 fid  = fopen(file,"r");
 T    = fread(fid, "single");
 fclose(fid);
@@ -56,6 +60,8 @@ T    = reshape(T,[M,M]);
 T    = T(1:num_elem,:);
 lambda  = load([home 'aval_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.dat']);
 lambdaB = load([home 'aval_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.dat']);
+lambdaB = load([home 'aval_exp_1_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.dat']);
+lambdaB = load([home 'aval_sexp_3_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.dat']);
 mm = 30000;
 [nom,lb] = loglambdafig([1:mm],lambdaB,mm,home_fig,nx,ny,nz,eta1,...
     eta2,eta3,beta,nu,ntipo,tipo);
@@ -69,17 +75,25 @@ sig= 1.0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 m  = [stoch(1,2); stoch(4,2); M];
 m  = sort(m);
+e  = [stoch(1,1); stoch(4,1); 100];
 str= [stoch(1,1); stoch(4,1); 100];
 err = zeros(length(m),1);
-energy  = zeros(length(m),1);
+energy= zeros(length(m),1);
 theta = single(lhsnorm(mu,sig,M));
 Y   = T(:,1:M) * theta(1:M);
 normY = norm(Y);
 for i = 1 : length(m)
     close all
-    Xi    = T(:,1:m(i)) * theta(1:m(i));
-    lim = [0 0];
-    plot_rock(Xi,G,'Yn','$Y$',color,lim,vw,1);
+    malha = [num2str(Lx,'%d') 'x' num2str(Ly,'%d') '_' num2str(nx,'%d')...
+        'x' num2str(ny,'%d') '_' clen '_M' num2str(m(i),'%d')...
+        '_E' num2str(e(i),'%d')];
+    Xi   = T(:,1:m(i)) * theta(1:m(i));
+    name = [tipo malha];
+    imprime3D(Lx,Ly,Lz,nx,ny,nz,ntipo,beta,Xi,i,home,name,0);
+    lim = [-3.0 3.0];
+    titulo = ['$\mathsf{M} =' num2str(m(i),'%d')...
+        '\quad (\mathcal{E}=' num2str(e(i),'%d') '\%)$'];
+    plot_rock(Xi,G,'Yn',titulo,color,lim,vw,1);
     base=['figuras/Y_' tipo clen '_E' num2str(str(i))];
     set(gcf,'PaperPositionMode','manual',...
         'PaperPosition',[0.01 0.01 4 4.5]);

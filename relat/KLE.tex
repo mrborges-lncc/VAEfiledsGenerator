@@ -147,15 +147,17 @@ The decay of the eigenvalues of the square exponential case is much faster than 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[H]
  \centering
- \subfigure[$\En=80\%$]{\includegraphics[scale=0.5]{figuras/Y_sexp_01_E80.png}
- \includegraphics[scale=0.5]{figuras/Y_exp_01_E80.png}
- \includegraphics[scale=0.5]{figuras/Y_exp_02_E80.png}}
- \subfigure[$\En=96\%$]{\includegraphics[scale=0.5]{figuras/Y_sexp_01_E96.png}
- \includegraphics[scale=0.5]{figuras/Y_exp_01_E96.png}
- \includegraphics[scale=0.5]{figuras/Y_exp_02_E96.png}}
- \subfigure[$\En\sim 100\%$]{\includegraphics[scale=0.5]{figuras/Y_sexp_01_E100.png}
- \includegraphics[scale=0.5]{figuras/Y_exp_01_E100.png}
+ \subfigure[Squared exponential, $\clen=0.1$]{\includegraphics[scale=0.5]{figuras/Y_sexp_01_E80.png}
+ \includegraphics[scale=0.5]{figuras/Y_sexp_01_E96.png}\includegraphics[scale=0.5]{figuras/Y_sexp_01_E100.png}
+ }
+ \subfigure[Exponential, $\clen=0.1$]{
+ \includegraphics[scale=0.5]{figuras/Y_exp_01_E80.png}\includegraphics[scale=0.5]{figuras/Y_exp_01_E96.png}\includegraphics[scale=0.5]{figuras/Y_exp_01_E100.png}
+ }
+ \subfigure[Exponential, $\clen=0.2$]{
+ \includegraphics[scale=0.5]{figuras/Y_exp_02_E80.png}\includegraphics[scale=0.5]{figuras/Y_exp_02_E96.png}
  \includegraphics[scale=0.5]{figuras/Y_exp_02_E100.png}}
+ \caption{Random fields generated with different numbers of modes $\m$ (or, equivalently, amount of energy).}
+ \label{fieldsMs}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -193,12 +195,27 @@ The decay of the eigenvalues of the square exponential case is much faster than 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[H]
  \centering
+ \subfigure[$x$ direction]{\includegraphics[scale=0.45]{./figuras/e_gssexp_1x1_100x100_0-1x0-1_M172_5000_Yx.png}}
+ \subfigure[$y$ direction]{\includegraphics[scale=0.45]{./figuras/e_gssexp_1x1_100x100_0-1x0-1_M172_5000_Yy.png}}
+ \caption{Estimated covariance in a sample of $5,000$ fields generate by \kle\ with $172$ terms. Squared exponential case with $\clen = 0.1$.}
+ \label{covar_sexpKL_96}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+ \centering
  \subfigure[$x$ direction]{\includegraphics[scale=0.45]{./figuras/e_gsexp_1x1_100x100_0-1x0-1_5000_Yx.png}}
  \subfigure[$y$ direction]{\includegraphics[scale=0.45]{./figuras/e_gsexp_1x1_100x100_0-1x0-1_5000_Yy.png}}
  \caption{Estimated covariance in a sample of $5,000$ fields generate by \kle\ with $30,000$ terms. Exponential case with $\clen = 0.1$.}
  \label{covar_expKL1}
 \end{figure}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+ \centering
+ \subfigure[$x$ direction]{\includegraphics[scale=0.45]{./figuras/e_gsexp_1x1_100x100_0-1x0-1_M10226_5000_Yx.png}}
+ \subfigure[$y$ direction]{\includegraphics[scale=0.45]{./figuras/e_gsexp_1x1_100x100_0-1x0-1_M10226_5000_Yy.png}}
+ \caption{Estimated covariance in a sample of $5,000$ fields generate by \kle\ with $10,226$ terms. Exponential case with $\clen = 0.1$.}
+ \label{covar_expKL1_96}
+\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[H]
  \centering
@@ -207,7 +224,14 @@ The decay of the eigenvalues of the square exponential case is much faster than 
  \caption{Estimated covariance in a sample of $5,000$ fields generate by \kle\ with $30,000$ terms. Exponential case with $\clen = 0.2$.}
  \label{covar_expKL2}
 \end{figure}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[H]
+ \centering
+ \subfigure[$x$ direction]{\includegraphics[scale=0.45]{./figuras/e_gexp_1x1_100x100_0-2x0-2_M3531_5000_Yx.png}}
+ \subfigure[$y$ direction]{\includegraphics[scale=0.45]{./figuras/e_gexp_1x1_100x100_0-2x0-2_M3531_5000_Yy.png}}
+ \caption{Estimated covariance in a sample of $5,000$ fields generate by \kle\ with $3,531$ terms. Exponential case with $\clen = 0.2$.}
+ \label{covar_expKL2_96}
+\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

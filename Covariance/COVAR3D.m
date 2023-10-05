@@ -12,12 +12,12 @@ nx  = 100;
 ny  = 100;
 nz  = 1;
 tipo_prt = 0;
-ntipo = 3;
+ntipo = 1;
 beta  = 0.5;
 Nrand = 5000;
 home ='../KLE/fields/';
 home ='~/Dropbox/fieldsCNN/campos/';
-name = 'sexp_1x1_100x100_0-1x0-1_M211_'
+name = 'exp_1x1_100x100_0-2x0-2_M3531_'
 nameout='./out/';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 X    = zeros(nx*ny*nz,1);

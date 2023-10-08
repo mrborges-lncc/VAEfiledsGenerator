@@ -63,7 +63,7 @@ test_size  = np.size(test_images,0)
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 200
+epochs     = 2000
 # set the dimensionality of the latent space to a plane for visualization later
 latent_dim = 128
 num_examples_to_generate = 16
@@ -71,12 +71,12 @@ num_examples_to_generate = 16
 ###############################################################################
 # Build the encoder ===========================================================
 conv_filters = [64, 64, 64, 64, 64, 64]
-conv_filters = [64, 64, 64]
+conv_filters = [64, 64]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [256, 128, 128]
+dens_neurons = [256, 128]
 dens_activat = ["relu", "relu", "relu", "relu"]
 net          = net_info(conv_filters, conv_strides, conv_kernels, conv_activat, 
                         conv_padding, dens_neurons, dens_activat)

@@ -9,7 +9,7 @@ Created on Fri Aug 11 13:05:56 2023
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras import layers
+#from tensorflow.keras import layers
 import sys
 sys.path.append("./tools/")
 from mytools import Sampling, VAE, fieldgenerator, plot_latent_space
@@ -63,7 +63,7 @@ test_size  = np.size(test_images,0)
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 2000
+epochs     = 1000
 # set the dimensionality of the latent space to a plane for visualization later
 latent_dim = 128
 num_examples_to_generate = 16

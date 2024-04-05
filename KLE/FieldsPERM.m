@@ -47,13 +47,10 @@ MM   = {25250, 25250, 25250, 25250, 25250, 25250};
 mu   = 0.0;
 sig  = 1.0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Nrand = 5;
-name2 = ['mix_' num2str(Lx,'%3.2f') 'x' num2str(Ly,'%3.2f') 'x' ...
-    num2str(Lz,'%3.2f') '_' num2str(NX,'%d') 'x' ...
-    num2str(NY,'%d') 'x' num2str(NZ,'%d')];
-namein= [home name2 '_' num2str(Nrand*length(file),'%d') '.mat']
-fileIDin  = fopen(namein,'w');
+Nrand = 1;
 cont = 0;
+lim  = [-4 4];
+theta = single(lhsnorm(mu,sig,MM{1}));
 for i = 1 : length(file)
     fid = fopen(file{i},"r");
     T   = fread(fid, "single");
@@ -63,11 +60,13 @@ for i = 1 : length(file)
     T   = T(1:num_elem, 1:M);
     for nr = 1 : Nrand
         cont = cont + 1;
-        theta = single(lhsnorm(mu,sig,M));
         Y     = T * theta(1:M);
         fprintf('Real.: %d \t Mean: %4.2f \t Std: %4.2f\n',cont,...
             mean(Y),std(Y));
-        fwrite(fileIDin ,Y ,'single');
+        plot_rock(Y,G,'Yn','$Y$','none',lim,[0 90],1);
+        base=['figuras/Y_' num2str(i,'%d') '_' num2str(nr,'%d')];
+        set(gcf,'PaperPositionMode','auto');
+        print('-dpng','-r600', base);
         clear Y theta
     end
     clear T

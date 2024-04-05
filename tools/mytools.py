@@ -272,13 +272,15 @@ def load_model_weights(dataname, ld):
     '''Load the weights of the encoder and decoder networks'''
     dataname= dataname + '_' + str(ld)
     outname = 'model/encoder_model_' + dataname + '.h5'
+    print('Loading encoder model....: %s' % (outname))
     encoder = tf.keras.models.load_model(outname, 
                                          custom_objects={'Sampling':Sampling})
     outname = 'model/decoder_model_' + dataname + '.h5'
+    print('Loading decoder model....: %s' % (outname))
     decoder = tf.keras.models.load_model(outname)
-    outname = 'model/encoder_weights_' + dataname
+    outname = 'model/encoder_' + dataname + '.weights.h5'
     encoder.load_weights(outname)
-    outname = 'model/decoder_weights_' + dataname
+    outname = 'model/decoder_' + dataname + '.weights.h5'
     decoder.load_weights(outname)
     return encoder, decoder
 ###############################################################################
@@ -289,12 +291,14 @@ def save_model_weights(vae, dataname, ld):
     '''Save the weights of the encoder and decoder networks'''
     dataname = dataname + '_' + str(ld)
     outname = 'model/encoder_model_' + dataname + '.h5'
+    print('Saving the encoder model....: %s' % (outname))
     vae.encoder.save(outname)
     outname = 'model/decoder_model_' + dataname + '.h5'
+    print('Saving the decoder model....: %s' % (outname))
     vae.decoder.save(outname)
-    outname = 'model/encoder_weights_' + dataname
+    outname = 'model/encoder_' + dataname + '.weights.h5'
     vae.encoder.save_weights(outname)
-    outname = 'model/decoder_weights_' + dataname
+    outname = 'model/decoder_' + dataname + '.weights.h5'
     vae.decoder.save_weights(outname)
 ###############################################################################
 

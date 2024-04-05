@@ -1,3 +1,4 @@
+function functionKLEgenerator3D_conditioned(eta1, eta2, eta3, ntipo)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                        RANDOM FIELDS GENERATOR
@@ -10,8 +11,6 @@
 % AUTHOR: MARCIO RENTES BORGES
 % DATE: 29/04/2021
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clear all
-close all
 addpath ./tools/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 inputbox = 10; % if == 1 display a dialog box to input data
@@ -45,12 +44,12 @@ if(inputbox==1)
         varY,Nrand,interpolacao,M,ntipo,TIPOINPUT,...
         file_input_cond]=finputbox();
 else
-    ntipo = 1; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
+    % ntipo = 1; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% physical dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Lx = 101.0;
     Ly = 250.0;
-    Lz = 0.01;
+    Lz = 1;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% mesh for covariance matrix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     nx = 101;
@@ -64,9 +63,9 @@ else
     interpolacao = 10; % if == 1 the eigenvector are interpolated to this mesh
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    eta1  = 10.0;       % correlation length in the x direction
-    eta2  = 10.0;       % correlation length in the y direction
-    eta3  = 0.001;     % correlation length in the z direction
+    % eta1  = 10.0;       % correlation length in the x direction
+    % eta2  = 10.0;       % correlation length in the y direction
+    % eta3  = 0.001;     % correlation length in the z direction
     Nrand = 1;         % total number of realizations
     M     = 0;         % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)
@@ -383,4 +382,3 @@ if(estatistica==1)
     print('-dpng','-r300',name);
 %     print('-depsc','-r300',name);
 end
-clear;

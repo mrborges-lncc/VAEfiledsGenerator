@@ -34,6 +34,8 @@ else:
 #==============================================================================
 data_size  = 800
 home       = '/home/mrborges/Dropbox/fieldsCNN/'
+home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
+home       = '/media/mrborges/borges/fieldsCNN/'
 namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
 namein     = home + 'exp_1.00x1.00x0.29_28x28x8_l0.10x0.10x0.05_2000.mat'
 namein     = home + 'exp_1.00x1.00x0.01_100x100x1_l0.20x0.20x0.00_5000.mat'
@@ -63,7 +65,7 @@ test_size  = np.size(test_images,0)
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 1000
+epochs     = 100
 # set the dimensionality of the latent space to a plane for visualization later
 latent_dim = 128
 num_examples_to_generate = 16
@@ -89,12 +91,13 @@ else:
 ###############################################################################
 # Collecting information for building the mirrored decoder ====================
 outputs = [layer.output for layer in encoder.layers]
+outputn = encoder.layers
 cont = 0
-for i in outputs:
-  name = i.name
-  if name[0:7] == 'flatten':
-    j = cont
-  cont += 1
+for i in outputn:
+    name = i.name
+    if name[0:7] == 'flatten':
+        j = cont
+    cont += 1
 layer = outputs[j-1]
 layer_shape = layer.shape[1:]
 layerdense  = layer_shape[0] * layer_shape[1] * layer_shape[2]

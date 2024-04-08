@@ -17,7 +17,7 @@ inputbox = 10; % if == 1 display a dialog box to input data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% INPUT DATA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tStart = tic;
-home     = '/media/mrborges/borges/fieldsCNN/';
+home     = '/home/mrborges/fieldsCNN/';
 %home     = './fields/';
 homeT    = './out/';
 homeT    = home;
@@ -47,12 +47,12 @@ else
     % ntipo = 1; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% physical dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    Lx = 101.0;
+    Lx = 100.0;
     Ly = 250.0;
     Lz = 1;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% mesh for covariance matrix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    nx = 101;
+    nx = 100;
     ny = 250;
     nz = 1;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -135,12 +135,12 @@ disp(['Eigenpairs computation done: ' num2str(tEauto) ' seg.']);
 disp('------------------------------');
 clear C
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-TOL = 1.0E-10;
+TOL = 1.0E-15;
 lambda(find(lambda < TOL)) = 0.0;
 [nom,lb] = loglambdafig([1:num_elem],lambda,M,home_fig,nx,ny,nz,eta1,...
     eta2,eta3,beta,nu,ntipo,tipo);
 name = [nom '_' num2str(NX,5) 'x' num2str(NY,5) 'x'...
-    num2str(NZ,5) '_' lb '_' num2str(M,5)];
+    num2str(NZ,5) '_' lb '_' num2str(M,5)]
 % print('-depsc','-r300',name);
 print('-dpng','-r300',name);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

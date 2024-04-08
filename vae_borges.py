@@ -20,8 +20,8 @@ from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses, plot_3D
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
-Lx  = 1.0
-Ly  = 1.0
+Lx  = 100.0
+Ly  = 100.0
 Lz  = 0.01
 nx  = 100
 ny  = 100
@@ -32,14 +32,15 @@ if nz == 1:
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 800
+data_size  = 35000
 home       = '/home/mrborges/Dropbox/fieldsCNN/'
 home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
-home       = '/media/mrborges/borges/fieldsCNN/'
+home       = '/home/mrborges/fieldsCNN/'
 namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
 namein     = home + 'exp_1.00x1.00x0.29_28x28x8_l0.10x0.10x0.05_2000.mat'
 namein     = home + 'exp_1.00x1.00x0.01_100x100x1_l0.20x0.20x0.00_5000.mat'
 namein     = home + 'mix_1.00x1.00x0.01_100x100x1_800.mat'
+namein     = home + 'mix_100.00x100.00x0.01_100x100x1_35000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
@@ -65,20 +66,20 @@ test_size  = np.size(test_images,0)
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 100
+epochs     = 10
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 128
+latent_dim = 200
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
 conv_filters = [64, 64, 64, 64, 64, 64]
-conv_filters = [64, 64]
+conv_filters = [100]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [256, 128]
+dens_neurons = [200]
 dens_activat = ["relu", "relu", "relu", "relu"]
 net          = net_info(conv_filters, conv_strides, conv_kernels, conv_activat, 
                         conv_padding, dens_neurons, dens_activat)

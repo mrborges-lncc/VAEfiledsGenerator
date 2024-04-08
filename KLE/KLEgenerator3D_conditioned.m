@@ -18,7 +18,7 @@ inputbox = 10; % if == 1 display a dialog box to input data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% INPUT DATA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tStart = tic;
-home     = '/media/mrborges/borges/fieldsCNN/';
+home     = '/home/mrborges/fieldsCNN/';
 %home     = './fields/';
 homeT    = './out/';
 homeT    = home;

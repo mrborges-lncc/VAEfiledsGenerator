@@ -73,9 +73,9 @@ A = 0*min(X1);
 B = max(X1);
 C = min(Y1);
 D = max(Y1);
-C = 1.0e-2;
-D = 1.0e+02;
-aspec = (B - A) / (D - C);
+C = 1.0e-12;
+D = 1.001e+04;
+aspec = 0.5 * (B - A) / (D - C);
 
 % Create figure
 figure1 = figure(36);
@@ -112,9 +112,11 @@ x   = [A : dx : B];
 % box(axes1,'on');
 % hold(axes1,'off');
 % Set the remaining axes properties
+tck = [1.e-10 1.e-8 1.e-6 1e-4 1e-2 1 1e+2 1e4];
+tck = [1e-12 1.e-8 1e-4 1 1e4];
 set(axes1,'DataAspectRatio',[aspec 1 1],'FontSize',18,'TickDir','both',...
     'TickLabelInterpreter','latex','XMinorTick','on','YMinorTick','on',...
-    'YTick',[1.e-10 1.e-8 1.e-6 0.0001 0.01 1 100],'XTick',...
+    'YTick',tck,'XTick',...
     x);
 return
 

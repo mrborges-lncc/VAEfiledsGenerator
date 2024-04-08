@@ -7,5 +7,6 @@ n = size(eta,2);
 for i = 1 : n
     eta1 = eta{i}(1); eta2 = eta{i}(2); eta3 = eta{i}(3);
     functionKLEgenerator3D_conditioned(eta1, eta2, eta3, ntipo)
+    close all
 end
 clear all

@@ -5,11 +5,11 @@ startup
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% GRID %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Lx  = 101.0;
-Ly  = 101.0;
+Lx  = 100.0;
+Ly  = 100.0;
 Lz  = 0.01;
-nx  = 101;
-ny  = 101;
+nx  = 100;
+ny  = 100;
 nz  = 1;
 NX = nx; NY = ny; NZ = nz;
 depth = 1e3;
@@ -32,7 +32,7 @@ G   = computeGeometry(G);
 [dim, nD, fine_grid, coarse_grid, dims, meshInfo] = preproc(Lx,Ly,Lz,...
     nx,ny,nz,nx,ny,nz);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-home = '/home/mrborges/fieldsCNN/';
+home = '/media/mrborges/borges/fieldsCNN/';
 file = {[home 'aval_exp_1_100x250x1_100x250x1_5x5x0.01_M25000.dat'],...
         [home 'aval_exp_1_100x250x1_100x250x1_10x10x0.01_M25000.dat'],...
         [home 'aval_exp_1_100x250x1_100x250x1_15x15x0.01_M25000.dat'],...
@@ -63,7 +63,7 @@ cont = 0;
 beta = 0.0; nu = 0.5;
 lim  = [-3.5  3.5];
 theta = single(lhsnorm(mu,sig,MM{1}));
-for i = 8 : length(file)
+for i = 1 : length(file)/2
     eta1 = eta{i}(1); eta2 = eta{i}(2); eta3 = eta{i}(3);
     if ntipo(i) == 1, tipo = 'exp_'; end
     if ntipo(i) == 3, tipo = 'sexp_'; end

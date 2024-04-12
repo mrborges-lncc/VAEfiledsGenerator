@@ -23,8 +23,8 @@ from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses, plot_3D
 Lx  = 100.0
 Ly  = 100.0
 Lz  = 0.01
-nx  = 100
-ny  = 100
+nx  = 28
+ny  = 28
 nz  = 1
 num_channel = 1
 if nz == 1:
@@ -33,13 +33,11 @@ else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
 data_size  = 35000
+ratio_valid= 0.05
+ratio_test = 0.05
 home       = '/home/mrborges/Dropbox/fieldsCNN/'
 home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
-home       = '/home/mrborges/fieldsCNN/'
-namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
-namein     = home + 'exp_1.00x1.00x0.29_28x28x8_l0.10x0.10x0.05_2000.mat'
-namein     = home + 'exp_1.00x1.00x0.01_100x100x1_l0.20x0.20x0.00_5000.mat'
-namein     = home + 'mix_1.00x1.00x0.01_100x100x1_800.mat'
+home       = '/media/mrborges/borges/fieldsCNN/'
 namein     = home + 'mix_100.00x100.00x0.01_100x100x1_35000.mat'
 porous     = False
 porosity   = 0.20
@@ -47,40 +45,41 @@ infoperm   = perm_info(namein, porous, input_shape, data_size, porosity,
                        Lx, Ly, Lz, nx, ny, nz)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[1]
+dataname   = data_name[0]
 name_ext   = '_teste'
 namefig    = './figuras/' + dataname + name_ext
-preprocess = False
-train_images, test_images = load_dataset(dataname,preprocess,infoperm)
+preprocess = True # Normalize
+train_images, valid_images, test_images = load_dataset(dataname,preprocess,
+                                                       infoperm,ratio_valid,
+                                                       ratio_test)
 plot_examples(train_images, namefig)
 print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 if nz > 1:
     #fieldplot3D(train_images[0,:,:,:],Lx,Ly,Lz,nx,ny,nz,dataname) 
     plot_3D(train_images[0,:,:,:], infoperm, namefig)
-#sys.exit()
 ###############################################################################
 # Parameters ==================================================================
 train_size = np.size(train_images,0)
-batch_size = 128
+valid_size = np.size(valid_images,0)
 test_size  = np.size(test_images,0)
+batch_size = 128
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
 epochs     = 10
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 200
+latent_dim = 50
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [64, 64, 64, 64, 64, 64]
-conv_filters = [100]
+conv_filters = [64]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [200]
-dens_activat = ["relu", "relu", "relu", "relu"]
+dens_neurons = [64]
+dens_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 net          = net_info(conv_filters, conv_strides, conv_kernels, conv_activat, 
                         conv_padding, dens_neurons, dens_activat)
 #==============================================================================
@@ -145,5 +144,5 @@ zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam,
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-comparison(vae, train_images, latent_dim, input_shape, namefig, infoperm)
+comparison(vae, test_images, latent_dim, input_shape, namefig, infoperm)
 #==============================================================================

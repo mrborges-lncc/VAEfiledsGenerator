@@ -342,7 +342,7 @@ def plot_examples(images, namefig):
     for n in range(1, 37):
         fig.add_subplot(6, 6, n)
         nr  = random.randint(0,M-1)
-        img = images[nr,:,:,0].T
+        img = images[nr,:,:,0]
         plt.imshow(img, cmap=cor, aspect='equal', interpolation='none', 
                    alpha = 1.0, origin='upper')
         plt.axis('off')
@@ -353,19 +353,30 @@ def plot_examples(images, namefig):
 
 ###############################################################################
 ###############################################################################
-def load_dataset(dataname,prep,infoperm):
+def load_dataset(dataname,prep,infoperm,rvalid,rtest):
     '''Load the dataset, split it into training and test sets, and scale then'''
-    if dataname == 'MNIST':
-        (train, _), (test, _) = tf.keras.datasets.mnist.load_data()
-    if dataname == 'FASHION_MNIST':
-        (train, _), (test, _) = tf.keras.datasets.fashion_mnist.load_data()
+    ntrain = math.ceil((1. - (rvalid + rtest)) * infoperm.data_size)
+    nvalid = math.ceil(rvalid * infoperm.data_size)
+    ntest  = infoperm.data_size - (ntrain + nvalid)    
     if dataname == 'PERM':
-        train, test = load_PERM(infoperm.namein, infoperm.input_shape, 
-                                infoperm.data_size)
-#==========================================================
+        train, valid, test = load_PERM(infoperm.namein, infoperm.input_shape, 
+                                       infoperm.data_size,ntrain,nvalid)
+    else:
+        if dataname == 'MNIST':
+            (train, _), (test, _) = tf.keras.datasets.mnist.load_data()
+        if dataname == 'FASHION_MNIST':
+            (train, _), (test, _) = tf.keras.datasets.fashion_mnist.load_data()
+        x = np.concatenate([train, test])
+        lista  = list(range(infoperm.data_size))
+        random.shuffle(lista)
+        train = x[lista[0:ntrain],:,:]
+        valid = x[lista[ntrain:ntrain+nvalid],:,:]
+        test  = x[lista[ntrain+nvalid:],:,:]
+#==============================================================================
     train = preprocess_images(train,dataname,prep,infoperm)
+    valid = preprocess_images(valid,dataname,prep,infoperm)
     test  = preprocess_images(test,dataname,prep,infoperm)
-    return train, test
+    return train, valid, test
 ###############################################################################
 
 ###############################################################################
@@ -386,8 +397,8 @@ def preprocess_images(images,dataname,prep,infoperm):
                 images = np.where(images > g, 0.0, 1.0).astype('float32')
                 return images.astype('float32')
             else:
-                maxdata = np.max(images)
-                mindata = np.min(images)
+                maxdata = np.max(images,axis=None)
+                mindata = np.min(images,axis=None)
                 images  = (images - mindata) / (maxdata - mindata)
                 images  = images.reshape((images.shape[0], nx, ny, nz))
                 return images.astype('float32')
@@ -421,7 +432,7 @@ def loaddataPERM(nx,ny,nz,data_size,namein):
 
 ###############################################################################
 ###############################################################################
-def load_PERM(namein,inputshape,datasize):
+def load_PERM(namein,inputshape,datasize,ntrain,nvalid):
     '''Load the dataset, split it into training and test sets, and scale then'''
     nx  = inputshape[0]
     ny  = inputshape[1]
@@ -432,11 +443,11 @@ def load_PERM(namein,inputshape,datasize):
     # name of data files
     data   = loaddataPERM(nx,ny,nz,data_size,namein)
     lista  = list(range(data_size))
-    ntrain = math.ceil(0.98 * data_size)
     random.shuffle(lista)
     train  = data[lista[0:ntrain],:,:,:]
-    test   = data[lista[ntrain:data_size],:,:,:]
-    return train, test
+    valid  = data[lista[ntrain:ntrain+nvalid],:,:,:]
+    test   = data[lista[ntrain+nvalid:],:,:,:]
+    return train, valid, test
 ###############################################################################
 
 ###############################################################################

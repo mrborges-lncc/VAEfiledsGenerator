@@ -4,7 +4,6 @@
 Created on Fri Aug 11 13:07:26 2023
 @author: mrborges
 """
-
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras

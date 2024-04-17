@@ -18,6 +18,13 @@ from mytools import load_dataset, plot_examples, comparison, plot_latent_hist
 from mytools import build_encoder3D, build_decoder3D, build_encoder2D
 from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses, plot_3D
 ###############################################################################
+print('Tensorflow version:',tf.version.VERSION)
+if tf.test.is_gpu_available():
+    print('Cuda:',tf.test.is_built_with_cuda())
+    print('Device name:',tf.config.list_physical_devices('GPU'))
+else:
+    print("GPU not available")
+device_name = tf.test.gpu_device_name()
 ###############################################################################
 # Load data base ==============================================================
 Lx  = 100.0
@@ -66,19 +73,19 @@ batch_size = 128
 inputshape = train_images.shape[1:]
 lrate      = 1.e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 10
+epochs     = 100
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 50
+latent_dim = 2
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [64]
+conv_filters = [256,128]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [64]
+dens_neurons = [128,64]
 dens_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 net          = net_info(conv_filters, conv_strides, conv_kernels, conv_activat, 
                         conv_padding, dens_neurons, dens_activat)

@@ -17,14 +17,19 @@ from mytools import plot_label_clusters, perm_info, save_model_weights
 from mytools import load_dataset, plot_examples, comparison, plot_latent_hist
 from mytools import build_encoder3D, build_decoder3D, build_encoder2D
 from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses, plot_3D
+from mytools import GPU_controler
 ###############################################################################
 print('Tensorflow version:',tf.version.VERSION)
 if tf.test.is_gpu_available():
     print('Cuda:',tf.test.is_built_with_cuda())
     print('Device name:',tf.config.list_physical_devices('GPU'))
+    device_name = tf.test.gpu_device_name()
+    GPU_control = True
+    GPU_memory_control = True
+    num_gpus = GPU_controler(GPU_control,GPU_memory_control)
+    mirrored_strategy = tf.distribute.MirroredStrategy()
 else:
     print("GPU not available")
-device_name = tf.test.gpu_device_name()
 ###############################################################################
 # Load data base ==============================================================
 Lx  = 100.0

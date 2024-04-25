@@ -27,6 +27,32 @@ plt.rcParams.update({'font.family':'Times'})
 
 ###############################################################################
 ###############################################################################
+def GPU_controler(control,memory_control):
+    if control:
+        print(tf.test.is_built_with_cuda())
+        if tf.test.gpu_device_name():
+            print('Default GPU Device: {}'.format(tf.test.gpu_device_name()))
+        else:
+            print("Please install GPU version of TF")
+        print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
+        #tf.debugging.set_log_device_placement(True)
+        if memory_control:
+            gpus = tf.config.experimental.list_physical_devices('GPU')
+            if gpus:
+                try:
+                    # Currently, memory growth needs to be the same across GPUs
+                    for gpu in gpus:
+                        tf.config.experimental.set_memory_growth(gpu, True)
+                    logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+                    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+                except RuntimeError as e:
+                    # Memory growth must be set before GPUs have been initialized
+                    print(e)
+    return len(tf.config.experimental.list_physical_devices('GPU'))
+###############################################################################
+
+###############################################################################
+###############################################################################
 def save_original_fields(data,inputshape,home,nf):
     nx    = inputshape[0]
     ny    = inputshape[1]

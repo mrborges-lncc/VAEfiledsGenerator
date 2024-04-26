@@ -866,7 +866,7 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm):
     plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
     #==========================================================================
-    ndata = np.size(images, axis = 0)
+    ndata = 5000#np.size(images, axis = 0)
     rel_error = np.zeros((ndata,1))
     for i in range(ndata):
         zz  = z[i,:]

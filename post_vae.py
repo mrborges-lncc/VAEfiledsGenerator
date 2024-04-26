@@ -15,46 +15,50 @@ sys.path.append("./tools/")
 from mytools import load_model_weights, VAE, plot_latent_hist, fieldgenerator
 from mytools import comparison, perm_info, load_dataset, plot_examples
 from mytools import random_generator, save_original_fields, plot_3D
+from mytools import plot_label_clusters
 ###############################################################################
 ###############################################################################
 # Load data base ==============================================================
-Lx  = 1.0
-Ly  = 1.0
+Lx  = 100.0
+Ly  = 100.0
 Lz  = 0.01
-nx  = 100
-ny  = 100
+nx  = 28
+ny  = 28
 nz  = 1
 num_channel = 1
 if nz == 1:
     input_shape= (nx, ny, num_channel)
 else:
     input_shape= (nx, ny, nz, num_channel)
-data_size  = 800
-home       = './KLE/fields/'
+#==============================================================================
+data_size  = 35000
+ratio_valid= 0.05
+ratio_test = 0.05
 home       = '/home/mrborges/Dropbox/fieldsCNN/'
-namein     = home + 'sexp_1.00x1.00x0.06_50x50x3_l0.10x0.10x0.05_20000.mat'
-namein     = home + 'sexp_1.00x1.00x0.01_28x28x1_l0.10x0.10x0.10_20000.mat'
-namein     = home + 'exp_1.00x1.00x0.01_100x100x1_l0.20x0.20x0.00_5000.mat'
-namein     = home + 'mix_1.00x1.00x0.01_100x100x1_800.mat'
+home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
+home       = '/media/mrborges/borges/fieldsCNN/'
+namein     = home + 'mix_100.00x100.00x0.01_100x100x1_35000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
                        Lx, Ly, Lz, nx, ny, nz)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[1]
-name_ext   = '_teste'
+dataname   = data_name[0]
+name_ext   = '_MNIST_ls2'
 namefig    = './figuras/' + dataname + name_ext
-preprocess = False
-train_images, test_images = load_dataset(dataname,preprocess,infoperm)
+preprocess = True # Normalize
+train_images, valid_images, test_images = load_dataset(dataname,preprocess,
+                                                       infoperm,ratio_valid,
+                                                       ratio_test)
 plot_examples(train_images, namefig)
 print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
-if nz > 1:
+#if nz > 1:
     #fieldplot3D(train_images[0,:,:,:],Lx,Ly,Lz,nx,ny,nz,dataname) 
-    plot_3D(train_images[0,:,:,:], infoperm, namefig)
-#sys.exit()
+    #plot_3D(train_images[0,:,:,:], infoperm, namefig)
+
 ###############################################################################
-ld = 128
+ld = 2
 name = dataname + name_ext
 encoder, decoder = load_model_weights(name, ld)
 print(encoder.summary())
@@ -74,6 +78,16 @@ latent_dim = layer.shape[-1]
 vae = VAE(encoder, decoder)
 #==============================================================================
 ###############################################################################
+# Display how the latent space clusters different digit classes ===============
+if dataname == 'MNIST':
+    if latent_dim == 2:
+        (x_train, y_train), _ = keras.datasets.mnist.load_data()
+        x_train = np.expand_dims(x_train, -1).astype("float32") / 255
+        plot_label_clusters(vae, x_train, y_train, namefig)
+        # Display a grid of sampled digits ====================================
+        plot_latent_space(vae, namefig)
+#==============================================================================
+###############################################################################
 # Show latent space ===========================================================
 Zparam = plot_latent_hist(vae, train_images, latent_dim, namefig, 16)
 #==============================================================================
@@ -84,7 +98,8 @@ zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam,
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-comparison(vae, train_images, latent_dim, input_shape, namefig, infoperm)
+comparison(vae, test_images, latent_dim, input_shape, namefig, infoperm)
+#==============================================================================
 #==============================================================================
 ###############################################################################
 # Random generation ===========================================================

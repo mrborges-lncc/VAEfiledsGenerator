@@ -35,8 +35,8 @@ else:
 Lx  = 100.0
 Ly  = 100.0
 Lz  = 0.01
-nx  = 28
-ny  = 28
+nx  = 100
+ny  = 100
 nz  = 1
 num_channel = 1
 if nz == 1:
@@ -48,8 +48,8 @@ data_size  = 35000
 ratio_valid= 0.05
 ratio_test = 0.05
 home       = '/home/mrborges/Dropbox/fieldsCNN/'
-home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
-home       = '/media/mrborges/borges/fieldsCNN/'
+home       = '/home/mrborges/fieldsCNN/'
+#home       = '/media/mrborges/borges/fieldsCNN/'
 namein     = home + 'mix_100.00x100.00x0.01_100x100x1_35000.mat'
 porous     = False
 porosity   = 0.20
@@ -57,7 +57,7 @@ infoperm   = perm_info(namein, porous, input_shape, data_size, porosity,
                        Lx, Ly, Lz, nx, ny, nz)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[0]
+dataname   = data_name[1]
 name_ext   = '_teste'
 namefig    = './figuras/' + dataname + name_ext
 preprocess = True # Normalize
@@ -76,21 +76,21 @@ valid_size = np.size(valid_images,0)
 test_size  = np.size(test_images,0)
 batch_size = 128
 inputshape = train_images.shape[1:]
-lrate      = 1.e-4
+lrate      = 5.0e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 100
+epochs     = 400
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 2
+latent_dim = 128
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [256]
+conv_filters = [64,32]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [128,64]
+dens_neurons = [128]
 dens_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 net          = net_info(conv_filters, conv_strides, conv_kernels, conv_activat, 
                         conv_padding, dens_neurons, dens_activat)

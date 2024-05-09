@@ -203,20 +203,24 @@ def build_decoder3D(net, input_shape, latent_dim, ndens, layer_shape, nconv):
 def build_encoder2D(net, input_shape, latent_dim):
     '''Build the encoder network for 2D data'''
     encoder_inputs = keras.Input(shape=input_shape)
-    x = layers.Conv2D(filters = net.conv_filters[0], 
-                      kernel_size = net.conv_kernels[0],
-                      strides = net.conv_strides[0], 
-                      activation = net.conv_activat[0],
-                      padding = net.conv_padding[0])(encoder_inputs)
-    for i in range(1,len(net.conv_filters)):
-      x = layers.Conv2D(filters = net.conv_filters[i], 
-                        kernel_size = net.conv_kernels[i],
-                        strides = net.conv_strides[i], 
-                        activation = net.conv_activat[i],
-                        padding = net.conv_padding[i])(x)
-    x = layers.Flatten()(x)
+    if len(net.conv_filters) > 0:
+        x = layers.Conv2D(filters     = net.conv_filters[0], 
+                          kernel_size = net.conv_kernels[0],
+                          strides     = net.conv_strides[0], 
+                          activation  = net.conv_activat[0], 
+                          padding     = net.conv_padding[0])(encoder_inputs)
+        for i in range(1,len(net.conv_filters)):
+            x = layers.Conv2D(filters     = net.conv_filters[i], 
+                              kernel_size = net.conv_kernels[i],
+                              strides     = net.conv_strides[i], 
+                              activation  = net.conv_activat[i],
+                              padding     = net.conv_padding[i])(x)
+        x = layers.Flatten()(x)
+    else:
+        x = layers.Flatten()(encoder_inputs)
+    #==========================================================================
     for i in range(len(net.dens_neurons)):
-      x = layers.Dense(net.dens_neurons[i], activation= net.dens_activat[i])(x)
+        x = layers.Dense(net.dens_neurons[i], activation= net.dens_activat[i])(x)
     z_mean = layers.Dense(latent_dim, name="z_mean")(x)
     z_log_var = layers.Dense(latent_dim, name="z_log_var")(x)
     z = Sampling(name='z')([z_mean, z_log_var])
@@ -237,18 +241,22 @@ def build_decoder2D(net, input_shape, latent_dim, ndens, layer_shape, nconv):
 
     x = layers.Dense(layer_shape[0] * layer_shape[1] * layer_shape[2], 
                      activation="relu")(x)
-    x = layers.Reshape(layer_shape)(x)
-
-    for i in range(nconv,-1,-1):
-      x = layers.Conv2DTranspose(filters = net.conv_filters[i], 
-                                 kernel_size = net.conv_kernels[i],
-                                 strides = net.conv_strides[i], 
-                                 activation = net.conv_activat[i],
-                                 padding = net.conv_padding[i])(x)
-    decoder_outputs = layers.Conv2DTranspose(filters = input_shape[-1],
-                                             kernel_size = net.conv_kernels[0],
-                                             activation="linear", 
-                                             padding="same")(x)
+    #==========================================================================
+    if len(net.conv_filters) > 0:
+        x = layers.Reshape(layer_shape)(x)
+        for i in range(nconv,-1,-1):
+          x = layers.Conv2DTranspose(filters = net.conv_filters[i], 
+                                     kernel_size = net.conv_kernels[i],
+                                     strides = net.conv_strides[i], 
+                                     activation = net.conv_activat[i],
+                                     padding = net.conv_padding[i])(x)
+        decoder_outputs = layers.Conv2DTranspose(filters = input_shape[-1],
+                                                 kernel_size = net.conv_kernels[0],
+                                                 activation="linear", 
+                                                 padding="same")(x)
+    else:
+        decoder_outputs = layers.Reshape(layer_shape)(x)
+    #==========================================================================
     decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
     decoder.summary()
     return decoder
@@ -533,7 +541,7 @@ class VAE(keras.Model):
         self.reconstruction_loss_tracker.update_state(reconstruction_loss)
         self.kl_loss_tracker.update_state(kl_loss)
         return {
-            "loss": self.total_loss_tracker.result(),
+            "total loss": self.total_loss_tracker.result(),
             "reconstruction_loss": self.reconstruction_loss_tracker.result(),
             "kl_loss": self.kl_loss_tracker.result(),
         }
@@ -807,7 +815,7 @@ def fieldgenerator(model,latent_dim,inputshape,Z,namefig,infoperm,nf):
 
 ###############################################################################
 ###############################################################################
-def comparison(vae, images, latent_dim, inputshape, namefig, infoperm):
+def comparison(vae, images, latent_dim, inputshape, namefig, infoperm, nsample):
     '''Display a 2D plot of the digit classes in the latent space'''
     z_mean, z_log_var, z = vae.encoder.predict(images)
     n   = random.randint(0,np.size(images,axis=0))
@@ -866,7 +874,7 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm):
     plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
     #==========================================================================
-    ndata = 5000#np.size(images, axis = 0)
+    ndata = nsample#np.size(images, axis = 0)
     rel_error = np.zeros((ndata,1))
     for i in range(ndata):
         zz  = z[i,:]
@@ -904,11 +912,7 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm):
     name = namefig + '_hist_latent.png'
     plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
-
 ###############################################################################
-
-
-
 ###############################################################################
 
 

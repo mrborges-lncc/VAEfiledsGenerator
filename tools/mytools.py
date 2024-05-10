@@ -888,7 +888,7 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm, nsample):
     fig= plt.figure(figsize=(10,10))
     a, b = np.min(rel_error), np.max(rel_error)
     c, d = 0., 0.5
-    x = np.arange(a, b, 0.01) 
+    x = np.arange(a, b, (b-a)/500) 
     num_bins = 20
     mu = np.mean(rel_error)
     desv = np.std(rel_error)

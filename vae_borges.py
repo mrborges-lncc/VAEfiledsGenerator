@@ -50,7 +50,7 @@ ratio_valid= 0.05
 ratio_test = 0.05
 home       = '/home/mrborges/Dropbox/fieldsCNN/'
 home       = '/home/mrborges/fieldsCNN/'
-home       = '/home/mrborges/Dropbox/matricesKLE/'
+home       = '/prj/prjmurad/mrborges/Dropbox/matricesKLE/'
 #home       = '/media/mrborges/borges/fieldsCNN/'
 namein     = home + 'mix_100.00x100.00x1.00_50x50x1_25000.mat'
 porous     = False
@@ -76,11 +76,11 @@ print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 train_size = np.size(train_images,0)
 valid_size = np.size(valid_images,0)
 test_size  = np.size(test_images,0)
-batch_size = 1000
+batch_size = 100
 inputshape = train_images.shape[1:]
 lrate      = 1.0e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 5
+epochs     = 500
 # set the dimensionality of the latent space to a plane for visualization later
 latent_dim = 500
 num_examples_to_generate = 16
@@ -158,6 +158,9 @@ zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam,
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-nsample = 500
-comparison(vae, test_images, latent_dim, input_shape, namefig, infoperm, nsample)
+nsample = 5
+for i in range(0,10):
+    comparison(vae, test_images, latent_dim, input_shape, namefig,
+               infoperm, nsample)
+    nsample = 0
 #==============================================================================

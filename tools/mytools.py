@@ -520,9 +520,6 @@ class VAE(keras.Model):
         with tf.GradientTape() as tape:
             z_mean, z_log_var, z = self.encoder(data)
             reconstruction = self.decoder(z)
- #           print(type(reconstruction),type(data))
- #           print(reconstruction.shape, data.shape)
- #           sys.exit()
             reconstruction_loss = tf.reduce_mean(
                 tf.reduce_sum(
                     keras.losses.MeanSquaredError(
@@ -874,44 +871,45 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm, nsample):
     plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
     #==========================================================================
-    ndata = nsample#np.size(images, axis = 0)
-    rel_error = np.zeros((ndata,1))
-    for i in range(ndata):
-        zz  = z[i,:]
-        zz  = zz.reshape((1, latent_dim))
-        prd = vae.decoder.predict(zz)
-        prd = prd.reshape(inputshape[0],inputshape[1])
-        img = images[i,:,:,:]
-        img = img.reshape(inputshape[0],inputshape[1])
-        rel_error[i] = np.linalg.norm(img - prd) / np.linalg.norm(img)
-    #==========================================================================
-    fig= plt.figure(figsize=(10,10))
-    a, b = np.min(rel_error), np.max(rel_error)
-    c, d = 0., 0.5
-    x = np.arange(a, b, (b-a)/500) 
-    num_bins = 20
-    mu = np.mean(rel_error)
-    desv = np.std(rel_error)
-    print('Relative Mean Squared Error => mean: %5.3f \t\t sigma: %5.3f' % (mu, desv))
-    #==========================================================================
-    nb, bins, patches = plt.hist(rel_error, num_bins, density=1, alpha=1.0, 
-                                         edgecolor='black')
-    d =  np.max(nb) * 1.1
-    y = ((1. / (np.sqrt(2. * np.pi) * desv)) * 
-         np.exp(-0.5 * (1. / desv * (x - mu))**2)) 
-    plt.plot(x, y, '-',linewidth=3,markersize=6, marker='',
-             markerfacecoloralt='tab:red', fillstyle='none')
-    plt.xlim(a,b)
-    plt.ylim(c,d)
-    plt.xlabel(r'$RMSE$', fontsize=22,
-               weight='bold', color='k')
-    plt.ylabel(r'Density', fontsize=22,
-               weight='bold', color='k')
-    plt.tick_params(labelsize=20)
-    fig.tight_layout()
-    name = namefig + '_hist_latent.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
-    plt.show()
+    ndata = np.min(nsample, np.size(images, axis = 0))
+    if ndata > 0:
+        rel_error = np.zeros((ndata,1))
+        for i in range(ndata):
+            zz  = z[i,:]
+            zz  = zz.reshape((1, latent_dim))
+            prd = vae.decoder.predict(zz)
+            prd = prd.reshape(inputshape[0],inputshape[1])
+            img = images[i,:,:,:]
+            img = img.reshape(inputshape[0],inputshape[1])
+            rel_error[i] = np.linalg.norm(img - prd) / np.linalg.norm(img)
+        #==========================================================================
+        fig= plt.figure(figsize=(10,10))
+        a, b = np.min(rel_error), np.max(rel_error)
+        c, d = 0., 0.5
+        x = np.arange(a, b, (b-a)/500) 
+        num_bins = 20
+        mu = np.mean(rel_error)
+        desv = np.std(rel_error)
+        print('Relative Mean Squared Error => mean: %5.3f \t\t sigma: %5.3f' % (mu, desv))
+        #==========================================================================
+        nb, bins, patches = plt.hist(rel_error, num_bins, density=1, alpha=1.0, 
+                                             edgecolor='black')
+        d =  np.max(nb) * 1.1
+        y = ((1. / (np.sqrt(2. * np.pi) * desv)) * 
+             np.exp(-0.5 * (1. / desv * (x - mu))**2)) 
+        plt.plot(x, y, '-',linewidth=3,markersize=6, marker='',
+                 markerfacecoloralt='tab:red', fillstyle='none')
+        plt.xlim(a,b)
+        plt.ylim(c,d)
+        plt.xlabel(r'$RMSE$', fontsize=22,
+                   weight='bold', color='k')
+        plt.ylabel(r'Density', fontsize=22,
+                   weight='bold', color='k')
+        plt.tick_params(labelsize=20)
+        fig.tight_layout()
+        name = namefig + '_hist_latent.png'
+        plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+        plt.show()
 ###############################################################################
 ###############################################################################
 

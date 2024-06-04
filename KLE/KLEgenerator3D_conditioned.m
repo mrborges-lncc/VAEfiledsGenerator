@@ -45,16 +45,16 @@ if(inputbox==1)
         varY,Nrand,interpolacao,M,ntipo,TIPOINPUT,...
         file_input_cond]=finputbox();
 else
-    ntipo = 1; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
+    ntipo = 3; % 1 == exponential, 3 == square exponential %%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% physical dimensions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     Lx = 100.0;
     Ly = 100.0;
-    Lz = 0.01;
+    Lz = 1.;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%% mesh for covariance matrix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    nx = 100;
-    ny = 100;
+    nx = 50;
+    ny = 50;
     nz = 1;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Mesh for interpolation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,9 +64,9 @@ else
     interpolacao = 10; % if == 1 the eigenvector are interpolated to this mesh
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    eta1  = 20.0;       % correlation length in the x direction
-    eta2  = 20.0;       % correlation length in the y direction
-    eta3  = 0.001;     % correlation length in the z direction
+    eta1  = 20.0;      % correlation length in the x direction
+    eta2  = 20.0;      % correlation length in the y direction
+    eta3  = 1.0;       % correlation length in the z direction
     Nrand = 1;         % total number of realizations
     M     = 0;         % number of terms used in the KL expansion. OBS: if == 0 it 
                        % uses the maximum number of terms (nx^2 x ny^2 x nz^2)

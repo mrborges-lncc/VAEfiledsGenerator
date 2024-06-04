@@ -1,37 +1,24 @@
 clear all; close all;
 addpath ./tools/
-addpath ~/Dropbox/mrst-2023a/
+addpath ~/Dropbox/mrst-2023b/
 startup
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% GRID %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Lx  = 1.0;
-Ly  = 1.0;
-Lz  = 0.01;
-nx  = 100;
-ny  = 100;
+Lx  = 100.0;
+Ly  = 100.0;
+Lz  = 1;
+nx  = 50;
+ny  = 50;
 nz  = 1;
 NX = nx; NY = ny; NZ = nz;
 depth = 1e3;
-eta1  = 0.2;       % correlation length in the x direction
-eta2  = 0.2;       % correlation length in the y direction
-eta3  = 0.001;       % correlation length in the z direction
+% eta1  = 10.0;       % correlation length in the x direction
+% eta2  = 10.0;       % correlation length in the y direction
+% eta3  = 0.001;       % correlation length in the z direction
 home_fig = './figuras/';
-ntipo = 1;
-nu = 0.5;
-beta = 1;
 num_elem = nx * ny;
-if ntipo == 1, tipo = 'exp_'; end
-if ntipo == 2, tipo = 'frac_'; end
-if ntipo == 3, tipo = 'sexp_'; end
-if ntipo == 4, tipo = 'matern_'; end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-nD = '3D';
-color = 'none';
-% color = 'k';
-vw  = [-35 20];
-vw  = [0 90];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%100x100x1_50x50x1%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% GRID %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dx  = Lx/double(nx);
@@ -45,44 +32,38 @@ G   = computeGeometry(G);
 [dim, nD, fine_grid, coarse_grid, dims, meshInfo] = preproc(Lx,Ly,Lz,...
     nx,ny,nz,nx,ny,nz);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-M    = 300 * 100;
-n    = 100 * 100;
+home = '~/mrborges/fieldsCNN/';
+home = '~/Dropbox/matricesKLE/';
+file = {[home 'avet_sexp_3_100x100x1_50x50x1_20x20x1_M2500.bin']};
+MM   = {2500};
 mu   = 0.0;
 sig  = 1.0;
-home = '~/Dropbox/fieldsCNN/';
-file = '/home/mrborges/Dropbox/fieldsCNN/avet_exp_1_1x3x0.01_100x300x1_0.2x0.2x0.001_M30000.bin';
-% file = '/home/mrborges/Dropbox/fieldsCNN/avet_exp_1_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.bin';
-% file = '/home/mrborges/Dropbox/fieldsCNN/avet_sexp_3_1x3x0.01_100x300x1_0.1x0.1x0.001_M30000.bin';
-fid  = fopen(file,"r");
-T    = fread(fid, "single");
-T    = reshape(T,[M,M]);
-fclose(fid);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-lb = '0-2x0-2';
-M  = 3531;
-Nrand = 5000;
-name2 = [tipo num2str(Lx,'%3.2f') 'x' num2str(Ly,'%3.2f') 'x' ...
+Nrand = 50000;
+name2 = ['mix_' num2str(Lx,'%3.2f') 'x' num2str(Ly,'%3.2f') 'x' ...
     num2str(Lz,'%3.2f') '_' num2str(NX,'%d') 'x' ...
-    num2str(NY,'%d') 'x' num2str(NZ,'%d') '_l' num2str(eta1,'%3.2f')...
-    'x' num2str(eta2,'%3.2f') 'x' num2str(eta3,'%3.2f')];
-namein= [home name2 '_' num2str(Nrand,'%d') '.mat'];
-if(nz==1)
-    name = ['campos/' tipo num2str(Lx,5) 'x' num2str(Ly,5) '_'...
-        num2str(NX,5) 'x' num2str(NY,5) '_' lb '_M' num2str(M,'%d') '_'];
-else
-    name = ['campos/' tipo num2str(Lx,5) 'x' num2str(Ly,5) 'x' ...
-        num2str(Lz,5) '_' num2str(NX,5) 'x' num2str(NY,5) 'x' ...
-        num2str(NZ,5) '_' lb '_M' num2str(M,'%d') '_'];
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    num2str(NY,'%d') 'x' num2str(NZ,'%d')];
+namein= [home name2 '_' num2str(Nrand*length(file),'%d') '.mat']
 fileIDin  = fopen(namein,'w');
-T = T(1:n, 1:M);
-for nr = 1 : Nrand
-    theta = single(lhsnorm(mu,sig,M));
-    Y     = T * theta(1:M);
-    fprintf('Real.: %d \t Mean: %4.2f \t Std: %4.2f\n',nr,mean(Y),std(Y));
-    fwrite(fileIDin ,Y ,'single');
-    imprime3D(Lx,Ly,Lz,NX,NY,NZ,ntipo,beta,Y,nr,home,name,0);
-    clear Y
+cont = 0;
+for i = 1 : length(file)
+    fid = fopen(file{i},"r");
+    T   = fread(fid, "single");
+    fclose(fid);
+    M   = MM{i};
+    T   = reshape(T,[M,M]);
+    T   = T(1:num_elem, 1:M);
+    for nr = 1 : Nrand
+        cont = cont + 1;
+        theta = single(lhsnorm(mu,sig,M));
+        Y     = T * theta(1:M);
+        fprintf('Real.: %d \t Mean: %4.2f \t Std: %4.2f\n',cont,...
+            mean(Y),std(Y));
+        fwrite(fileIDin ,Y ,'single');
+        clear Y theta
+    end
+    clear T
 end
-fclose(fileIDin)
+fclose(fileIDin);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clear all;

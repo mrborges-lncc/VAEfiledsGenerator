@@ -504,8 +504,7 @@ class VAE(keras.Model):
         self.decoder = decoder
         self.total_loss_tracker = keras.metrics.Mean(name="total_loss")
         self.reconstruction_loss_tracker = keras.metrics.Mean(
-            name="reconstruction_loss"
-        )
+            name="reconstruction_loss")
         self.kl_loss_tracker = keras.metrics.Mean(name="kl_loss")
 
     @property
@@ -831,7 +830,9 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm, nsample):
         #    prd = np.where(prd > .5, 1.0, 0.0).astype('float32')
         fig.add_subplot(1,2,2)
         plt.imshow(prd, cmap="jet", aspect='equal', interpolation='none',
-                   alpha = 1.0, origin='upper')
+                   alpha = 1.0, origin='upper') 
+        print(np.min(img), np.max(img))
+        print(np.min(prd), np.max(prd))
     else:
         img = images[n,:,:,:]
         x = np.linspace(0, infoperm.Lx, infoperm.nx+1) 
@@ -871,7 +872,7 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm, nsample):
     plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
     #==========================================================================
-    ndata = np.min(nsample, np.size(images, axis = 0))
+    ndata = min(nsample, np.size(images, axis = 0))
     if ndata > 0:
         rel_error = np.zeros((ndata,1))
         for i in range(ndata):

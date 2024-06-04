@@ -45,14 +45,14 @@ if nz == 1:
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 25000
+data_size  = 50000
 ratio_valid= 0.05
 ratio_test = 0.05
 home       = '/home/mrborges/Dropbox/fieldsCNN/'
 home       = '/home/mrborges/fieldsCNN/'
-home       = '/prj/prjmurad/mrborges/Dropbox/matricesKLE/'
+home       = '/home/mrborges/Dropbox/matricesKLE/'
 #home       = '/media/mrborges/borges/fieldsCNN/'
-namein     = home + 'mix_100.00x100.00x1.00_50x50x1_25000.mat'
+namein     = home + 'mix_100.00x100.00x1.00_50x50x1_50000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
@@ -66,6 +66,7 @@ preprocess = True # Normalize
 train_images, valid_images, test_images = load_dataset(dataname,preprocess,
                                                        infoperm,ratio_valid,
                                                        ratio_test)
+
 plot_examples(train_images, namefig)
 print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 #if nz > 1:
@@ -76,13 +77,13 @@ print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 train_size = np.size(train_images,0)
 valid_size = np.size(valid_images,0)
 test_size  = np.size(test_images,0)
-batch_size = 100
+batch_size = 1000
 inputshape = train_images.shape[1:]
-lrate      = 1.0e-4
+lrate      = 5.0e-5
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 500
+epochs     = 400
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 500
+latent_dim = 100
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
@@ -92,8 +93,10 @@ conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [2500]
+dens_neurons = [100]
 dens_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
+dens_activat = ["linear", "linear", "linear", "linear", "linear", "linear", "linear"]
+#dens_activat = ["sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid"]
 net          = net_info(conv_filters, conv_strides, conv_kernels, conv_activat, 
                         conv_padding, dens_neurons, dens_activat)
 #==============================================================================
@@ -154,11 +157,11 @@ Zparam = plot_latent_hist(vae, train_images, latent_dim, namefig, 16)
 ###############################################################################
 # Generator ===================================================================
 zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam, 
-                            namefig, infoperm, 16)
+                            namefig, infoperm, 36)
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-nsample = 5
+nsample = 0
 for i in range(0,10):
     comparison(vae, test_images, latent_dim, input_shape, namefig,
                infoperm, nsample)

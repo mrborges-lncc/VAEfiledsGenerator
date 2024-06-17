@@ -521,8 +521,9 @@ class VAE(keras.Model):
             reconstruction = self.decoder(z)
             reconstruction_loss = tf.reduce_mean(
                 tf.reduce_sum(
-                    keras.losses.MeanSquaredError(
-                        reduction="none")(data, reconstruction), axis=(1, 2)
+                    keras.losses.MSE(data, reconstruction)
+#                   keras.losses.MeanSquaredError(
+#                        reduction="none")(data, reconstruction), axis=(1, 2)
 #                    keras.losses.binary_crossentropy(data, reconstruction), axis=(1, 2)
                 )
             )
@@ -629,7 +630,7 @@ def plot_latent_hist(vae, images, latent_dim, namefig, nf):
     fig= plt.figure(figsize=(10,10))
     a, b = -4.5, 4.5
     c, d = 0., 0.5
-    x = np.arange(a, b, 0.01) 
+    x = np.arange(a, b, 0.005) 
     num_bins = 20
     n = 0
     for i in range(0,nx):
@@ -646,10 +647,13 @@ def plot_latent_hist(vae, images, latent_dim, namefig, nf):
                                          edgecolor='black')
 #            x = np.arange(np.min(zn),np.max(zn),0.001) 
             # add a 'best fit' line
-            y = ((1. / (np.sqrt(2. * np.pi) * std_z)) *
-                 np.exp(-0.5 * (1. / std_z * (x - mu_z))**2))
-            plt.plot(x, y, '-',linewidth=3,markersize=6, marker='',
-                    markerfacecoloralt='tab:red', fillstyle='none')
+#            y = ((1. / (np.sqrt(2. * np.pi) * std_z)) *
+#                 np.exp(-0.5 * (1. / std_z * (x - mu_z))**2))
+            muZ, stdZ = 0.0, 1.0
+            y = ((1. / (np.sqrt(2. * np.pi) * stdZ)) *
+                np.exp(-0.5 * (1. / stdZ * (x - muZ))**2))
+            plt.plot(x, y, '-',linewidth=4,markersize=6, marker='',
+                     markerfacecoloralt='tab:red', fillstyle='none')
             plt.xlim(a,b)
             plt.ylim(c,d)
             plt.xlabel(r'$z_{_{' + str(nseq[n]) + '}}$', fontsize=18,
@@ -872,6 +876,7 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm, nsample):
     plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
     plt.show()
     #==========================================================================
+    #==========================================================================
     ndata = min(nsample, np.size(images, axis = 0))
     if ndata > 0:
         rel_error = np.zeros((ndata,1))
@@ -883,21 +888,26 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm, nsample):
             img = images[i,:,:,:]
             img = img.reshape(inputshape[0],inputshape[1])
             rel_error[i] = np.linalg.norm(img - prd) / np.linalg.norm(img)
-        #==========================================================================
+        #======================================================================
         fig= plt.figure(figsize=(10,10))
         a, b = np.min(rel_error), np.max(rel_error)
         c, d = 0., 0.5
         x = np.arange(a, b, (b-a)/500) 
-        num_bins = 20
+        num_bins = 40
         mu = np.mean(rel_error)
         desv = np.std(rel_error)
+        print(a,b,mu,desv)
         print('Relative Mean Squared Error => mean: %5.3f \t\t sigma: %5.3f' % (mu, desv))
         #==========================================================================
-        nb, bins, patches = plt.hist(rel_error, num_bins, density=1, alpha=1.0, 
+        nb, bins, patches = plt.hist(rel_error, num_bins, density=True, alpha=1.0, 
                                              edgecolor='black')
         d =  np.max(nb) * 1.1
         y = ((1. / (np.sqrt(2. * np.pi) * desv)) * 
              np.exp(-0.5 * (1. / desv * (x - mu))**2)) 
+        mu2 = mu#np.log(mu / (np.sqrt(mu*mu + desv*desv)))
+        desv2 = desv#np.sqrt(1.0 + (desv*desv/(mu*mu)))
+#        y = ((1. / x*(np.sqrt(2. * np.pi) * desv2)) * 
+#             np.exp(-0.5 * (1. / desv2 * (np.log(x) - mu2))**2)) 
         plt.plot(x, y, '-',linewidth=3,markersize=6, marker='',
                  markerfacecoloralt='tab:red', fillstyle='none')
         plt.xlim(a,b)

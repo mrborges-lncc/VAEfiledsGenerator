@@ -36,8 +36,8 @@ else:
 Lx  = 100.0
 Ly  = 100.0
 Lz  = 0.01
-nx  = 28
-ny  = 28
+nx  = 50
+ny  = 50
 nz  = 1
 num_channel = 1
 if nz == 1:
@@ -46,8 +46,8 @@ else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
 data_size  = 50000
-ratio_valid= 0.05
-ratio_test = 0.05
+ratio_valid= 0.1
+ratio_test = 0.1
 home       = '/home/mrborges/Dropbox/fieldsCNN/'
 home       = '/home/mrborges/fieldsCNN/'
 home       = '/home/mrborges/Dropbox/matricesKLE/'
@@ -59,7 +59,7 @@ infoperm   = perm_info(namein, porous, input_shape, data_size, porosity,
                        Lx, Ly, Lz, nx, ny, nz)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[0]
+dataname   = data_name[1]
 name_ext   = '_teste'
 namefig    = './figuras/' + dataname + name_ext
 preprocess = True # Normalize
@@ -77,23 +77,23 @@ print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 train_size = np.size(train_images,0)
 valid_size = np.size(valid_images,0)
 test_size  = np.size(test_images,0)
-batch_size = 128
+batch_size = 256
 inputshape = train_images.shape[1:]
-lrate      = 5.0e-5
+lrate      = 1.0e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 50
+epochs     = 400
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 20
+latent_dim = 128
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = []
+conv_filters = [128,64,32]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [200,200]
+dens_neurons = [256,128]
 dens_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 #dens_activat = ["linear", "linear", "linear", "linear", "linear", "linear", "linear"]
 #dens_activat = ["sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid"]
@@ -161,8 +161,8 @@ zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam,
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-nsample = 0
-for i in range(0,0):
+nsample = 1000
+for i in range(0,10):
     comparison(vae, test_images, latent_dim, input_shape, namefig,
                infoperm, nsample)
     nsample = 0

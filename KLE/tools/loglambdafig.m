@@ -73,7 +73,7 @@ A = 0*min(X1);
 B = max(X1);
 C = min(Y1);
 D = max(Y1);
-C = 1.0e-2;
+C = 1.0e-10;
 D = 1.001e+04;
 aspec = 0.5 * (B - A) / (D - C);
 

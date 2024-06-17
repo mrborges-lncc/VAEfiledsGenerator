@@ -380,7 +380,7 @@ def plot_examples(images, namefig):
                    alpha = 1.0, origin='upper')
         plt.axis('off')
     name = namefig + '_data_examples.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
     plt.show()
 ###############################################################################
 
@@ -665,7 +665,7 @@ def plot_latent_hist(vae, images, latent_dim, namefig, nf):
             # Tweak spacing to prevent clipping of ylabel
     fig.tight_layout()
     name = namefig + '_hist_latent.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
     plt.show()
     return statZ
 ###############################################################################
@@ -808,7 +808,7 @@ def fieldgenerator(model,latent_dim,inputshape,Z,namefig,infoperm,nf):
                           linewidth=0.0) 
                 plt.axis('off')
     name = namefig + '_predicted_examples.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
     plt.show()
     return zmean, zvar, z
 ###############################################################################
@@ -873,7 +873,7 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm, nsample):
         ax.voxels(r, g, b, sphere, facecolors=colors, linewidth=0.0) 
         plt.axis('off')
     name = namefig + '_data_x_predicted.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
     plt.show()
     #==========================================================================
     #==========================================================================
@@ -896,30 +896,31 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm, nsample):
         num_bins = 40
         mu = np.mean(rel_error)
         desv = np.std(rel_error)
-        print(a,b,mu,desv)
+        label_n = 'LogNormal($\mu$ = {0:.2f}'.format(mu) + \
+        ', ' + '$\sigma$ = {0:.2f}'.format(desv) + ')'
+        print(label_n)
         print('Relative Mean Squared Error => mean: %5.3f \t\t sigma: %5.3f' % (mu, desv))
         #==========================================================================
-        nb, bins, patches = plt.hist(rel_error, num_bins, density=True, alpha=1.0, 
-                                             edgecolor='black')
-        d =  np.max(nb) * 1.1
-        y = ((1. / (np.sqrt(2. * np.pi) * desv)) * 
-             np.exp(-0.5 * (1. / desv * (x - mu))**2)) 
-        mu2 = mu#np.log(mu / (np.sqrt(mu*mu + desv*desv)))
-        desv2 = desv#np.sqrt(1.0 + (desv*desv/(mu*mu)))
-#        y = ((1. / x*(np.sqrt(2. * np.pi) * desv2)) * 
-#             np.exp(-0.5 * (1. / desv2 * (np.log(x) - mu2))**2)) 
-        plt.plot(x, y, '-',linewidth=3,markersize=6, marker='',
-                 markerfacecoloralt='tab:red', fillstyle='none')
+        nb, bins, patches = plt.hist(rel_error, num_bins, density=True,
+                                     alpha=1.0, edgecolor='black', 
+                                     label = 'data')
+        d     =  np.max(nb) * 1.1
+        muY   = np.log(mu*mu / (np.sqrt(mu*mu + desv*desv)))
+        desvY = np.sqrt(np.log(1.0 + (desv*desv/(mu*mu))))
+        y = ((1. / x*(np.sqrt(2. * np.pi) * desvY)) * 
+             np.exp(-0.5 * (1. / desvY * (np.log(x) - muY))**2)) 
+        plt.plot(x, y, '-', linewidth=4, markersize=6, marker='',
+                 markerfacecoloralt='tab:red', fillstyle='none',
+                 label = label_n)
         plt.xlim(a,b)
         plt.ylim(c,d)
-        plt.xlabel(r'$RMSE$', fontsize=22,
-                   weight='bold', color='k')
-        plt.ylabel(r'Density', fontsize=22,
-                   weight='bold', color='k')
-        plt.tick_params(labelsize=20)
+        plt.xlabel(r'$RMSE$' , fontsize=26, weight='bold', color='k')
+        plt.ylabel(r'Density', fontsize=26, weight='bold', color='k')
+        plt.tick_params(labelsize=24)
+        plt.legend(loc = "upper right", fontsize=18)
         fig.tight_layout()
         name = namefig + '_hist_latent.png'
-        plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+        plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
         plt.show()
 ###############################################################################
 ###############################################################################

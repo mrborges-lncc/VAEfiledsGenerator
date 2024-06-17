@@ -48,9 +48,9 @@ else:
 data_size  = 50000
 ratio_valid= 0.1
 ratio_test = 0.1
-home       = '/home/mrborges/Dropbox/fieldsCNN/'
-home       = '/home/mrborges/fieldsCNN/'
-home       = '/home/mrborges/Dropbox/matricesKLE/'
+home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
+home       = '/prj/prjmurad/mrborges/fieldsCNN/'
+home       = '/prj/prjmurad/mrborges/Dropbox/matricesKLE/'
 #home       = '/media/mrborges/borges/fieldsCNN/'
 namein     = home + 'mix_100.00x100.00x1.00_50x50x1_50000.mat'
 porous     = False
@@ -83,17 +83,17 @@ lrate      = 1.0e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
 epochs     = 400
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 128
+latent_dim = 16
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [128,64,32]
+conv_filters = [64,32]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [256,128]
+dens_neurons = [128, 64]
 dens_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 #dens_activat = ["linear", "linear", "linear", "linear", "linear", "linear", "linear"]
 #dens_activat = ["sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid"]
@@ -161,7 +161,7 @@ zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam,
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-nsample = 1000
+nsample = 100
 for i in range(0,10):
     comparison(vae, test_images, latent_dim, input_shape, namefig,
                infoperm, nsample)

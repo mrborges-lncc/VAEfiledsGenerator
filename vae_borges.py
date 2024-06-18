@@ -46,14 +46,14 @@ if nz == 1:
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 25000
+data_size  = 40000
 ratio_valid= 0.1
 ratio_test = 0.1
 home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
 home       = '/prj/prjmurad/mrborges/fieldsCNN/'
-home       = '/home/mrborges/Dropbox/matricesKLE/'
+home       = '/prj/prjmurad/mrborges/Dropbox/matricesKLE/'
 #home       = '/media/mrborges/borges/fieldsCNN/'
-namein     = home + 'mix_100.00x100.00x1.00_50x50x1_25000.mat'
+namein     = home + 'mix_100.00x100.00x1.00_50x50x1_40000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
@@ -88,7 +88,7 @@ num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [64,32]
+conv_filters = [128,64,32]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
@@ -162,18 +162,18 @@ if dataname == 'MNIST':
 #==============================================================================
 ###############################################################################
 # Show latent space ===========================================================
-Zparam = plot_latent_hist(vae, train_images, latent_dim, namefig, 16)
+Zparam = plot_latent_hist(vae, train_images, latent_dim, namefig, fig_print, 16)
 #==============================================================================
 ###############################################################################
 # Generator ===================================================================
 zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam, 
-                            namefig, infoperm, 36)
+                            namefig, infoperm, fig_print, 36)
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
 nsample = 100
 for i in range(0,10):
     comparison(vae, test_images, latent_dim, input_shape, namefig,
-               infoperm, nsample)
+               infoperm, nsample, fig_print)
     nsample = 0
 #==============================================================================

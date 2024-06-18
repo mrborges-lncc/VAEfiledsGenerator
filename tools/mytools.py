@@ -68,60 +68,61 @@ def save_original_fields(data,inputshape,home,nf):
 
 ###############################################################################
 ###############################################################################
-def plot_losses(history, namefig):
+def plot_losses(history, namefig, flag):
     '''Plot the losses of the training process'''
-    lista_metric = list() 
-    for i in history.history.keys():
-        lista_metric.append(i)
-    #total_loss   = lista_metric[0]
-    reconstruction_loss  = lista_metric[1]
-    kl_loss      = lista_metric[2]
-    #=========================================================================
-    fig = plt.figure(constrained_layout=True, figsize=(30,25))
-    fig, axs = plt.subplots(nrows=1,ncols=2, constrained_layout=True)
-    #=========================================================================
-    ya = np.min(history.history[reconstruction_loss]) * .95
-    yb = np.max(history.history[reconstruction_loss]) * 1.05
-    dy = (yb-ya)/4
-    axy = np.arange(ya,yb+1e-5,dy)
-    axx = np.arange(0, len(history.history['reconstruction_loss'])+1,
-                    len(history.history['reconstruction_loss'])/4)
-    axs[0].plot(history.history[reconstruction_loss],'tab:blue',linewidth=3)
-    axs[0].set_title(r'Reconstruction loss',fontsize=14)
-#    axs[0].legend([], loc='upper right')
-    axs[0].set_ylim((ya,yb))
-#    axs[0].set_yticks(axy)
-    axs[0].set_xticks(axx)
-    axs[0].tick_params(axis="x", labelsize=12)
-    axs[0].tick_params(axis="y", labelsize=12)
-    axs[0].set_yscale('log')
-    axs[0].set_xlabel(r'\textbf{Epoch}', fontsize=14, weight='bold', color='k')
-    axs[0].set_ylabel(r'$\mathsf{MSE}$', fontsize=14, weight='bold', color='k')
-    axs[0].set_box_aspect(1)
-    axs[0].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
-#    axs[0].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1f'))
-    #=========================================================================
-    ya = np.min(history.history[kl_loss]) * .95
-    yb = np.max(history.history[kl_loss]) * 1.05
-    dy = (yb-ya)/4
-    axy = np.arange(ya,yb+1e-5,dy)
-    axs[1].plot(history.history[kl_loss],'tab:orange',linewidth=3)
-    axs[1].set_title(r'KL-divergence loss',fontsize=14)
-#    axs[1].legend([], loc='upper right')
-    axs[1].set_ylim((ya,yb))
-    axs[1].set_yticks(axy)
-    axs[1].set_xticks(axx)
-    axs[1].tick_params(axis="x", labelsize=12)
-    axs[1].tick_params(axis="y", labelsize=12)
-    axs[1].set_yscale('log')
-    axs[1].set_xlabel(r'\textbf{Epoch}', fontsize=14, weight='bold', color='k')
-    axs[1].set_ylabel(r'$\mathcal{D}_{\mathsf{KL}}$', fontsize=14, 
-                      weight='bold', color='k')
-    axs[1].set_box_aspect(1)
-    axs[1].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
-    name = namefig + '_losses.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
-    plt.show()
+    if flag:
+        lista_metric = list() 
+        for i in history.history.keys():
+            lista_metric.append(i)
+        #total_loss   = lista_metric[0]
+        reconstruction_loss  = lista_metric[1]
+        kl_loss      = lista_metric[2]
+        #=========================================================================
+        fig = plt.figure(constrained_layout=True, figsize=(30,25))
+        fig, axs = plt.subplots(nrows=1,ncols=2, constrained_layout=True)
+        #=========================================================================
+        ya = np.min(history.history[reconstruction_loss]) * .95
+        yb = np.max(history.history[reconstruction_loss]) * 1.05
+        dy = (yb-ya)/4
+        axy = np.arange(ya,yb+1e-5,dy)
+        axx = np.arange(0, len(history.history['reconstruction_loss'])+1,
+                        len(history.history['reconstruction_loss'])/4)
+        axs[0].plot(history.history[reconstruction_loss],'tab:blue',linewidth=3)
+        axs[0].set_title(r'Reconstruction loss',fontsize=14)
+    #    axs[0].legend([], loc='upper right')
+        axs[0].set_ylim((ya,yb))
+    #    axs[0].set_yticks(axy)
+        axs[0].set_xticks(axx)
+        axs[0].tick_params(axis="x", labelsize=12)
+        axs[0].tick_params(axis="y", labelsize=12)
+        axs[0].set_yscale('log')
+        axs[0].set_xlabel(r'\textbf{Epoch}', fontsize=14, weight='bold', color='k')
+        axs[0].set_ylabel(r'$\mathsf{MSE}$', fontsize=14, weight='bold', color='k')
+        axs[0].set_box_aspect(1)
+        axs[0].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
+    #    axs[0].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1f'))
+        #=========================================================================
+        ya = np.min(history.history[kl_loss]) * .95
+        yb = np.max(history.history[kl_loss]) * 1.05
+        dy = (yb-ya)/4
+        axy = np.arange(ya,yb+1e-5,dy)
+        axs[1].plot(history.history[kl_loss],'tab:orange',linewidth=3)
+        axs[1].set_title(r'KL-divergence loss',fontsize=14)
+    #    axs[1].legend([], loc='upper right')
+        axs[1].set_ylim((ya,yb))
+        axs[1].set_yticks(axy)
+        axs[1].set_xticks(axx)
+        axs[1].tick_params(axis="x", labelsize=12)
+        axs[1].tick_params(axis="y", labelsize=12)
+        axs[1].set_yscale('log')
+        axs[1].set_xlabel(r'\textbf{Epoch}', fontsize=14, weight='bold', color='k')
+        axs[1].set_ylabel(r'$\mathcal{D}_{\mathsf{KL}}$', fontsize=14, 
+                          weight='bold', color='k')
+        axs[1].set_box_aspect(1)
+        axs[1].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
+        name = namefig + '_losses.png'
+        plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+        plt.show()
 ###############################################################################
 
 ###############################################################################
@@ -367,21 +368,22 @@ def Gfunction(x, porosity):
 
 ###############################################################################
 ###############################################################################
-def plot_examples(images, namefig):
+def plot_examples(images, namefig, flag):
     '''Display a 5x7 plot of 35 images'''
-    fig = plt.figure(figsize=(10,10))
-    M = np.size(images,0)
-    cor = 'jet'
-    for n in range(1, 37):
-        fig.add_subplot(6, 6, n)
-        nr  = random.randint(0,M-1)
-        img = images[nr,:,:,0]
-        plt.imshow(img, cmap=cor, aspect='equal', interpolation='none', 
-                   alpha = 1.0, origin='upper')
-        plt.axis('off')
-    name = namefig + '_data_examples.png'
-    plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
-    plt.show()
+    if flag:
+        fig = plt.figure(figsize=(10,10))
+        M = np.size(images,0)
+        cor = 'jet'
+        for n in range(1, 37):
+            fig.add_subplot(6, 6, n)
+            nr  = random.randint(0,M-1)
+            img = images[nr,:,:,0]
+            plt.imshow(img, cmap=cor, aspect='equal', interpolation='none', 
+                       alpha = 1.0, origin='upper')
+            plt.axis('off')
+        name = namefig + '_data_examples.png'
+        plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
+        plt.show()
 ###############################################################################
 
 ###############################################################################

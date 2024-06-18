@@ -30,7 +30,8 @@ if tf.test.is_gpu_available():
     mirrored_strategy = tf.distribute.MirroredStrategy()
 else:
     print("GPU not available")
-
+#==============================================================================
+fig_print = True
 ###############################################################################
 # Load data base ==============================================================
 Lx  = 100.0
@@ -45,14 +46,14 @@ if nz == 1:
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 50000
+data_size  = 25000
 ratio_valid= 0.1
 ratio_test = 0.1
 home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
 home       = '/prj/prjmurad/mrborges/fieldsCNN/'
-home       = '/prj/prjmurad/mrborges/Dropbox/matricesKLE/'
+home       = '/home/mrborges/Dropbox/matricesKLE/'
 #home       = '/media/mrborges/borges/fieldsCNN/'
-namein     = home + 'mix_100.00x100.00x1.00_50x50x1_50000.mat'
+namein     = home + 'mix_100.00x100.00x1.00_50x50x1_25000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
@@ -66,8 +67,7 @@ preprocess = True # Normalize
 train_images, valid_images, test_images = load_dataset(dataname,preprocess,
                                                        infoperm,ratio_valid,
                                                        ratio_test)
-
-plot_examples(train_images, namefig)
+plot_examples(train_images, namefig, fig_print)
 print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
 #if nz > 1:
     #fieldplot3D(train_images[0,:,:,:],Lx,Ly,Lz,nx,ny,nz,dataname) 
@@ -81,7 +81,7 @@ batch_size = 256
 inputshape = train_images.shape[1:]
 lrate      = 1.0e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 400
+epochs     = 500
 # set the dimensionality of the latent space to a plane for visualization later
 latent_dim = 16
 num_examples_to_generate = 16
@@ -104,6 +104,12 @@ if input_shape[2] == 1:
     encoder = build_encoder2D(net, input_shape, latent_dim)
 else:
     encoder = build_encoder3D(net, input_shape, latent_dim)
+#==============================================================================
+filen = 'model/encoder_summary' + name_ext + '.txt'
+with open(filen, 'w') as f:
+    encoder.summary(print_fn=lambda x: f.write(x + '\n'))
+#filen = 'figuras/encoder_summary' + name_ext + '.png'
+#tf.keras.utils.plot_model(encoder, filen, show_shapes=True)
 #==============================================================================
 ###############################################################################
 # Collecting information for building the mirrored decoder ====================
@@ -130,6 +136,10 @@ else:
     decoder = build_decoder3D(net, input_shape, latent_dim, ndens,
                               layer_shape, nconv)
 #==============================================================================
+filen = 'model/decoder_summary' + name_ext + '.txt'
+with open(filen, 'w') as f:
+    decoder.summary(print_fn=lambda x: f.write(x + '\n'))
+#==============================================================================
 ###############################################################################
 # Train the VAE ===============================================================
 vae = VAE(encoder, decoder)
@@ -138,7 +148,7 @@ history = vae.fit(train_images, epochs=epochs, batch_size=batch_size)
 # saving model ================================================================
 name = dataname + name_ext
 save_model_weights(vae, name, latent_dim)
-plot_losses(history, namefig)
+plot_losses(history, namefig, fig_print)
 #==============================================================================
 ###############################################################################
 # Display how the latent space clusters different digit classes ===============

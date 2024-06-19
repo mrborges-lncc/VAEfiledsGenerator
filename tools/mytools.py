@@ -75,17 +75,17 @@ def plot_losses(history, namefig, flag):
         lista_metric.append(i)
     #total_loss   = lista_metric[0]
     reconstruction_loss  = lista_metric[1]
-    kl_loss      = lista_metric[2]
+    kl_loss      = lista_metric[0]
     #=========================================================================
     fig = plt.figure(constrained_layout=True, figsize=(30,25))
     fig, axs = plt.subplots(nrows=1,ncols=2, constrained_layout=True)
     #=========================================================================
-    ya = np.min(history.history[reconstruction_loss]) * .95
-    yb = np.max(history.history[reconstruction_loss]) * 1.05
+    ya = pot10min(np.min(history.history[reconstruction_loss]))
+    yb = pot10sup(np.max(history.history[reconstruction_loss]))
     dy = (yb-ya)/4
     axy = np.arange(ya,yb+1e-5,dy)
-    axx = np.arange(0, len(history.history['reconstruction_loss'])+1,
-                    len(history.history['reconstruction_loss'])/4)
+    axx = np.arange(0, len(history.history[reconstruction_loss])+1,
+                    len(history.history[reconstruction_loss])/4)
     axs[0].plot(history.history[reconstruction_loss],'tab:blue',linewidth=3)
     axs[0].set_title(r'Reconstruction loss',fontsize=14)
 #    axs[0].legend([], loc='upper right')
@@ -97,12 +97,12 @@ def plot_losses(history, namefig, flag):
     axs[0].set_yscale('log')
     axs[0].set_xlabel(r'\textbf{Epoch}', fontsize=14, weight='bold', color='k')
     axs[0].set_ylabel(r'$\mathsf{MSE}$', fontsize=14, weight='bold', color='k')
-    axs[0].set_box_aspect(1)
+    axs[0].set_box_aspect(1.0)
     axs[0].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
 #    axs[0].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1f'))
     #=========================================================================
-    ya = np.min(history.history[kl_loss]) * .95
-    yb = np.max(history.history[kl_loss]) * 1.05
+    ya = pot10min(np.min(history.history[kl_loss]))
+    yb = pot10sup(np.max(history.history[kl_loss]))
     dy = (yb-ya)/4
     axy = np.arange(ya,yb+1e-5,dy)
     axs[1].plot(history.history[kl_loss],'tab:orange',linewidth=3)
@@ -117,12 +117,32 @@ def plot_losses(history, namefig, flag):
     axs[1].set_xlabel(r'\textbf{Epoch}', fontsize=14, weight='bold', color='k')
     axs[1].set_ylabel(r'$\mathcal{D}_{\mathsf{KL}}$', fontsize=14, 
                       weight='bold', color='k')
-    axs[1].set_box_aspect(1)
+    axs[1].set_box_aspect(1.0)
     axs[1].yaxis.set_major_formatter(ticker.FormatStrFormatter('%2.1e'))
     name = namefig + '_losses.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
     if flag:
         plt.show()
+###############################################################################
+
+###############################################################################
+###############################################################################
+def pot10sup(x):
+    for i in range(0,10):
+        aux = np.power(10.0, i)
+        if aux >= x:
+            break
+    return aux
+###############################################################################
+
+###############################################################################
+###############################################################################
+def pot10min(x):
+    for i in range(10,0,-1):
+        aux = np.power(10.0, i)
+        if aux <= x:
+            break
+    return aux
 ###############################################################################
 
 ###############################################################################
@@ -408,15 +428,18 @@ def load_dataset(dataname,prep,infoperm,rvalid,rtest):
         valid = x[lista[ntrain:ntrain+nvalid],:,:]
         test  = x[lista[ntrain+nvalid:],:,:]
 #==============================================================================
-    train = preprocess_images(train,dataname,prep,infoperm)
-    valid = preprocess_images(valid,dataname,prep,infoperm)
-    test  = preprocess_images(test,dataname,prep,infoperm)
-    return train, valid, test
+    maxdata = np.max(train,axis=None)
+    mindata = np.min(train,axis=None)
+#==============================================================================
+    train = preprocess_images(train,dataname,prep,infoperm,maxdata,mindata)
+    valid = preprocess_images(valid,dataname,prep,infoperm,maxdata,mindata)
+    test  = preprocess_images(test,dataname,prep,infoperm,maxdata,mindata)
+    return train, valid, test, maxdata, mindata
 ###############################################################################
 
 ###############################################################################
 ###############################################################################
-def preprocess_images(images,dataname,prep,infoperm):
+def preprocess_images(images,dataname,prep,infoperm,maxdata,mindata):
     '''Normalize and reshape the images'''
     poros    = infoperm.porous
     porosity = infoperm.porosity
@@ -432,8 +455,6 @@ def preprocess_images(images,dataname,prep,infoperm):
                 images = np.where(images > g, 0.0, 1.0).astype('float32')
                 return images.astype('float32')
             else:
-                maxdata = np.max(images,axis=None)
-                mindata = np.min(images,axis=None)
                 images  = (images - mindata) / (maxdata - mindata)
                 images  = images.reshape((images.shape[0], nx, ny, nz))
                 return images.astype('float32')
@@ -675,7 +696,7 @@ def plot_latent_hist(vae, images, latent_dim, namefig, flag, nf):
 
 ###############################################################################
 ###############################################################################
-def random_generator(model,latent_dim,inputshape,Z,home,nf):
+def random_generator(model,latent_dim,inputshape,Z,home,nf,mindata,maxdata):
     '''Display a n*n 2D manifold of digits'''
     zmean = Z[:,0]
     zvar  = Z[:,1]
@@ -688,7 +709,8 @@ def random_generator(model,latent_dim,inputshape,Z,home,nf):
         z = np.random.multivariate_normal(zmean, cov, 1).T
         z = z.reshape((1, latent_dim))
         X = model.predict(z)
-        img = X[0].reshape(nx * ny * nz)
+        img = (maxdata - mindata) * X[0].reshape(nx * ny * nz) + mindata
+        print(np.mean(img), np.std(img), np.max(img), np.min(img))
         fname = home + str(i) + '.dat'
         print(fname)
         np.savetxt(fname, img, fmt='%.8e', delimiter=' ', newline='\n', 

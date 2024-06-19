@@ -17,13 +17,14 @@ from mytools import comparison, perm_info, load_dataset, plot_examples
 from mytools import random_generator, save_original_fields, plot_3D
 from mytools import plot_label_clusters
 ###############################################################################
+fig_print = True
 ###############################################################################
 # Load data base ==============================================================
 Lx  = 100.0
 Ly  = 100.0
 Lz  = 0.01
-nx  = 28
-ny  = 28
+nx  = 50
+ny  = 50
 nz  = 1
 num_channel = 1
 if nz == 1:
@@ -31,34 +32,34 @@ if nz == 1:
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 35000
-ratio_valid= 0.05
-ratio_test = 0.05
-home       = '/home/mrborges/Dropbox/fieldsCNN/'
+data_size  = 40000
+ratio_valid= 0.1
+ratio_test = 0.1
 home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
-home       = '/media/mrborges/borges/fieldsCNN/'
-namein     = home + 'mix_100.00x100.00x0.01_100x100x1_35000.mat'
+home       = '/prj/prjmurad/mrborges/fieldsCNN/'
+home       = '/prj/prjmurad/mrborges/Dropbox/matricesKLE/'
+#home       = '/media/mrborges/borges/fieldsCNN/'
+namein     = home + 'mix_100.00x100.00x1.00_50x50x1_40000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
                        Lx, Ly, Lz, nx, ny, nz)
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
-dataname   = data_name[0]
-name_ext   = '_MNIST_ls2'
+dataname   = data_name[1]
+name_ext   = '_cilamce'
 namefig    = './figuras/' + dataname + name_ext
 preprocess = True # Normalize
-train_images, valid_images, test_images = load_dataset(dataname,preprocess,
-                                                       infoperm,ratio_valid,
-                                                       ratio_test)
-plot_examples(train_images, namefig)
-print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
-#if nz > 1:
-    #fieldplot3D(train_images[0,:,:,:],Lx,Ly,Lz,nx,ny,nz,dataname) 
-    #plot_3D(train_images[0,:,:,:], infoperm, namefig)
-
+train_images, valid_images, test_images, maxdata, mindata = \
+ load_dataset(dataname,preprocess, infoperm, ratio_valid, ratio_test)
+fname = 'model/min_max' + name_ext + '.dat'
+#np.savetxt(fname, (mindata, maxdata), fmt='%.8e', delimiter=' ',
+#           newline='\n', header='', footer='', comments='# ', encoding=None)
+plot_examples(train_images, namefig, fig_print)
+print("Original Data interval......... [%g,%g]" % (mindata,maxdata))
+print("Post-processed Data interval... [%g,%g]" % (np.min(train_images),np.max(train_images)))
 ###############################################################################
-ld = 2
+ld = 64
 name = dataname + name_ext
 encoder, decoder = load_model_weights(name, ld)
 print(encoder.summary())
@@ -89,23 +90,26 @@ if dataname == 'MNIST':
 #==============================================================================
 ###############################################################################
 # Show latent space ===========================================================
-Zparam = plot_latent_hist(vae, train_images, latent_dim, namefig, 16)
+Zparam = plot_latent_hist(vae, train_images, latent_dim, namefig, fig_print, 16)
 #==============================================================================
 ###############################################################################
 # Generator ===================================================================
 zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam, 
-                            namefig, infoperm, 16)
+                            namefig, infoperm, fig_print, 16)
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-comparison(vae, test_images, latent_dim, input_shape, namefig, infoperm)
+nsample = 200
+comparison(vae, test_images, latent_dim, input_shape, namefig, infoperm,
+           nsample, fig_print)
 #==============================================================================
 #==============================================================================
 ###############################################################################
 # Random generation ===========================================================
 fname = './KLE/fields/field_' + dataname + '_'
 N = 50
-random_generator(decoder, latent_dim, input_shape, Zparam, fname, N)
+random_generator(decoder, latent_dim, input_shape, Zparam, fname, N, mindata,
+                 maxdata)
 #==============================================================================
 ###############################################################################
 # Save original fields ========================================================

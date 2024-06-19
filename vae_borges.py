@@ -61,14 +61,18 @@ infoperm   = perm_info(namein, porous, input_shape, data_size, porosity,
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[1]
-name_ext   = '_teste'
+name_ext   = '_cilamce'
 namefig    = './figuras/' + dataname + name_ext
 preprocess = True # Normalize
-train_images, valid_images, test_images = load_dataset(dataname,preprocess,
-                                                       infoperm,ratio_valid,
-                                                       ratio_test)
+train_images, valid_images, test_images, \
+maxdata, mindata = load_dataset(dataname,preprocess, infoperm, 
+                                ratio_valid, ratio_test)
+fname = 'model/min_max' + name_ext + '.dat'
+np.savetxt(fname, (mindata, maxdata), fmt='%.8e', delimiter=' ',
+           newline='\n', header='', footer='', comments='# ', encoding=None)
 plot_examples(train_images, namefig, fig_print)
-print("Data interval [%g,%g]" % (np.min(train_images),np.max(train_images)))
+print("Original Data interval......... [%g,%g]" % (mindata,maxdata))
+print("Post-processed Data interval... [%g,%g]" % (np.min(train_images),np.max(train_images)))
 #if nz > 1:
     #fieldplot3D(train_images[0,:,:,:],Lx,Ly,Lz,nx,ny,nz,dataname) 
     #plot_3D(train_images[0,:,:,:], infoperm, namefig)
@@ -81,9 +85,9 @@ batch_size = 256
 inputshape = train_images.shape[1:]
 lrate      = 1.0e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 500
+epochs     = 750
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 16
+latent_dim = 64
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
@@ -171,7 +175,7 @@ zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam,
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-nsample = 100
+nsample = test_size
 for i in range(0,10):
     comparison(vae, test_images, latent_dim, input_shape, namefig,
                infoperm, nsample, fig_print)

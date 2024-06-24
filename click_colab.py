@@ -12,6 +12,6 @@ import time
 mouse = Controller()
 
 while True:
-    mouse.click(Button.right,1)
+    mouse.click(Button.left,1)
     print('clicked')
     time.sleep(30)

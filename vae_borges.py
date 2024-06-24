@@ -46,14 +46,15 @@ if nz == 1:
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 40000
+data_size  = 60000
 ratio_valid= 0.1
 ratio_test = 0.1
 home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
 home       = '/prj/prjmurad/mrborges/fieldsCNN/'
 home       = '/prj/prjmurad/mrborges/Dropbox/matricesKLE/'
+home       = '/home/mrborges/Dropbox/matricesKLE/'
 #home       = '/media/mrborges/borges/fieldsCNN/'
-namein     = home + 'mix_100.00x100.00x1.00_50x50x1_40000.mat'
+namein     = home + 'mix_100.00x100.00x1.00_50x50x1_60000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
@@ -61,7 +62,7 @@ infoperm   = perm_info(namein, porous, input_shape, data_size, porosity,
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[1]
-name_ext   = '_cilamce'
+name_ext   = '_cilamce128'
 namefig    = './figuras/' + dataname + name_ext
 preprocess = True # Normalize
 train_images, valid_images, test_images, \
@@ -85,19 +86,19 @@ batch_size = 256
 inputshape = train_images.shape[1:]
 lrate      = 1.0e-4
 optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
-epochs     = 750
+epochs     = 400
 # set the dimensionality of the latent space to a plane for visualization later
-latent_dim = 64
+latent_dim = 128
 num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [128,64,32]
+conv_filters = [128,64,64]
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 conv_padding = ["same", "same", "same", "same", "same", "same", "same"]
-dens_neurons = [128, 64]
+dens_neurons = [256, 128]
 dens_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
 #dens_activat = ["linear", "linear", "linear", "linear", "linear", "linear", "linear"]
 #dens_activat = ["sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid", "sigmoid"]

@@ -13,7 +13,7 @@ from tensorflow import keras
 import sys
 sys.path.append("./tools/")
 from mytools import Sampling, VAE, fieldgenerator, plot_latent_space
-from mytools import plot_label_clusters, perm_info, save_model_weights
+from mytools import plot_label_clusters, perm_info, save_model, save_model_weights
 from mytools import load_dataset, plot_examples, comparison, plot_latent_hist
 from mytools import build_encoder3D, build_decoder3D, build_encoder2D
 from mytools import build_decoder2D, net_info, fieldplot3D, plot_losses, plot_3D
@@ -93,7 +93,7 @@ num_examples_to_generate = 16
 #==============================================================================
 ###############################################################################
 # Build the encoder ===========================================================
-conv_filters = [128,64,64]
+conv_filters = []
 conv_strides = [2, 1, 1, 1, 1, 1, 1]
 conv_kernels = [2, 2, 2, 2, 2, 2, 2]
 conv_activat = ["relu", "relu", "relu", "relu", "relu", "relu", "relu"]
@@ -152,6 +152,7 @@ vae.compile(optimizer=optimizer)
 history = vae.fit(train_images, epochs=epochs, batch_size=batch_size)
 # saving model ================================================================
 name = dataname + name_ext
+save_model(vae, name, latent_dim)
 save_model_weights(vae, name, latent_dim)
 plot_losses(history, namefig, fig_print)
 #==============================================================================

@@ -32,14 +32,14 @@ if nz == 1:
 else:
     input_shape= (nx, ny, nz, num_channel)
 #==============================================================================
-data_size  = 40000
+data_size  = 60000
 ratio_valid= 0.1
 ratio_test = 0.1
 home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
 home       = '/prj/prjmurad/mrborges/fieldsCNN/'
-home       = '/prj/prjmurad/mrborges/Dropbox/matricesKLE/'
+home       = '/home/mrborges/Dropbox/matricesKLE/'
 #home       = '/media/mrborges/borges/fieldsCNN/'
-namein     = home + 'mix_100.00x100.00x1.00_50x50x1_40000.mat'
+namein     = home + 'mix_100.00x100.00x1.00_50x50x1_60000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
@@ -47,7 +47,7 @@ infoperm   = perm_info(namein, porous, input_shape, data_size, porosity,
 #==============================================================================
 data_name  = ['MNIST', 'PERM', 'FASHION_MNIST']
 dataname   = data_name[1]
-name_ext   = '_cilamce'
+name_ext   = '_cilamce64'
 namefig    = './figuras/' + dataname + name_ext
 preprocess = True # Normalize
 train_images, valid_images, test_images, maxdata, mindata = \
@@ -60,10 +60,34 @@ print("Original Data interval......... [%g,%g]" % (mindata,maxdata))
 print("Post-processed Data interval... [%g,%g]" % (np.min(train_images),np.max(train_images)))
 ###############################################################################
 ld = 64
-name = dataname + name_ext
-encoder, decoder = load_model_weights(name, ld)
+hm   = 'model/'
+ename  = hm + 'encoder_model_' + dataname + name_ext + '_128.h5'
+dname  = hm + 'decoder_model_' + dataname + name_ext + '_128.h5'
+ewname = hm + 'encoder_' + dataname + name_ext + '_128.weights.h5'
+dwname = hm + 'decoder_' + dataname + name_ext + '_128.weights.h5'
+
+dataname = 'tosin_PERM_'
+name_ext = 'teste'
+hm   = '/home/mrborges/Dropbox/vae_files/'
+ename  = hm + 'encoder_model_' + dataname + name_ext + '_64.h5'
+dname  = hm + 'decoder_model_' + dataname + name_ext + '_64.h5'
+ewname = hm + 'encoder_' + dataname + name_ext + '_64.weights.h5'
+dwname = hm + 'decoder_' + dataname + name_ext + '_64.weights.h5'
+
+encoder, decoder = load_model_weights(ename, dname, ewname, dwname)
 print(encoder.summary())
 print(decoder.summary())
+filen = 'model/encoder_summary' + name_ext + '.txt'
+with open(filen, 'w') as f:
+    encoder.summary(print_fn=lambda x: f.write(x + '\n'))
+filen = 'model/decoder_summary' + name_ext + '.txt'
+with open(filen, 'w') as f:
+    decoder.summary(print_fn=lambda x: f.write(x + '\n'))
+#==============================================================================
+###############################################################################
+lrate      = 1.0e-4
+optimizer  = tf.keras.optimizers.Adam(learning_rate = lrate)
+decoder.compile()
 #==============================================================================
 ###############################################################################
 # Collecting information for building the mirrored decoder ====================
@@ -95,19 +119,21 @@ Zparam = plot_latent_hist(vae, train_images, latent_dim, namefig, fig_print, 16)
 ###############################################################################
 # Generator ===================================================================
 zmu,zvar,z = fieldgenerator(vae, latent_dim, input_shape, Zparam, 
-                            namefig, infoperm, fig_print, 16)
+                            namefig, infoperm, fig_print, 36)
 #==============================================================================
 ###############################################################################
 # Comparison between data and predictions =====================================
-nsample = 200
-comparison(vae, test_images, latent_dim, input_shape, namefig, infoperm,
-           nsample, fig_print)
+nsample = 5000
+for i in range(0,20):
+    comparison(vae, test_images, latent_dim, input_shape, namefig,
+               infoperm, nsample, fig_print, i)
+    nsample = 0
 #==============================================================================
 #==============================================================================
 ###############################################################################
 # Random generation ===========================================================
 fname = './KLE/fields/field_' + dataname + '_'
-N = 50
+N = 5
 random_generator(decoder, latent_dim, input_shape, Zparam, fname, N, mindata,
                  maxdata)
 #==============================================================================
@@ -115,3 +141,10 @@ random_generator(decoder, latent_dim, input_shape, Zparam, fname, N, mindata,
 # Save original fields ========================================================
 fname = './KLE/fields/field_orig_' + dataname + '_'
 save_original_fields(train_images, input_shape, fname, N)
+
+#==============================================================================
+###############################################################################
+enc_name = ename[0:-3] + '.keras'
+vae.encoder.save(enc_name)
+dec_name = dname[0:-3] + '.keras'
+vae.decoder.save(dec_name)

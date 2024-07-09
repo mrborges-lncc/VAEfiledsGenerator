@@ -322,19 +322,18 @@ def fieldplot3D(f,Lx,Ly,Lz,nx,ny,nz,name):
 
 ###############################################################################
 ###############################################################################
-def load_model_weights(dataname, ld):
+def load_model_weights(ename, dname, ewname, dwname):
     '''Load the weights of the encoder and decoder networks'''
-    dataname= dataname + '_' + str(ld)
-    outname = 'model/encoder_model_' + dataname + '.h5'
+    outname = ename
     print('Loading encoder model....: %s' % (outname))
     encoder = tf.keras.models.load_model(outname, 
                                          custom_objects={'Sampling':Sampling})
-    outname = 'model/decoder_model_' + dataname + '.h5'
+    outname = dname
     print('Loading decoder model....: %s' % (outname))
     decoder = tf.keras.models.load_model(outname)
-    outname = 'model/encoder_' + dataname + '.weights.h5'
+    outname = ewname
     encoder.load_weights(outname)
-    outname = 'model/decoder_' + dataname + '.weights.h5'
+    outname = dwname
     decoder.load_weights(outname)
     return encoder, decoder
 ###############################################################################
@@ -350,10 +349,23 @@ def save_model_weights(vae, dataname, ld):
     outname = 'model/decoder_model_' + dataname + '.h5'
     print('Saving the decoder model....: %s' % (outname))
     vae.decoder.save(outname)
-    outname = 'model/encoder_' + dataname + '.weights.h5'
+    outname = 'model/encoder_model_' + dataname + '.weights.h5'
     vae.encoder.save_weights(outname)
-    outname = 'model/decoder_' + dataname + '.weights.h5'
+    outname = 'model/decoder_model_' + dataname + '.weights.h5'
     vae.decoder.save_weights(outname)
+###############################################################################
+
+###############################################################################
+###############################################################################
+def save_model(vae, dataname, ld):
+    '''Save the weights of the encoder and decoder networks'''
+    dataname = dataname + '_' + str(ld)
+    outname = 'model/encoder_model_' + dataname + '.keras'
+    print('Saving the encoder model....: %s' % (outname))
+    vae.encoder.save(outname)
+    outname = 'model/decoder_model_' + dataname + '.keras'
+    print('Saving the decoder model....: %s' % (outname))
+    vae.decoder.save(outname)
 ###############################################################################
 
 ###############################################################################
@@ -518,6 +530,8 @@ class Sampling(layers.Layer):
                                    dtype = tf.float32)
         return z_mean + tf.exp(0.5 * z_log_var) * epsilon
 ###############################################################################
+
+###############################################################################
 ###############################################################################
 class VAE(keras.Model):
     '''Combines the encoder and decoder into an end-to-end model for training.'''
@@ -605,7 +619,7 @@ def plot_latent_space(vae, namefig, n=15, figsize=15):
     plt.ylabel("z[1]")
     plt.imshow(figure, cmap="Greys_r")
     name = namefig + '_predicted.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
     plt.show()
 ###############################################################################
 
@@ -620,7 +634,7 @@ def plot_label_clusters(vae, data, labels, namefig):
     plt.xlabel("z[0]")
     plt.ylabel("z[1]")
     name = namefig + '_post_clusters.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
     plt.show()
 ###############################################################################
 
@@ -772,7 +786,7 @@ def plot_3D(img, infoperm, namefig):
     ax.set_zticks(zz[1:])
 #    plt.axis('off')
     name = namefig + '_3D.png'
-    plt.savefig(name, transparent=True, dpi=300, bbox_inches='tight')
+    plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
     plt.show()
 ###############################################################################
 
@@ -842,7 +856,7 @@ def fieldgenerator(model,latent_dim,inputshape,Z,namefig,infoperm,flag,nf):
 ###############################################################################
 ###############################################################################
 def comparison(vae, images, latent_dim, inputshape, namefig, infoperm,
-               nsample, flag):
+               nsample, flag, nr):
     '''Display a 2D plot of the digit classes in the latent space'''
     z_mean, z_log_var, z = vae.encoder.predict(images)
     n   = random.randint(0,np.size(images,axis=0))
@@ -858,10 +872,18 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm,
         plt.imshow(img, cmap="jet", aspect='equal', interpolation='none',
                    alpha = 1.0, origin='upper')
         prd = prd.reshape(inputshape[0],inputshape[1])
-        #    prd = np.where(prd > .5, 1.0, 0.0).astype('float32')
+        plt.xlabel(r'$x_1$', fontsize=16, weight='bold', color='k')
+        plt.ylabel(r'$x_2$', fontsize=16, weight='bold', color='k')
+        plt.xticks(fontsize = 14)
+        plt.yticks(fontsize = 14)
+        #======================================================================
         fig.add_subplot(1,2,2)
         plt.imshow(prd, cmap="jet", aspect='equal', interpolation='none',
                    alpha = 1.0, origin='upper') 
+        plt.xlabel(r'$x_1$', fontsize=16, weight='bold', color='k')
+        plt.ylabel(r'$x_2$', fontsize=16, weight='bold', color='k')
+        plt.xticks(fontsize = 14)
+        plt.yticks(fontsize = 14)
         print(np.min(img), np.max(img))
         print(np.min(prd), np.max(prd))
     else:
@@ -899,7 +921,7 @@ def comparison(vae, images, latent_dim, inputshape, namefig, infoperm,
                            infoperm.Lz / m)) 
         ax.voxels(r, g, b, sphere, facecolors=colors, linewidth=0.0) 
         plt.axis('off')
-    name = namefig + '_data_x_predicted.png'
+    name = namefig + '_data_x_predicted_' + str(nr) + '.png'
     plt.savefig(name, transparent=True, dpi=600, bbox_inches='tight')
     if flag:
         plt.show()

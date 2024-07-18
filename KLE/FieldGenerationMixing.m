@@ -51,14 +51,15 @@ file = {[home 'avet_exp_1_100x100x1_50x50x1_5x5x0.01_M2500.bin'],...
 file = {[home 'avet_sexp_3_100x100x1_50x50x1_10x10x0.01_M2500.bin'],...
         [home 'avet_sexp_3_100x100x1_50x50x1_20x20x0.01_M2500.bin'],...
         [home 'avet_sexp_3_100x100x1_50x50x1_30x30x0.01_M2500.bin']};
+file = {[home 'avet_sexp_3_100x100x1_50x50x1_20x20x0.01_M2500.bin']};
 MM   = {2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500,...
     2500, 2500, 2500, 2500, 2500};
 mu   = 0.0;
 sig  = 1.0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Nrand = 20000;
-name2 = ['mix_' num2str(Lx,'%3.2f') 'x' num2str(Ly,'%3.2f') 'x' ...
-    num2str(Lz,'%3.2f') '_' num2str(NX,'%d') 'x' ...
+Nrand = 60000;
+name2 = ['mix_c' num2str(length(file),'%d') '_' num2str(Lx,'%3.2f') 'x' ...
+    num2str(Ly,'%3.2f') 'x' num2str(Lz,'%3.2f') '_' num2str(NX,'%d') 'x' ...
     num2str(NY,'%d') 'x' num2str(NZ,'%d')];
 namein= [home name2 '_' num2str(Nrand*length(file),'%d') '.mat']
 fileIDin  = fopen(namein,'w');
@@ -71,9 +72,10 @@ for i = 1 : length(file)
     T   = reshape(T,[M,M]);
     T   = T(1:num_elem, 1:M);
     for nr = 1 : Nrand
-        cont = cont + 1;
+        cont  = cont + 1;
         theta = single(lhsnorm(mu,sig,M));
         Y     = T * theta(1:M);
+        Y     = (Y - mean(Y)) / std(Y);
         fprintf('Real.: %d \t Mean: %4.2f \t Std: %4.2f\n',cont,...
             mean(Y),std(Y));
         fwrite(fileIDin ,Y ,'single');

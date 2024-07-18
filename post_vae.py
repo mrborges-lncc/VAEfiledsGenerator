@@ -37,9 +37,9 @@ ratio_valid= 0.1
 ratio_test = 0.1
 home       = '/prj/prjmurad/mrborges/Dropbox/fieldsCNN/'
 home       = '/prj/prjmurad/mrborges/fieldsCNN/'
-home       = '/home/mrborges/Dropbox/matricesKLE/'
+home       = '/prj/prjmurad/mrborges/Dropbox/matricesKLE/'
 #home       = '/media/mrborges/borges/fieldsCNN/'
-namein     = home + 'mix_100.00x100.00x1.00_50x50x1_60000.mat'
+namein     = home + 'mix3_100.00x100.00x1.00_50x50x1_60000.mat'
 porous     = False
 porosity   = 0.20
 infoperm   = perm_info(namein, porous, input_shape, data_size, porosity, 
@@ -68,7 +68,7 @@ dwname = hm + 'decoder_' + dataname + name_ext + '_128.weights.h5'
 
 dataname = 'tosin_PERM_'
 name_ext = 'teste'
-hm   = '/home/mrborges/Dropbox/vae_files/'
+hm   = '/prj/prjmurad/mrborges/Dropbox/vae_files/'
 ename  = hm + 'encoder_model_' + dataname + name_ext + '_64.h5'
 dname  = hm + 'decoder_model_' + dataname + name_ext + '_64.h5'
 ewname = hm + 'encoder_' + dataname + name_ext + '_64.weights.h5'
@@ -148,3 +148,8 @@ enc_name = ename[0:-3] + '.keras'
 vae.encoder.save(enc_name)
 dec_name = dname[0:-3] + '.keras'
 vae.decoder.save(dec_name)
+#==============================================================================
+###############################################################################
+# Field generation ============================================================
+dec = vae.decoder
+z   = 
